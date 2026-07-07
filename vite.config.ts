@@ -1,18 +1,20 @@
-import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import { defineConfig } from "vite";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
+import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
-    babel({ presets: [reactCompilerPreset()] })
+    babel({ presets: [reactCompilerPreset()] }),
   ],
+  resolve: {
+    alias: { "@": "/src" },
+  },
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 5173,
-    watch: {
-      usePolling: true
-    }
-  }
-})
+    watch: { usePolling: true },
+  },
+});
