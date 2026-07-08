@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
+  X,
   LayoutDashboard,
   MessageSquare,
   Sun,
@@ -125,9 +126,10 @@ export const AdminLayout = () => {
               sx={{
                 borderRadius: "0 4px 4px 0",
                 mb: 1,
-                px: collapsed ? 1 : 2,
+                pl: collapsed ? 2 : 1.25,
+                pr: collapsed ? 1 : 2,
                 py: 1.25,
-                justifyContent: collapsed ? "center" : "flex-start",
+                justifyContent: "flex-start",
                 minHeight: 44,
                 color: isActive ? "var(--color-destaque)" : "var(--color-texto-secundario)",
                 bgcolor: isActive ? "var(--color-destaque-suave)" : "transparent",
@@ -189,9 +191,10 @@ export const AdminLayout = () => {
           }}
           sx={{
             borderRadius: "0 4px 4px 0",
-            px: collapsed ? 1 : 2,
+            pl: collapsed ? 2 : 1.25,
+            pr: collapsed ? 1 : 2,
             py: 1.25,
-            justifyContent: collapsed ? "center" : "flex-start",
+            justifyContent: "flex-start",
             minHeight: 44,
             color: "var(--color-texto-secundario)",
             bgcolor: "transparent",
@@ -246,9 +249,10 @@ export const AdminLayout = () => {
           onClick={onClick}
           sx={{
             borderRadius: "0 4px 4px 0",
-            px: collapsed ? 1 : 2,
+            pl: collapsed ? 2 : 1.25,
+            pr: collapsed ? 1 : 2,
             py: 1.25,
-            justifyContent: collapsed ? "center" : "flex-start",
+            justifyContent: "flex-start",
             minHeight: 44,
             color: "var(--color-texto-secundario)",
             bgcolor: "transparent",
@@ -302,9 +306,10 @@ export const AdminLayout = () => {
           }}
           sx={{
             borderRadius: "0 4px 4px 0",
-            px: collapsed ? 1 : 2,
+            pl: collapsed ? 2 : 1.25,
+            pr: collapsed ? 1 : 2,
             py: 1.25,
-            justifyContent: collapsed ? "center" : "flex-start",
+            justifyContent: "flex-start",
             minHeight: 44,
             color: "var(--color-erro)",
             bgcolor: "transparent",
@@ -350,7 +355,7 @@ export const AdminLayout = () => {
       <GlobalRequestIndicator />
       <Navbar />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative">
         {/* Sidebar desktop */}
         <aside
           className={`relative hidden shrink-0 border-r border-borda-padrao bg-fundo-superficie transition-all duration-200 lg:flex lg:flex-col ${
@@ -408,9 +413,10 @@ export const AdminLayout = () => {
                 sx={{
                   borderRadius: "0 4px 4px 0",
                   width: "100%",
-                  px: collapsed ? 1 : 2,
+                  pl: collapsed ? 2 : 1.25,
+                  pr: collapsed ? 1 : 2,
                   py: 1.25,
-                  justifyContent: collapsed ? "center" : "flex-start",
+                  justifyContent: "flex-start",
                   minHeight: 44,
                   color: location.pathname === "/admin" ? "var(--color-destaque)" : "var(--color-texto-secundario)",
                   bgcolor: location.pathname === "/admin" ? "var(--color-destaque-suave)" : "transparent",
@@ -461,33 +467,77 @@ export const AdminLayout = () => {
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           variant="temporary"
-          ModalProps={{ keepMounted: true }}
+          ModalProps={{ 
+            keepMounted: true,
+            disablePortal: true
+          }}
           sx={{
+            position: "fixed",
+            top: "64px",
+            height: "calc(100vh - 64px)",
+            zIndex: 40,
             "& .MuiDrawer-paper": {
               width: "16rem",
               bgcolor: "var(--color-fundo-superficie)",
+              position: "absolute",
+              height: "100%",
+              boxShadow: "none",
             },
+            "& .MuiBackdrop-root": {
+              position: "absolute",
+              height: "100%",
+            }
           }}
         >
-          <div className="flex h-16 items-center justify-between border-b border-borda-padrao px-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center bg-azul-unb">
-                <ChartColumnBig className="h-4 w-4 text-white" />
+          <div className="flex h-16 items-center justify-between border-b border-borda-padrao p-2 pl-0">
+            <ListItemButton
+              component={NavLink}
+              to="/admin"
+              end
+              onClick={() => setMobileOpen(false)}
+              sx={{
+                borderRadius: "0 4px 4px 0",
+                pl: 1.25,
+                pr: 2,
+                py: 1.25,
+                justifyContent: "flex-start",
+                minHeight: 44,
+                color: location.pathname === "/admin" ? "var(--color-destaque)" : "var(--color-texto-secundario)",
+                bgcolor: location.pathname === "/admin" ? "var(--color-destaque-suave)" : "transparent",
+                borderLeft: location.pathname === "/admin" ? "4px solid var(--color-destaque)" : "4px solid transparent",
+                "&:hover": {
+                  bgcolor: location.pathname === "/admin"
+                    ? "var(--color-destaque-suave)"
+                    : "var(--color-fundo-superficie-suave)",
+                  color: location.pathname === "/admin" ? "var(--color-destaque-hover)" : "var(--color-texto-principal)",
+                },
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 32,
+                  color: "inherit",
+                  justifyContent: "center",
+                  mr: 1,
+                }}
+              >
+                <LayoutDashboard className="h-5 w-5" />
+              </ListItemIcon>
+              <div className="transition-all duration-200 ease-in-out whitespace-nowrap overflow-hidden opacity-100 max-w-[150px]">
+                <span className="text-sm font-semibold">Painel</span>
               </div>
-              <span className="text-sm font-bold text-texto-principal">
-                Administração
-              </span>
-            </div>
+            </ListItemButton>
             <IconButton
               onClick={() => setMobileOpen(false)}
               sx={{
                 borderRadius: "50%",
                 color: "var(--color-texto-secundario)",
                 p: 1,
+                mr: 1.5,
                 "&:hover": { bgcolor: "var(--color-fundo-superficie-suave)" },
               }}
             >
-              <Menu className="h-5 w-5" />
+              <X className="h-5 w-5" />
             </IconButton>
           </div>
           <nav className="flex-1 overflow-y-auto p-2" onClick={() => setMobileOpen(false)}>

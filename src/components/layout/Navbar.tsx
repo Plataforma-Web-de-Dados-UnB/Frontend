@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-  BarChart2,
   LogIn,
   Menu,
   UserPlus,
@@ -13,6 +12,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { useAuth } from "@/features/auth/useAuth";
 import { APP_CONFIG, ROUTES } from "@/utils/constants";
+import unbLogo from "@/../public/unb-logo.png";
 
 const sharpButton = {
   borderRadius: "4px",
@@ -106,20 +106,19 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 w-full bg-azul-unb shadow-md">
       <div className="flex h-16 w-full items-center justify-between px-6 lg:px-7">
         {/* Logo / Título */}
-        <Link to={ROUTES.home} className="flex items-center gap-3 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center bg-destaque">
-            <BarChart2 className="h-5 w-5 text-white" />
-          </div>
+        <Link to={ROUTES.home} className="flex items-center gap-3 shrink-0 select-none cursor-pointer">
+          <img src={unbLogo} alt="UnB Logo" className="sm:h-[35px] h-[35.5px] w-auto object-contain" />
           <div className="flex flex-col leading-tight">
-            <span className="hidden text-sm font-black uppercase tracking-wide text-texto-invertido sm:block">
+            <span className="hidden font-black uppercase tracking-wide text-white sm:block">
               Portal de Dados Institucionais
             </span>
-            <span className="hidden text-[10px] font-medium tracking-widest text-texto-invertido/60 sm:block">
-              Universidade de Brasília
+            <span className="hidden text-[12px] font-semibold tracking-widest text-white/90 sm:block">
+              Universidade de Brasília - FCTE
             </span>
-            <span className="text-sm font-black uppercase tracking-wide text-texto-invertido sm:hidden">
-              PDI · UnB
-            </span>
+            <div className="text-sm font-black tracking-wide text-white sm:hidden flex flex-col leading-tight">
+              <span className="uppercase">Portal de Dados Institucionais</span>
+              <span className="text-xs font-semibold text-white/90 mt-0.5 tracking-wider">Universidade de Brasília - FCTE</span>
+            </div>
           </div>
         </Link>
 

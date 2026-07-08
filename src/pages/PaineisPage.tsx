@@ -1,7 +1,8 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart2 } from "lucide-react";
+import { BarChart2, ChevronsRight } from "lucide-react";
 import { categoriasApi } from "@/services/categoriasApi";
+import { painelApi } from "@/services/painelApi";
 import { ROUTES } from "@/utils/constants";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
@@ -9,22 +10,51 @@ export const PaineisPage = () => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
 
-  const { data: categorias, isLoading } = useQuery({
+  const { data: categorias, isLoading: isLoadingCategorias } = useQuery({
     queryKey: ["categorias-all"],
     queryFn: () => categoriasApi.listAll(),
   });
 
-  const filtered = q
-    ? categorias?.filter((c) => c.nome.toLowerCase().includes(q.toLowerCase()))
-    : categorias;
+  const { data: paineisRes, isLoading: isLoadingPaineis } = useQuery({
+    queryKey: ["paineis-search-all"],
+    queryFn: () => painelApi.list(1, 1000),
+    enabled: !!q,
+  });
+
+  const normalizeText = (text: string) => {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  };
+
+  const searchNormalized = normalizeText(q);
+
+  const filteredPaineis = q && paineisRes?.itens
+    ? paineisRes.itens.filter((painel) => {
+        const nameNorm = normalizeText(painel.nome);
+        const descNorm = normalizeText(painel.descricao ?? "");
+        return nameNorm.includes(searchNormalized) || descNorm.includes(searchNormalized);
+      })
+    : [];
+
+  const filteredCategorias = !q && categorias ? categorias : [];
+
+  const isLoading = isLoadingCategorias || (!!q && isLoadingPaineis);
 
   return (
     <div className="px-6 py-8 lg:px-7">
-      <Breadcrumb items={[{ label: "Painéis" }]} />
+      <Breadcrumb
+        items={
+          q
+            ? [{ label: "Painéis", to: ROUTES.paineis }, { label: "Busca" }]
+            : [{ label: "Painéis" }]
+        }
+      />
 
       <div className="mt-6 border-l-4 border-destaque pl-4">
         <h1 className="text-3xl font-black uppercase tracking-tight text-azul-unb">
-          Painéis
+          {q ? `Busca: ${q}` : "Painéis"}
         </h1>
       </div>
 
@@ -34,15 +64,54 @@ export const PaineisPage = () => {
         </div>
       )}
 
-      {!isLoading && filtered && filtered.length === 0 && (
+      {!isLoading && q && filteredPaineis.length === 0 && (
         <p className="mt-16 text-center text-texto-secundario">
-          Nenhuma categoria encontrada{q ? ` para "${q}"` : ""}.
+          Nenhum painel encontrado para "{q}".
         </p>
       )}
 
-      {!isLoading && filtered && filtered.length > 0 && (
+      {!isLoading && !q && filteredCategorias.length === 0 && (
+        <p className="mt-16 text-center text-texto-secundario">
+          Nenhuma categoria encontrada.
+        </p>
+      )}
+
+      {/* Resultados da busca (Lista de Painéis) */}
+      {!isLoading && q && filteredPaineis.length > 0 && (
+        <div className="mt-8 flex flex-col gap-3">
+          {filteredPaineis.map((painel) => (
+            <Link
+              key={painel.id}
+              to={ROUTES.painel.replace(":id", String(painel.id))}
+              className="group flex items-center gap-4 bg-fundo-superficie px-4 py-4 transition hover:bg-fundo-superficie-suave"
+            >
+              <ChevronsRight className="h-5 w-5 shrink-0 text-destaque transition group-hover:translate-x-1" />
+              <div className="min-w-0 flex-1 md:flex md:items-center md:justify-between md:gap-6">
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold uppercase tracking-wide text-texto-principal group-hover:text-destaque">
+                    {painel.nome}
+                  </p>
+                  {painel.descricao && (
+                    <p className="mt-0.5 text-sm text-texto-secundario line-clamp-1">
+                      {painel.descricao}
+                    </p>
+                  )}
+                </div>
+                <div className="mt-2 md:mt-0 flex shrink-0 select-none">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-azul-unb text-white uppercase tracking-wider">
+                    {painel.categoriaNome}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Categorias sem busca */}
+      {!isLoading && !q && filteredCategorias.length > 0 && (
         <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-          {filtered.map((cat) => (
+          {filteredCategorias.map((cat) => (
             <Link
               key={cat.id}
               to={ROUTES.categoria.replace(":id", String(cat.id))}
