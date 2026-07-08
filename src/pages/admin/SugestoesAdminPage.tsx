@@ -68,7 +68,7 @@ export const SugestoesAdminPage = () => {
     }
   });
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     setBusca(buscaInput);
     setPage(1);

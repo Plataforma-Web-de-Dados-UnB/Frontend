@@ -24,11 +24,11 @@ export const categoriasApi = {
     );
     return data.itens;
   },
-  async listAdmin(page = 1, limit = 10) {
+  async listAdmin(page = 1, limit = 10, busca?: string, active?: boolean) {
     const { data } = await api.get<ResultadoPaginado<CategoriaGetDto>>(
       "/categoria/admin",
       {
-        params: { page, limit },
+        params: { page, limit, busca, active },
       },
     );
     return data;

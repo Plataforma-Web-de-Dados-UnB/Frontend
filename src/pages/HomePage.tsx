@@ -8,15 +8,15 @@ export const HomePage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
     navigate(`${ROUTES.paineis}?q=${encodeURIComponent(search)}`);
   };
 
   return (
-    <div>
+    <div className="flex-1 flex flex-col">
       {/* Hero */}
-      <section className="bg-fundo-superficie py-20 px-4 text-center">
+      <section className="bg-fundo-superficie flex-1 flex items-center justify-center py-12 px-4 text-center">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-4xl font-black uppercase tracking-tight text-azul-unb lg:text-5xl">
             Portal de Dados Institucionais
@@ -83,7 +83,7 @@ export const HomePage = () => {
       </section>
 
       {/* Sobre */}
-      <section className="bg-fundo-superficie-suave px-4 py-16">
+      <section className="bg-fundo-superficie-suave px-4 py-12 shrink-0 border-t border-borda-padrao/50">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl font-black uppercase tracking-tight text-azul-unb">
             Sobre

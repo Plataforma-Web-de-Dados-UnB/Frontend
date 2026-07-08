@@ -1,72 +1,78 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, LayoutList, BarChart2, Power } from "lucide-react";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
-import { FormField } from "@/components/ui/FormField";
-import { AlertBanner } from "@/components/ui/AlertBanner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
+import { ChevronLeft, ChevronRight, LayoutList } from "lucide-react";
+import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { CategoriaFilterBar } from "@/components/categorias/CategoriaFilterBar";
+import { CategoriaAdminCard } from "@/components/categorias/CategoriaAdminCard";
+import { CategoriaFormModal } from "@/components/categorias/CategoriaFormModal";
+import { CategoriaDetailModal } from "@/components/categorias/CategoriaDetailModal";
+import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import { categoriasApi } from "@/services/categoriasApi";
-import { categoriaSchema, type CategoriaFormValues } from "@/schemas/forms";
-import { isApiError } from "@/types/api";
-import { Pagination } from "@/components/ui/Pagination";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { openDialog, closeDialog } from "@/utils/dialog";
 import type { CategoriaGetDto } from "@/types/dtos";
+import type { CategoriaFormValues } from "@/schemas/forms";
+import { isApiError } from "@/types/api";
 import { toast } from "sonner";
 
-const MODAL_FORM = "cat-form-modal";
-const MODAL_DELETE = "cat-delete-modal";
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 export const CategoriasAdminPage = () => {
   const qc = useQueryClient();
   const [page, setPage] = useState(1);
-  const [editing, setEditing] = useState<CategoriaGetDto | null>(null);
-  const [deleting, setDeleting] = useState<CategoriaGetDto | null>(null);
+  const [buscaInput, setBuscaInput] = useState("");
+  const [busca, setBusca] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ativos" | "inativos" | "todos">("ativos");
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["categorias-admin", page],
-    queryFn: () => categoriasApi.listAdmin(page, PAGE_SIZE),
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editing, setEditing] = useState<CategoriaGetDto | null>(null);
+  const [viewing, setViewing] = useState<CategoriaGetDto | null>(null);
+  const [deactivating, setDeactivating] = useState<CategoriaGetDto | null>(null);
+  const [restoring, setRestoring] = useState<CategoriaGetDto | null>(null);
+  const [deleting, setDeleting] = useState<CategoriaGetDto | null>(null);
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+
+  // Compute active parameter for API
+  const activeParam = 
+    statusFilter === "ativos" 
+      ? true 
+      : statusFilter === "inativos" 
+      ? false 
+      : undefined;
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["categorias-admin", page, busca, statusFilter],
+    queryFn: () => categoriasApi.listAdmin(page, PAGE_SIZE, busca || undefined, activeParam),
   });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<CategoriaFormValues>({ resolver: zodResolver(categoriaSchema) });
-
   const createMutation = useMutation({
-    mutationFn: (v: CategoriaFormValues) => categoriasApi.create(v),
+    mutationFn: (v: CategoriaFormValues & { imagem?: File }) => categoriasApi.create(v),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
-      closeDialog(MODAL_FORM);
-      reset();
-      toast.success("Categoria criada.");
+      setIsFormOpen(false);
+      setFormError(undefined);
+      toast.success("Categoria criada com sucesso!");
     },
     onError: (err) => {
-      if (isApiError(err)) setError("root", { message: err.message });
+      if (isApiError(err)) setFormError(err.message);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, v }: { id: number; v: CategoriaFormValues }) =>
+    mutationFn: ({ id, v }: { id: number; v: CategoriaFormValues & { imagem?: File } }) =>
       categoriasApi.update(id, v),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
-      closeDialog(MODAL_FORM);
-      reset();
+      setIsFormOpen(false);
+      setFormError(undefined);
       setEditing(null);
-      toast.success("Categoria atualizada.");
+      toast.success("Categoria atualizada com sucesso!");
     },
     onError: (err) => {
-      if (isApiError(err)) setError("root", { message: err.message });
+      if (isApiError(err)) setFormError(err.message);
     },
   });
 
@@ -75,219 +81,298 @@ export const CategoriasAdminPage = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
-      closeDialog(MODAL_DELETE);
       setDeleting(null);
-      toast.success("Categoria removida.");
+      toast.success("Categoria excluída com sucesso.");
     },
+    onError: (err: any) => {
+      toast.error(err.message || "Erro ao excluir categoria.");
+    }
   });
 
   const toggleMutation = useMutation({
     mutationFn: categoriasApi.toggleActive,
-    onSuccess: (data) => {
+    onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
-      toast.success(data?.message || "Status da categoria alterado com sucesso!");
+      setDeactivating(null);
+      setRestoring(null);
+      toast.success(res?.message || "Status alterado com sucesso!");
     },
-    onError: (err: any) => toast.error(err.message || "Erro ao alterar status da categoria."),
+    onError: (err: any) => {
+      toast.error(err.message || "Erro ao alterar status da categoria.");
+    },
   });
+
+  const handleSearchSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setBusca(buscaInput);
+    setPage(1);
+  };
+
+  const handleClearSearch = () => {
+    setBuscaInput("");
+    setBusca("");
+    setPage(1);
+  };
 
   const openNew = () => {
     setEditing(null);
-    reset({ nome: "", descricao: "", sortOrdem: 0 });
-    openDialog(MODAL_FORM);
+    setFormError(undefined);
+    setIsFormOpen(true);
   };
+
   const openEdit = (c: CategoriaGetDto) => {
     setEditing(c);
-    reset({
-      nome: c.nome,
-      descricao: c.descricao ?? "",
-      sortOrdem: c.sortOrdem,
-    });
-    openDialog(MODAL_FORM);
+    setFormError(undefined);
+    setIsFormOpen(true);
   };
+
+  const openView = (c: CategoriaGetDto) => {
+    setViewing(c);
+  };
+
+  const openDeactivate = (c: CategoriaGetDto) => {
+    setDeactivating(c);
+  };
+
+  const openRestore = (c: CategoriaGetDto) => {
+    setRestoring(c);
+  };
+
   const openDelete = (c: CategoriaGetDto) => {
     setDeleting(c);
-    openDialog(MODAL_DELETE);
   };
-  const onSubmit = (v: CategoriaFormValues) =>
-    editing
-      ? updateMutation.mutate({ id: editing.id, v })
-      : createMutation.mutate(v);
+
+  const handleFormSubmit = async (values: CategoriaFormValues & { imagem?: File }) => {
+    if (editing) {
+      await updateMutation.mutateAsync({ id: editing.id, v: values });
+    } else {
+      await createMutation.mutateAsync(values);
+    }
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditing(null);
+    setFormError(undefined);
+  };
+
+  const formatData = (dataStr: string) => {
+    return new Date(dataStr).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // Pagination stats
+  const totalItens = data?.totalItens ?? 0;
+  const totalPages = data?.totalPaginas ?? 1;
+  const startRange = totalItens === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const endRange = Math.min(page * PAGE_SIZE, totalItens);
 
   return (
-    <div>
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-texto-principal">
-            Categorias de Painéis
-          </h1>
-          <p className="mt-1 text-sm text-texto-secundario">
-            As categorias são as agregadoras de painéis apresentadas na área
-            pública da plataforma.
-          </p>
-        </div>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Plus className="h-4 w-4" />}
-          onClick={openNew}
-          sx={{ whiteSpace: "nowrap", flexShrink: 0 }}
-        >
-          Nova Categoria
-        </Button>
+    <div className="flex flex-col gap-6">
+      {/* Header */}
+      <PageHeaderCard
+        title="Categorias de Painéis"
+        description="Gerencie as categorias de agrupamento dos painéis. As categorias organizam os dashboards e facilitam a descoberta e navegação dos usuários na área pública."
+      />
+
+      {/* Filter and Search Bar */}
+      <CategoriaFilterBar
+        searchTerm={buscaInput}
+        setSearchTerm={setBuscaInput}
+        onSearchSubmit={handleSearchSubmit}
+        onClearSearch={handleClearSearch}
+        statusFilter={statusFilter}
+        setStatusFilter={(val) => {
+          setStatusFilter(val);
+          setPage(1);
+        }}
+        onNewClick={openNew}
+      />
+
+      {/* Linear progress for background updates */}
+      <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
+        {isFetching && !isLoading && (
+          <LinearProgress 
+            color="primary" 
+            className="absolute inset-0" 
+            sx={{ 
+              height: 3, 
+              bgcolor: "transparent",
+              "& .MuiLinearProgress-bar": {
+                bgcolor: "var(--color-azul-unb-destaque)"
+              }
+            }} 
+          />
+        )}
       </div>
 
-      <div className="mt-6 rounded border border-borda-padrao bg-fundo-superficie shadow-sm">
+      {/* List Container */}
+      <div className="flex flex-col gap-5 min-h-[520px] relative">
         {isLoading && (
-          <div className="flex justify-center py-12">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-destaque border-t-transparent" />
+          <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
+            <CircularProgress color="primary" />
           </div>
         )}
-        {!isLoading && data?.itens.length === 0 && (
-          <p className="py-12 text-center text-sm text-texto-secundario">
-            Nenhuma categoria cadastrada.
-          </p>
+
+        {!isLoading && totalItens === 0 && (
+          <div className="flex flex-col items-center justify-start py-26 text-center bg-fundo-superficie rounded shadow-sm min-h-[612px]">
+            <LayoutList className="h-12 w-12 text-texto-secundario/40 mb-3" />
+            <p className="font-semibold text-texto-principal">Nenhuma categoria encontrada</p>
+            <p className="text-sm text-texto-secundario mt-1">Experimente alterar os filtros ou cadastrar uma nova categoria.</p>
+          </div>
         )}
-        {!isLoading &&
-          data?.itens.map((c) => (
-            <div
-              key={c.id}
-              className="border-b border-borda-padrao px-5 py-4 last:border-none"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-azul-unb-suave">
-                  {c.imagemUrl ? (
-                    <img
-                      src={c.imagemUrl}
-                      alt={c.nome}
-                      className="h-7 w-7 object-contain"
-                    />
-                  ) : (
-                    <LayoutList className="h-5 w-5 text-azul-unb" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-semibold text-texto-principal">{c.nome}</p>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
-                        c.active
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-                          : "bg-rose-50 text-rose-700 border border-rose-200/60"
-                      }`}
-                    >
-                      {c.active ? "Ativa" : "Inativa"}
-                    </span>
-                  </div>
-                  <p className="text-xs text-texto-secundario flex items-center gap-1 mt-0.5">
-                    <BarChart2 className="h-3 w-3" />
-                    Quantidade de Painéis: {c.quantidadePaineis ?? "—"}
-                  </p>
-                </div>
-                <IconButton
-                  size="small"
-                  onClick={() => toggleMutation.mutate(c.id)}
-                  title={c.active ? "Desativar" : "Reativar"}
-                  disabled={toggleMutation.isPending}
-                  sx={{
-                    borderRadius: "50%",
-                    p: 1.5,
-                    color: c.active ? "success.main" : "text.secondary",
-                    "&:hover": {
-                      bgcolor: c.active ? "rgba(46, 125, 50, 0.08)" : "rgba(0, 0, 0, 0.04)"
-                    }
-                  }}
-                >
-                  <Power className="h-4 w-4" />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => openEdit(c)}
-                  title="Editar"
-                  sx={{ borderRadius: "50%", p: 1.5 }}
-                >
-                  <Pencil className="h-4 w-4" />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => openDelete(c)}
-                  color="error"
-                  title="Excluir"
-                  sx={{ borderRadius: "50%", p: 1.5 }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </IconButton>
-              </div>
-              {c.descricao && (
-                <p className="mt-1.5 text-sm text-texto-secundario pl-14">
-                  {c.descricao}
-                </p>
-              )}
-            </div>
-          ))}
+
+        {!isLoading && totalItens > 0 && data?.itens && (
+          <div className="flex flex-col gap-3.5">
+            {data.itens.map((c) => (
+              <CategoriaAdminCard
+                key={c.id}
+                categoria={c}
+                onView={openView}
+                onEdit={openEdit}
+                onDeactivate={openDeactivate}
+                onRestore={openRestore}
+                onDelete={openDelete}
+                isToggling={toggleMutation.isPending}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {data && (
-        <Pagination
-          page={page}
-          totalPages={data.totalPaginas}
-          onPageChange={setPage}
-        />
+      {/* Pagination Footer */}
+      {data && totalItens > 0 && (
+        <div className="p-4 bg-fundo-superficie flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-texto-secundario rounded shadow-sm">
+          <div>
+            Mostrando <span className="font-semibold text-texto-principal">{startRange}</span> a{" "}
+            <span className="font-semibold text-texto-principal">{endRange}</span> de{" "}
+            <span className="font-semibold text-texto-principal">{totalItens}</span> registros
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              sx={{
+                borderRadius: "50%",
+                minWidth: "36px",
+                width: "36px",
+                height: "36px",
+                p: 0,
+                border: "2px solid transparent",
+                bgcolor: "var(--color-fundo-superficie-suave)",
+                color: "var(--color-texto-principal)",
+                "&:hover": { 
+                  border: "2px solid var(--color-destaque)",
+                  bgcolor: "var(--color-destaque)",
+                  color: "#ffffff"
+                },
+                "&.Mui-disabled": {
+                  bgcolor: "var(--color-fundo-superficie-suave)",
+                  border: "2px solid transparent",
+                  opacity: 0.35
+                }
+              }}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+
+            <div className="flex items-center px-3 font-semibold text-texto-principal">
+              Página {page} de {totalPages}
+            </div>
+
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              sx={{
+                borderRadius: "50%",
+                minWidth: "36px",
+                width: "36px",
+                height: "36px",
+                p: 0,
+                border: "2px solid transparent",
+                bgcolor: "var(--color-fundo-superficie-suave)",
+                color: "var(--color-texto-principal)",
+                "&:hover": { 
+                  border: "2px solid var(--color-destaque)",
+                  bgcolor: "var(--color-destaque)",
+                  color: "#ffffff"
+                },
+                "&.Mui-disabled": {
+                  bgcolor: "var(--color-fundo-superficie-suave)",
+                  border: "2px solid transparent",
+                  opacity: 0.35
+                }
+              }}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
       )}
 
-      <dialog
-        id={MODAL_FORM}
-        className="fixed inset-0 m-auto rounded bg-transparent p-0 backdrop:bg-black/50 w-full max-w-lg"
-      >
-        <div className="rounded border border-borda-padrao bg-fundo-superficie p-6 shadow-2xl">
-          <h2 className="text-xl font-bold text-texto-principal">
-            {editing ? "Editar" : "Nova"} Categoria de Painéis
-          </h2>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="mt-5 flex flex-col gap-1"
-          >
-            <FormField
-              label="Nome da Categoria de Painéis"
-              placeholder="Nome da Categoria de Painéis"
-              fieldError={errors.nome}
-              {...register("nome")}
-            />
-            <FormField
-              label="Descrição da Categoria de Painéis (Opcional)"
-              placeholder="Descrição"
-              {...register("descricao")}
-            />
-            <AlertBanner message={errors.root?.message} />
-            <div className="flex justify-end gap-2 pt-2">
-              <form method="dialog">
-                <Button type="submit" variant="text" color="inherit">
-                  Cancelar
-                </Button>
-              </form>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={isSubmitting}
-                startIcon={
-                  isSubmitting ? (
-                    <CircularProgress size={16} color="inherit" />
-                  ) : null
-                }
-              >
-                Salvar
-              </Button>
-            </div>
-          </form>
-        </div>
-      </dialog>
+      {/* Form Modal */}
+      <CategoriaFormModal
+        open={isFormOpen}
+        editing={editing}
+        onSubmit={handleFormSubmit}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
+        rootError={formError}
+        onClose={handleCloseForm}
+      />
 
-      <ConfirmDialog
-        id={MODAL_DELETE}
+      {/* Detail Modal */}
+      <CategoriaDetailModal
+        open={viewing !== null}
+        onClose={() => setViewing(null)}
+        categoria={viewing}
+        formatData={formatData}
+      />
+
+      {/* Deactivate Modal */}
+      <MuiConfirmDialog
+        open={deactivating !== null}
+        onClose={() => setDeactivating(null)}
+        title="Desativar Categoria"
+        description={`Tem certeza que deseja desativar a categoria "${deactivating?.nome}"? Os painéis vinculados continuarão existindo mas a categoria ficará oculta na área pública.`}
+        confirmText="Desativar"
+        confirmTone="warning"
+        isLoading={toggleMutation.isPending}
+        onConfirm={() => deactivating && toggleMutation.mutate(deactivating.id)}
+      />
+
+      {/* Restore Modal */}
+      <MuiConfirmDialog
+        open={restoring !== null}
+        onClose={() => setRestoring(null)}
+        title="Reativar Categoria"
+        description={`Tem certeza que deseja reativar a categoria "${restoring?.nome}"? Ela voltará a ficar visível na área pública.`}
+        confirmText="Reativar"
+        confirmTone="success"
+        isLoading={toggleMutation.isPending}
+        onConfirm={() => restoring && toggleMutation.mutate(restoring.id)}
+      />
+
+      {/* Delete Confirmation */}
+      <MuiConfirmDialog
+        open={deleting !== null}
+        onClose={() => setDeleting(null)}
         title="Excluir Categoria"
-        description={`Tem certeza que deseja excluir "${deleting?.nome}"?`}
+        description={`Tem certeza que deseja excluir permanentemente a categoria "${deleting?.nome}"? Essa ação é irreversível e removerá todos os dados correspondentes. Não é possível remover se houver painéis vinculados.`}
         confirmText="Excluir"
+        confirmTone="danger"
+        requireTextInput
+        textInputExpectedValue={deleting?.nome || ""}
         isLoading={deleteMutation.isPending}
         onConfirm={() => deleting && deleteMutation.mutate(deleting.id)}
       />
