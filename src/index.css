@@ -106,8 +106,8 @@ body {
 
 /* ─── WEB-KIT AUTOFILL OVERRIDES ─────────────────────────── */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px var(--color-fundo-superficie) inset !important;
   -webkit-text-fill-color: var(--color-texto-principal) !important;
@@ -243,4 +243,43 @@ select:not([class*="Mui"]):focus {
   border-color: var(--color-destaque) !important;
   box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.15);
   outline: none;
+}
+
+/* ─── CUSTOM SONNER TOAST STYLES ────────────────────────── */
+[data-sonner-toast] {
+  font-size: 0.9375rem !important;
+  user-select: none !important;
+}
+
+[data-sonner-toast][data-type="success"] {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  border-color: #15803d !important;
+}
+
+[data-sonner-toast][data-type="error"] {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+}
+
+[data-sonner-toast][data-type="warning"] {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  border-color: #b45309 !important;
+}
+
+[data-sonner-toast][data-type="info"] {
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  border-color: #1e3a8a !important;
+}
+
+/* Force icons and close buttons to inherit color to match the solid background */
+[data-sonner-toast] svg {
+  color: currentColor !important;
+}
+
+[data-sonner-toast] button {
+  color: currentColor !important;
 }

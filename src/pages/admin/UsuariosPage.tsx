@@ -151,7 +151,7 @@ export const UsuariosPage = () => {
                   </div>
 
                   <div className="flex items-center gap-1">
-                    {u.status === "Pendente" && (
+                    {(u.status === "Pendente" || u.status === "Recusado") && (
                       <IconButton
                         title="Aprovar Cadastro"
                         color="success"

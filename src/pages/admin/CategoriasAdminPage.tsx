@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, LayoutList, BarChart2 } from "lucide-react";
+import { Plus, Pencil, Trash2, LayoutList, BarChart2, Power } from "lucide-react";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -81,6 +81,16 @@ export const CategoriasAdminPage = () => {
     },
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: categoriasApi.toggleActive,
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: ["categorias-admin"] });
+      qc.invalidateQueries({ queryKey: ["categorias-all"] });
+      toast.success(data?.message || "Status da categoria alterado com sucesso!");
+    },
+    onError: (err: any) => toast.error(err.message || "Erro ao alterar status da categoria."),
+  });
+
   const openNew = () => {
     setEditing(null);
     reset({ nome: "", descricao: "", sortOrdem: 0 });
@@ -157,12 +167,39 @@ export const CategoriasAdminPage = () => {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-texto-principal">{c.nome}</p>
-                  <p className="text-xs text-texto-secundario flex items-center gap-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-semibold text-texto-principal">{c.nome}</p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+                        c.active
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                          : "bg-rose-50 text-rose-700 border border-rose-200/60"
+                      }`}
+                    >
+                      {c.active ? "Ativa" : "Inativa"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-texto-secundario flex items-center gap-1 mt-0.5">
                     <BarChart2 className="h-3 w-3" />
                     Quantidade de Painéis: {c.quantidadePaineis ?? "—"}
                   </p>
                 </div>
+                <IconButton
+                  size="small"
+                  onClick={() => toggleMutation.mutate(c.id)}
+                  title={c.active ? "Desativar" : "Reativar"}
+                  disabled={toggleMutation.isPending}
+                  sx={{
+                    borderRadius: "50%",
+                    p: 1.5,
+                    color: c.active ? "success.main" : "text.secondary",
+                    "&:hover": {
+                      bgcolor: c.active ? "rgba(46, 125, 50, 0.08)" : "rgba(0, 0, 0, 0.04)"
+                    }
+                  }}
+                >
+                  <Power className="h-4 w-4" />
+                </IconButton>
                 <IconButton
                   size="small"
                   onClick={() => openEdit(c)}

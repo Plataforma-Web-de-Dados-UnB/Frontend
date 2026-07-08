@@ -43,4 +43,8 @@ export const painelApi = {
   async remove(id: number) {
     await api.delete(`/painel/${id}`);
   },
+  async toggleActive(id: number) {
+    const { data } = await api.patch<{ message: string }>(`/painel/${id}/toggle`);
+    return data;
+  },
 };

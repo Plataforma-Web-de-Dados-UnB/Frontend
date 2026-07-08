@@ -39,7 +39,7 @@ export const HomePage = () => {
                 placeholder="Procurar painel..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded border border-borda-padrao bg-fundo-superficie py-2.5 pl-9 pr-4 text-sm text-texto-principal placeholder:text-texto-secundario focus:border-destaque focus:outline-none"
+                className="w-full rounded border border-borda-padrao hover:border-borda-padrao bg-fundo-superficie py-2.5 pl-9 pr-4 text-sm text-texto-principal placeholder:text-texto-secundario focus:border-destaque focus:outline-none"
               />
             </div>
             <Button

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Eye, BarChart2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, BarChart2, Power } from "lucide-react";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -87,6 +87,15 @@ export const PaineisAdminPage = () => {
       setDeleting(null);
       toast.success("Painel removido.");
     },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: painelApi.toggleActive,
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: ["paineis-admin"] });
+      toast.success(data?.message || "Status do painel alterado com sucesso!");
+    },
+    onError: (err: any) => toast.error(err.message || "Erro ao alterar status do painel."),
   });
 
   const openNew = () => {
@@ -197,7 +206,18 @@ export const PaineisAdminPage = () => {
                   <BarChart2 className="h-5 w-5 text-destaque" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-texto-principal">{p.nome}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-semibold text-texto-principal">{p.nome}</p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+                        p.active
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                          : "bg-rose-50 text-rose-700 border border-rose-200/60"
+                      }`}
+                    >
+                      {p.active ? "Ativo" : "Inativo"}
+                    </span>
+                  </div>
                   {p.descricao && (
                     <p className="text-sm text-texto-secundario mt-0.5">
                       {p.descricao}
@@ -219,6 +239,22 @@ export const PaineisAdminPage = () => {
                   sx={{ borderRadius: "50%", p: 1.5 }}
                 >
                   <Eye className="h-4 w-4" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => toggleMutation.mutate(p.id)}
+                  title={p.active ? "Desativar" : "Reativar"}
+                  disabled={toggleMutation.isPending}
+                  sx={{
+                    borderRadius: "50%",
+                    p: 1.5,
+                    color: p.active ? "success.main" : "text.secondary",
+                    "&:hover": {
+                      bgcolor: p.active ? "rgba(46, 125, 50, 0.08)" : "rgba(0, 0, 0, 0.04)"
+                    }
+                  }}
+                >
+                  <Power className="h-4 w-4" />
                 </IconButton>
                 <IconButton
                   size="small"

@@ -10,11 +10,16 @@ import type {
 } from "@/types/dtos";
 
 export const pipelineApi = {
-  async list(page = 1, limit = 10) {
+  async list(page = 1, limit = 10, busca?: string, ativo?: boolean | null) {
     const { data } = await api.get<ResultadoPaginado<PipelineGetDto>>(
       "/pipeline",
       {
-        params: { page, limit },
+        params: { 
+          page, 
+          limit, 
+          busca: busca || undefined, 
+          ativo: ativo !== null && ativo !== undefined ? ativo : undefined 
+        },
       },
     );
     return data;
@@ -40,8 +45,10 @@ export const pipelineApi = {
     const { data } = await api.put<PipelineGetDto>(`/pipeline/${id}`, payload);
     return data;
   },
-  async remove(id: number) {
-    await api.delete(`/pipeline/${id}`);
+  async remove(id: number, hardDelete = false) {
+    await api.delete(`/pipeline/${id}`, {
+      params: { hardDelete }
+    });
   },
 
   async uploadCsv(arquivo: File) {
@@ -77,6 +84,10 @@ export const pipelineApi = {
     const { data } = await api.get<PipelineExecucaoGetDto>(
       `/pipeline/execucoes/${id}`,
     );
+    return data;
+  },
+  async toggleActive(id: number) {
+    const { data } = await api.patch<{ message: string }>(`/pipeline/${id}/toggle`);
     return data;
   },
 };

@@ -64,4 +64,8 @@ export const categoriasApi = {
   async remove(id: number) {
     await api.delete(`/categoria/${id}`);
   },
+  async toggleActive(id: number) {
+    const { data } = await api.patch<{ message: string }>(`/categoria/${id}/toggle`);
+    return data;
+  },
 };

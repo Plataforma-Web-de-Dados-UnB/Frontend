@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
+import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
 import { api } from "@/services/api";
 import { pipelineApi } from "@/services/pipelineApi";
 import type { PipelineExecucaoGetDto } from "@/types/dtos";
@@ -172,7 +173,7 @@ export const AdminDashboardPage = () => {
   const fetchExecutions = async () => {
     try {
       setExecLoading(true);
-      const data = await pipelineApi.listExecucoes(1, 5);
+      const data = await pipelineApi.listExecucoes(1, 3);
       setExecutions(data.itens || []);
     } catch (err) {
       console.error("Erro ao carregar execuções do dashboard:", err);
@@ -248,17 +249,10 @@ export const AdminDashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded bg-gradient-to-r from-azul-unb/90 to-azul-unb p-6 text-white shadow-md">
-        <div className="relative z-10 w-full">
-          <h1 className="text-2xl font-black tracking-tight">
-            Olá, {user?.nome || "Administrador"}!
-          </h1>
-          <p className="mt-2 text-white/80 text-sm w-full font-medium">
-            Bem-vindo à Área Administrativa do Portal de Dados. Aqui você pode gerenciar painéis, categorias, pipelines de dados e acompanhar o status de integridade do ambiente.
-          </p>
-        </div>
-        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
-      </div>
+      <PageHeaderCard
+        title={`Olá, ${user?.nome || "Administrador"}!`}
+        description="Bem-vindo à Área Administrativa do Portal de Dados. Aqui você pode gerenciar painéis, categorias, pipelines de dados e acompanhar o status de integridade do ambiente."
+      />
 
       {/* Grid de KPIs Principais */}
       <div>
@@ -386,7 +380,7 @@ export const AdminDashboardPage = () => {
             title="Volume Bronze"
             value={formatBytes(kpis.volumeBronze)}
             rows={kpis.linhasBronze}
-            desc="Dados brutos ingeridos"
+            desc="Dados brutos"
             icon={Database}
             iconColor="#b25a13"
             iconBg="#b25a1315"
@@ -458,7 +452,7 @@ export const AdminDashboardPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-borda-padrao">
-                  {executions.map((exec) => {
+                  {executions.slice(0, 3).map((exec) => {
                     const dataHora = exec.createdAt
                       ? new Date(exec.createdAt).toLocaleString("pt-BR")
                       : "—";

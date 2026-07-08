@@ -15,7 +15,7 @@ import { CadastroPage } from "@/pages/CadastroPage";
 import { CadastroPendentePage } from "@/pages/CadastroPendentePage";
 import { PerfilPage } from "@/pages/PerfilPage";
 import { AdminDashboardPage } from "@/pages/admin/AdminDashboardPage";
-import { PipelinasPage } from "@/pages/admin/PipelinasPage";
+import { PipelinesPage } from "@/pages/admin/PipelinesPage";
 import { UploadPage } from "@/pages/admin/UploadPage";
 import { CategoriasAdminPage } from "@/pages/admin/CategoriasAdminPage";
 import { PaineisAdminPage } from "@/pages/admin/PaineisAdminPage";
@@ -59,7 +59,7 @@ export default function App() {
               index
               element={<AdminDashboardPage />}
             />
-            <Route path="pipelines" element={<PipelinasPage />} />
+            <Route path="pipelines" element={<PipelinesPage />} />
             <Route path="upload" element={<UploadPage />} />
             <Route path="categorias" element={<CategoriasAdminPage />} />
             <Route path="paineis" element={<PaineisAdminPage />} />
