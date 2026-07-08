@@ -127,16 +127,34 @@ export const UploadPage = () => {
     });
   };
 
-  const statusBadge = (status: number) => {
-    const map: Record<number, string> = {
-      0: "bg-cinza-claro text-cinza-escuro",
-      1: "bg-azul-claro text-azul-escuro",
-      2: "bg-verde-claro text-verde-escuro",
-      3: "bg-vermelho-claro text-vermelho-escuro",
-      4: "bg-amarelo-claro text-amarelo-escuro",
-      5: "bg-amarelo-claro text-amarelo-escuro",
+  const statusBadge = (status: any) => {
+    const s = String(status).toLowerCase();
+    const map: Record<string, string> = {
+      "0": "bg-[#f1f5f9] text-slate-500",
+      "pendente": "bg-[#f1f5f9] text-slate-500",
+      "1": "bg-[#e0f2fe] text-sky-700",
+      "processando": "bg-[#e0f2fe] text-sky-700",
+      "2": "bg-[#e6f7ed] text-emerald-600",
+      "sucesso": "bg-[#e6f7ed] text-emerald-600",
+      "3": "bg-[#fef2f2] text-red-500",
+      "erro": "bg-[#fef2f2] text-red-500",
+      "4": "bg-[#f1f5f9] text-slate-400",
+      "cancelado": "bg-[#f1f5f9] text-slate-400",
+      "5": "bg-[#fef2f2] text-red-400",
+      "rollback": "bg-[#fef2f2] text-red-400",
     };
-    return map[status] ?? "bg-cinza-claro text-cinza-escuro";
+    return map[s] ?? "bg-[#f1f5f9] text-slate-500";
+  };
+
+  const getStatusLabel = (status: any) => {
+    const s = String(status).toLowerCase();
+    if (s === "0" || s === "pendente") return "Pendente";
+    if (s === "1" || s === "processando") return "Processando";
+    if (s === "2" || s === "sucesso") return "Sucesso";
+    if (s === "3" || s === "erro") return "Erro";
+    if (s === "4" || s === "cancelado") return "Cancelado";
+    if (s === "5" || s === "rollback") return "Rollback";
+    return String(status);
   };
 
   return (
@@ -277,7 +295,7 @@ export const UploadPage = () => {
                   <span
                     className={`rounded-full px-2 py-0.5 font-semibold ${statusBadge(exec.status)}`}
                   >
-                    {StatusPipelineLabel[exec.status]}
+                    {getStatusLabel(exec.status)}
                   </span>
                 </div>
               </div>
@@ -288,7 +306,7 @@ export const UploadPage = () => {
               >
                 <Eye className="h-4 w-4" />
               </IconButton>
-              {exec.status === 2 && (
+              {(exec.status === 2 || String(exec.status).toLowerCase() === "sucesso") && (
                 <IconButton
                   size="small"
                   title="Rollback"

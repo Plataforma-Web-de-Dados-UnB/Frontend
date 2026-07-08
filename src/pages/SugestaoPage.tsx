@@ -11,6 +11,7 @@ import { sugestaoSchema, type SugestaoFormValues } from "@/schemas/forms";
 import { isApiError } from "@/types/api";
 import { FormField } from "@/components/ui/FormField";
 import { AlertBanner } from "@/components/ui/AlertBanner";
+import type { TipoSugestao } from "@/types/dtos";
 
 export const SugestaoPage = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -26,7 +27,7 @@ export const SugestaoPage = () => {
     try {
       await sugestaoApi.create({
         ...values,
-        tipo: Number(values.tipo),
+        tipo: Number(values.tipo) as TipoSugestao,
       });
       setSubmitted(true);
     } catch (err) {

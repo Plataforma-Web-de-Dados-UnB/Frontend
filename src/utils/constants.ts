@@ -14,10 +14,13 @@ export const ROUTES = {
   cadastro: "/cadastro",
   cadastroPendente: "/cadastro/pendente",
   perfil: "/perfil",
+  politicaPrivacidade: "/politica-privacidade",
   // Admin
+  adminDashboard: "/admin",
   adminPipelines: "/admin/pipelines",
   adminUpload: "/admin/upload",
   adminCategorias: "/admin/categorias",
   adminPaineis: "/admin/paineis",
   adminUsuarios: "/admin/usuarios",
+  adminSugestoes: "/admin/sugestoes",
 } as const;

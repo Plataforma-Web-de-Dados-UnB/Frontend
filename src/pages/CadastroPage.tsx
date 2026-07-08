@@ -118,22 +118,22 @@ export const CadastroPage = () => {
           <div className="grid grid-cols-2 gap-2">
             <FormField
               label="Nome"
-              placeholder="Nome"
+              placeholder="Seu primeiro nome"
               fieldError={errors.nome}
               {...register("nome")}
             />
             <FormField
               label="Sobrenome"
-              placeholder="Sobrenome"
+              placeholder="Seu sobrenome"
               fieldError={errors.ultimoNome}
               {...register("ultimoNome")}
             />
           </div>
 
           <FormField
-            label="Email Institucional"
+            label="E-mail"
             type="email"
-            placeholder="seu@unb.br"
+            placeholder="Seu email"
             fieldError={errors.email}
             spellCheck={false}
             {...register("email")}
@@ -152,6 +152,7 @@ export const CadastroPage = () => {
                     <IconButton
                       onClick={() => setShowPasswords(!showPasswords)}
                       edge="end"
+                      sx={{ borderRadius: "50%" }}
                     >
                       {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </IconButton>
@@ -195,6 +196,7 @@ export const CadastroPage = () => {
                     <IconButton
                       onClick={() => setShowPasswords(!showPasswords)}
                       edge="end"
+                      sx={{ borderRadius: "50%" }}
                     >
                       {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </IconButton>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BarChart2, Search } from "lucide-react";
+import { ChartColumnBig, Search } from "lucide-react";
 import Button from "@mui/material/Button";
 import { ROUTES } from "@/utils/constants";
 
@@ -62,7 +62,7 @@ export const HomePage = () => {
               component={Link}
               to={ROUTES.paineis}
               variant="contained"
-              startIcon={<BarChart2 className="h-4 w-4 text-destaque" />}
+              startIcon={<ChartColumnBig className="h-4 w-4 text-destaque" />}
               sx={{
                 borderRadius: "4px",
                 textTransform: "none",

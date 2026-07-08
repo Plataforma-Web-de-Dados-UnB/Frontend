@@ -150,10 +150,47 @@ export type PipelineExecucaoCreateDto = {
 };
 
 // ─── Sugestão ─────────────────────────────────────────────────
+export type TipoSugestao = 0 | 1 | 2;
+export type StatusSugestao = 0 | 1 | 2;
+
+export const TipoSugestaoLabel: Record<TipoSugestao, string> = {
+  0: "Sugestão",
+  1: "Erro",
+  2: "Relato",
+};
+
+export const StatusSugestaoLabel: Record<StatusSugestao, string> = {
+  0: "Pendente",
+  1: "Analisado",
+  2: "Descartado",
+};
+
 export type SugestaoCreateDto = {
-  tipo: number;
+  tipo: TipoSugestao;
   titulo: string;
   descricao: string;
   nomeContato?: string | null;
   emailContato?: string | null;
+};
+
+export type SugestaoGetDto = {
+  id: number;
+  tipo: TipoSugestao;
+  titulo: string;
+  descricao: string;
+  nomeContato: string | null;
+  emailContato: string | null;
+  status: StatusSugestao;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SugestaoListDto = {
+  id: number;
+  tipo: TipoSugestao;
+  titulo: string;
+  nomeContato: string | null;
+  emailContato: string | null;
+  status: StatusSugestao;
+  createdAt: string;
 };

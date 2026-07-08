@@ -32,7 +32,7 @@ export const CategoriaPage = () => {
   }
 
   return (
-    <div className="px-6 py-8 lg:px-12">
+    <div className="px-6 py-8 lg:px-7">
       <Breadcrumb
         items={[
           { label: "Painéis", to: ROUTES.paineis },

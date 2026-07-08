@@ -25,7 +25,7 @@ type AuthContextType = {
   isSuperAdmin: boolean;
   login: (data: LoginDto) => Promise<{ ok: boolean; error?: string }>;
   cadastro: (data: CadastroDto) => Promise<{ ok: boolean; error?: string }>;
-  logout: () => void;
+  logout: () => Promise<void>;
   alterarSenha: (
     data: AlterarSenhaDto,
   ) => Promise<{ ok: boolean; error?: string }>;
@@ -86,11 +86,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("portal@access_token");
-    localStorage.removeItem("portal@refresh_token");
-    localStorage.removeItem("portal@user");
+  const logout = async () => {
+    try {
+      await api.post("/usuario/logout");
+    } catch (err) {
+      console.error("Erro ao realizar logout no backend:", err);
+    } finally {
+      setUser(null);
+      localStorage.removeItem("portal@access_token");
+      localStorage.removeItem("portal@refresh_token");
+      localStorage.removeItem("portal@user");
+    }
   };
 
   const alterarSenha = async (data: AlterarSenhaDto) => {

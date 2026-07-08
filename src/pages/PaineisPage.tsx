@@ -19,7 +19,7 @@ export const PaineisPage = () => {
     : categorias;
 
   return (
-    <div className="px-6 py-8 lg:px-12">
+    <div className="px-6 py-8 lg:px-7">
       <Breadcrumb items={[{ label: "Painéis" }]} />
 
       <div className="mt-6 border-l-4 border-destaque pl-4">

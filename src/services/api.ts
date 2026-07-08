@@ -46,7 +46,22 @@ const normalizeApiError = (error: unknown): ApiError => {
 export const api = axios.create({
   baseURL: APP_CONFIG.apiBaseUrl,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
+
+let isRefreshing = false;
+let failedQueue: { resolve: (token: string | null) => void; reject: (err: any) => void }[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("portal@access_token");
@@ -60,14 +75,52 @@ api.interceptors.response.use(
     requestTracker.end();
     return response;
   },
-  (error) => {
+  async (error) => {
     requestTracker.end();
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem("portal@access_token");
-      localStorage.removeItem("portal@refresh_token");
-      localStorage.removeItem("portal@user");
-      window.location.href = "/entrar";
+    const originalRequest = error.config;
+
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/usuario/refresh")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: (token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(api(originalRequest));
+            },
+            reject: (err) => {
+              reject(err);
+            },
+          });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const response = await api.post<{ accessToken: string }>("/usuario/refresh");
+        const { accessToken } = response.data;
+        localStorage.setItem("portal@access_token", accessToken);
+        api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        processQueue(null, accessToken);
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        localStorage.removeItem("portal@access_token");
+        localStorage.removeItem("portal@user");
+        window.location.href = "/entrar";
+        return Promise.reject(normalizeApiError(refreshError));
+      } finally {
+        isRefreshing = false;
+      }
     }
+
     return Promise.reject(normalizeApiError(error));
   },
 );

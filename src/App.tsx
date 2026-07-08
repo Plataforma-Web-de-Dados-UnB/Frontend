@@ -14,16 +14,22 @@ import { LoginPage } from "@/pages/LoginPage";
 import { CadastroPage } from "@/pages/CadastroPage";
 import { CadastroPendentePage } from "@/pages/CadastroPendentePage";
 import { PerfilPage } from "@/pages/PerfilPage";
+import { AdminDashboardPage } from "@/pages/admin/AdminDashboardPage";
 import { PipelinasPage } from "@/pages/admin/PipelinasPage";
 import { UploadPage } from "@/pages/admin/UploadPage";
 import { CategoriasAdminPage } from "@/pages/admin/CategoriasAdminPage";
 import { PaineisAdminPage } from "@/pages/admin/PaineisAdminPage";
 import { UsuariosPage } from "@/pages/admin/UsuariosPage";
+import { SugestoesAdminPage } from "@/pages/admin/SugestoesAdminPage";
+
+import { PoliticaPrivacidadePage } from "@/pages/PoliticaPrivacidadePage";
+import { CookieConsent } from "@/components/layout/CookieConsent";
 
 export default function App() {
   return (
     <>
       <Toaster richColors position="top-right" />
+      <CookieConsent />
       <Routes>
         {/* Área pública */}
         <Route element={<PublicLayout />}>
@@ -34,14 +40,8 @@ export default function App() {
           <Route path={ROUTES.sugestao} element={<SugestaoPage />} />
           <Route path={ROUTES.login} element={<LoginPage />} />
           <Route path={ROUTES.cadastro} element={<CadastroPage />} />
-          <Route
-            path={ROUTES.cadastroPendente}
-            element={
-              <PrivateRoute>
-                <CadastroPendentePage />
-              </PrivateRoute>
-            }
-          />
+          <Route path={ROUTES.politicaPrivacidade} element={<PoliticaPrivacidadePage />} />
+          <Route path={ROUTES.cadastroPendente} element={<CadastroPendentePage />} />
           <Route
             path={ROUTES.perfil}
             element={
@@ -57,13 +57,14 @@ export default function App() {
           <Route element={<AdminLayout />}>
             <Route
               index
-              element={<Navigate to={ROUTES.adminPipelines} replace />}
+              element={<AdminDashboardPage />}
             />
             <Route path="pipelines" element={<PipelinasPage />} />
             <Route path="upload" element={<UploadPage />} />
             <Route path="categorias" element={<CategoriasAdminPage />} />
             <Route path="paineis" element={<PaineisAdminPage />} />
             <Route path="usuarios" element={<UsuariosPage />} />
+            <Route path="sugestoes" element={<SugestoesAdminPage />} />
           </Route>
         </Route>
 

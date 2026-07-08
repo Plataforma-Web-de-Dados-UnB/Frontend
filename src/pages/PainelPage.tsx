@@ -112,7 +112,7 @@ export const PainelPage = () => {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       {/* Header */}
-      <div className="bg-fundo-superficie px-6 py-8 lg:px-12">
+      <div className="bg-fundo-superficie px-6 py-8 lg:px-7">
         <Breadcrumb
           items={[
             { label: "Painéis", to: ROUTES.paineis },
@@ -147,7 +147,7 @@ export const PainelPage = () => {
             <div
               id="superset-embed-container"
               ref={embedRef}
-              className="mx-6 lg:mx-12 mb-2 overflow-y-auto overflow-x-hidden"
+              className="mx-6 lg:mx-7 mb-2 overflow-y-auto overflow-x-hidden"
               style={{
                 minHeight: "400px",
               }}
@@ -157,7 +157,7 @@ export const PainelPage = () => {
           <div
             id="fallback-embed-container"
             ref={embedRef}
-            className="mx-6 lg:mx-12 mb-2 overflow-y-auto overflow-x-hidden"
+            className="mx-6 lg:mx-7 mb-2 overflow-y-auto overflow-x-hidden"
             style={{
               height: "800px",
             }}
@@ -178,7 +178,7 @@ export const PainelPage = () => {
         )}
 
         {/* Toolbar bottom */}
-        <div className="flex items-center justify-end mx-6 lg:mx-12 py-3 border-t border-fundo-superficie-suave mb-6 gap-2">
+        <div className="flex items-center justify-end mx-6 lg:mx-7 py-3 border-t border-fundo-superficie-suave mb-6 gap-2">
           <Button
             size="small"
             startIcon={<Maximize2 className="h-4 w-4" />}

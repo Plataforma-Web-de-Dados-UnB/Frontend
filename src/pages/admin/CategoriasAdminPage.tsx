@@ -109,7 +109,7 @@ export const CategoriasAdminPage = () => {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-texto-principal">
-            Categoria de Painéis
+            Categorias de Painéis
           </h1>
           <p className="mt-1 text-sm text-texto-secundario">
             As categorias são as agregadoras de painéis apresentadas na área

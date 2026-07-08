@@ -62,14 +62,27 @@ const navTextButtonDestaque = {
   },
 };
 
+const navTextButtonRed = {
+  ...navTextButton,
+  color: "#f87171",
+  "&::after": {
+    ...navTextButton["&::after"],
+    backgroundColor: "#ef4444",
+  },
+  "&:hover": {
+    ...navTextButton["&:hover"],
+    color: "#ef4444",
+  },
+};
+
 export const Navbar = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate(ROUTES.home);
     setOpen(false);
   };
@@ -90,8 +103,8 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-azul-unb shadow-md">
-      <div className="flex h-16 w-full items-center justify-between px-6 lg:px-12">
+    <header className="sticky top-0 z-50 w-full bg-azul-unb shadow-md">
+      <div className="flex h-16 w-full items-center justify-between px-6 lg:px-7">
         {/* Logo / Título */}
         <Link to={ROUTES.home} className="flex items-center gap-3 shrink-0">
           <div className="flex h-9 w-9 items-center justify-center bg-destaque">
@@ -112,18 +125,6 @@ export const Navbar = () => {
 
         {/* Desktop: botões à direita */}
         <div className="hidden items-center gap-3 lg:flex">
-          {isAuthenticated && APP_CONFIG.supersetUrl && (
-            <Button
-              component="a"
-              href={APP_CONFIG.supersetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              //startIcon={<LayoutDashboard className="h-4 w-4" />}
-              sx={navTextButton}
-            >
-              Superset
-            </Button>
-          )}
           <Button
             component={Link}
             to={ROUTES.paineis}
@@ -141,54 +142,46 @@ export const Navbar = () => {
             Sugestões
           </Button>
 
+          {isAuthenticated && APP_CONFIG.supersetUrl && (
+            <Button
+              component="a"
+              href={APP_CONFIG.supersetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              //startIcon={<LayoutDashboard className="h-4 w-4" />}
+              sx={navTextButton}
+            >
+              Superset
+            </Button>
+          )}
+
           {isAuthenticated ? (
             <>
               {isAdmin && (
                 <Button
                   component={Link}
-                  to={ROUTES.adminPipelines}
+                  to={ROUTES.adminDashboard}
                   //startIcon={<Settings2 className="h-4 w-4" />}
-                  sx={getNavButtonStyle("/admin")}
+                  sx={getNavButtonStyle(ROUTES.adminDashboard)}
                 >
                   Área administrativa
                 </Button>
               )}
-
-              <div className="hidden items-center gap-2 lg:flex lg:ml-4">
-                <IconButton
+                <Button
                   component={Link}
                   to={ROUTES.perfil}
-                  title="Perfil"
-                  sx={{
-                    borderRadius: "4px",
-                    color: "#ffffff",
-                    bgcolor: "rgba(255, 255, 255, 0.08)",
-                    p: 1,
-                    "&:hover": {
-                      bgcolor: "rgba(255, 255, 255, 0.18)",
-                      color: "#ffffff",
-                    },
-                  }}
+                  startIcon={<User className="h-4 w-4" />}
+                  sx={getNavButtonStyle(ROUTES.perfil)}
                 >
-                  <User className="h-5 w-5" />
-                </IconButton>
-                <IconButton
+                  Perfil
+                </Button>
+                <Button
                   onClick={handleLogout}
-                  title="Sair"
-                  sx={{
-                    borderRadius: "4px",
-                    color: "#f87171",
-                    bgcolor: "rgba(239, 68, 68, 0.2)",
-                    p: 1,
-                    "&:hover": {
-                      bgcolor: "rgba(239, 68, 68, 0.4)",
-                      color: "#ef4444",
-                    },
-                  }}
+                  startIcon={<LogOut className="h-4 w-4" />}
+                  sx={navTextButtonRed}
                 >
-                  <LogOut className="h-5 w-5" />
-                </IconButton>
-              </div>
+                  Sair
+                </Button>
             </>
           ) : (
             <>
@@ -232,25 +225,6 @@ export const Navbar = () => {
       {open && (
         <div className="border-t border-white/10 bg-azul-unb px-4 pb-4 lg:hidden">
           <div className="mt-3 flex flex-col gap-2 pt-2">
-            {isAuthenticated && APP_CONFIG.supersetUrl && (
-              <Button
-                fullWidth
-                component="a"
-                href={APP_CONFIG.supersetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                //startIcon={<LayoutDashboard className="h-4 w-4" />}
-                sx={{
-                  ...sharpButton,
-                  justifyContent: "flex-start",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
-                }}
-              >
-                Superset
-              </Button>
-            )}
             <Button
               fullWidth
               component={Link}
@@ -281,13 +255,32 @@ export const Navbar = () => {
             >
               Sugestões
             </Button>
+            {isAuthenticated && APP_CONFIG.supersetUrl && (
+              <Button
+                fullWidth
+                component="a"
+                href={APP_CONFIG.supersetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                //startIcon={<LayoutDashboard className="h-4 w-4" />}
+                sx={{
+                  ...sharpButton,
+                  justifyContent: "flex-start",
+                  color: "#ffffff",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                }}
+              >
+                Superset
+              </Button>
+            )}
             {isAuthenticated ? (
               <>
                 {isAdmin && (
                   <Button
                     fullWidth
                     component={Link}
-                    to={ROUTES.adminPipelines}
+                    to="/admin"
                     onClick={() => setOpen(false)}
                     //startIcon={<Settings2 className="h-4 w-4" />}
                     sx={{
