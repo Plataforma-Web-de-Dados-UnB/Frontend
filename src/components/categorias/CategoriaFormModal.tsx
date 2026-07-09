@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Dialog from "@mui/material/Dialog";
@@ -43,6 +43,7 @@ export const CategoriaFormModal = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showConfirmClose, setShowConfirmClose] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -223,36 +224,59 @@ export const CategoriaFormModal = ({
               }}
             />
 
-            {/* Upload de Imagem/Ícone */}
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-black uppercase tracking-wider text-texto-secundario select-none">
-                Imagem / Ícone (Opcional)
-              </label>
-              <div className="flex items-center gap-4 border border-dashed border-borda-padrao rounded p-3 bg-fundo-superficie-suave/30">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/50">
-                  {previewUrl ? (
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="h-10 w-10 object-contain"
-                    />
-                  ) : (
-                    <Upload className="h-6 w-6 text-azul-unb" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <input
-                    type="file"
-                    accept="image/png, image/jpeg, image/svg+xml"
-                    onChange={handleFileChange}
-                    className="block w-full text-xs text-texto-secundario file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-azul-unb-suave file:text-azul-unb hover:file:bg-azul-unb-suave/80 file:cursor-pointer"
-                  />
-                  <p className="mt-1.5 text-[10px] text-texto-secundario font-medium">
-                    Suporta arquivos .svg, .png ou .jpg. Recomendado: SVG ou PNG quadrado com fundo transparente.
-                  </p>
-                </div>
-              </div>
-            </div>
+             {/* Upload de Imagem/Ícone */}
+             <div className="flex flex-col gap-2">
+               <label className="text-xs font-black uppercase tracking-wider text-texto-secundario select-none">
+                 Imagem / Ícone (Opcional)
+               </label>
+               <div className="flex items-center gap-4 border border-dashed border-borda-padrao rounded p-3 bg-fundo-superficie-suave/30">
+                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/50 overflow-hidden">
+                   {previewUrl ? (
+                     <img
+                       src={previewUrl}
+                       alt="Preview"
+                       className="h-full w-full object-contain"
+                     />
+                   ) : (
+                     <Upload className="h-6 w-6 text-azul-unb" />
+                   )}
+                 </div>
+                 <div className="flex-1 flex gap-3 items-center min-w-0">
+                   <div className="flex-1 flex items-center gap-2 rounded border border-borda-padrao bg-fundo-superficie px-4 py-2 text-sm text-texto-secundario min-h-[40px] box-sizing-border-box">
+                     <span className="flex-1 truncate text-xs">
+                       {selectedFile?.name ?? (editing?.imagemUrl ? "Imagem atual conservada" : "Nenhum arquivo selecionado")}
+                     </span>
+                   </div>
+                   <input
+                     ref={fileInputRef}
+                     type="file"
+                     accept="image/png, image/jpeg, image/svg+xml"
+                     className="hidden"
+                     onChange={handleFileChange}
+                   />
+                   <Button
+                     type="button"
+                     variant="contained"
+                     onClick={() => fileInputRef.current?.click()}
+                     startIcon={<Upload className="h-4 w-4" />}
+                     sx={{
+                       height: "40px",
+                       textTransform: "none",
+                       fontWeight: 600,
+                       bgcolor: "var(--color-azul-unb)",
+                       color: "#ffffff",
+                       "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
+                       px: 3,
+                     }}
+                   >
+                     Selecionar
+                   </Button>
+                 </div>
+               </div>
+               <p className="text-[10px] text-texto-secundario font-medium -mt-1 pl-1">
+                 Suporta arquivos .svg, .png ou .jpg. Recomendado: SVG ou PNG quadrado com fundo transparente.
+               </p>
+             </div>
 
             <AlertBanner message={rootError} />
           </DialogContent>

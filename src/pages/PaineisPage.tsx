@@ -110,7 +110,7 @@ export const PaineisPage = () => {
 
       {/* Categorias sem busca */}
       {!isLoading && !q && filteredCategorias.length > 0 && (
-        <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+        <div className="mt-8 grid grid-cols-3 gap-5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
           {filteredCategorias.map((cat) => (
             <Link
               key={cat.id}
@@ -121,27 +121,27 @@ export const PaineisPage = () => {
               <div className="flip-card-inner relative h-full w-full transform-style-3d transition-transform duration-500">
                 {/* Frente */}
                 <div className="backface-hidden absolute inset-0 flex flex-col items-center p-3 text-center shadow-sm bg-fundo-superficie">
-                  <div className="flex flex-1 items-center justify-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-fundo-superficie-suave">
-                      {cat.imagemUrl ? (
-                        <img
-                          src={cat.imagemUrl}
-                          alt={cat.nome}
-                          className="h-8 w-8 object-contain"
-                        />
-                      ) : (
-                        <BarChart2 className="h-6 w-6 text-texto-secundario" />
-                      )}
-                    </div>
+                  <div className="flex flex-1 w-full items-center justify-center min-h-0">
+                    {cat.imagemUrl ? (
+                      <img
+                        src={cat.imagemUrl}
+                        alt={cat.nome}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-fundo-superficie-suave">
+                        <BarChart2 className="h-10 w-10 text-texto-secundario" />
+                      </div>
+                    )}
                   </div>
-                  <span className="text-sm font-bold leading-tight text-texto-principal line-clamp-2 mt-2">
+                  <span className="text-sm font-black leading-tight text-texto-principal/80 line-clamp-2 mt-2">
                     {cat.nome}
                   </span>
                 </div>
                 {/* Verso */}
-                <div className="backface-hidden rotate-y-180 absolute inset-0 flex items-center justify-center bg-azul-unb p-3 text-center shadow-md">
+                <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center p-3.5 text-center shadow-md bg-azul-unb">
                   {cat.descricao ? (
-                    <p className="line-clamp-3 text-sm font-medium leading-normal text-texto-invertido">
+                    <p className="line-clamp-6 text-sm font-medium leading-relaxed text-texto-invertido">
                       {cat.descricao}
                     </p>
                   ) : (

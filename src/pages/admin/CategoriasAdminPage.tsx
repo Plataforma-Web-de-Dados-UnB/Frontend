@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
@@ -11,12 +9,16 @@ import { CategoriaFormModal } from "@/components/categorias/CategoriaFormModal";
 import { CategoriaDetailModal } from "@/components/categorias/CategoriaDetailModal";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import { categoriasApi } from "@/services/categoriasApi";
+import { ImagePreviewModal } from "@/components/ui/ImagePreviewModal";
 import type { CategoriaGetDto } from "@/types/dtos";
 import type { CategoriaFormValues } from "@/schemas/forms";
 import { isApiError } from "@/types/api";
 import { toast } from "sonner";
 
 const PAGE_SIZE = 5;
+
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const CategoriasAdminPage = () => {
   const qc = useQueryClient();
@@ -28,10 +30,12 @@ export const CategoriasAdminPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<CategoriaGetDto | null>(null);
   const [viewing, setViewing] = useState<CategoriaGetDto | null>(null);
+  const [viewingImage, setViewingImage] = useState<CategoriaGetDto | null>(null);
   const [deactivating, setDeactivating] = useState<CategoriaGetDto | null>(null);
   const [restoring, setRestoring] = useState<CategoriaGetDto | null>(null);
   const [deleting, setDeleting] = useState<CategoriaGetDto | null>(null);
   const [formError, setFormError] = useState<string | undefined>(undefined);
+
 
   // Compute active parameter for API
   const activeParam = 
@@ -239,6 +243,7 @@ export const CategoriasAdminPage = () => {
                 onDeactivate={openDeactivate}
                 onRestore={openRestore}
                 onDelete={openDelete}
+                onViewImage={setViewingImage}
                 isToggling={toggleMutation.isPending}
               />
             ))}
@@ -375,6 +380,13 @@ export const CategoriasAdminPage = () => {
         textInputExpectedValue={deleting?.nome || ""}
         isLoading={deleteMutation.isPending}
         onConfirm={() => deleting && deleteMutation.mutate(deleting.id)}
+      />
+
+      <ImagePreviewModal
+        open={viewingImage !== null}
+        onClose={() => setViewingImage(null)}
+        imageUrl={viewingImage?.imagemUrl || null}
+        imageAlt={viewingImage?.nome}
       />
     </div>
   );

@@ -83,7 +83,7 @@ export const HomePage = () => {
       </section>
 
       {/* Sobre */}
-      <section className="bg-fundo-superficie-suave px-4 py-12 shrink-0 border-t border-borda-padrao/50">
+      <section className="bg-fundo-superficie-suave px-4 py-12 shrink-0">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl font-black uppercase tracking-tight text-azul-unb">
             Sobre

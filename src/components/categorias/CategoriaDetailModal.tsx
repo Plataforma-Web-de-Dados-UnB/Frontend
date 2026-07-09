@@ -4,7 +4,7 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useQuery } from "@tanstack/react-query";
-import { X, Calendar, Clock, LayoutList, BarChart2 } from "lucide-react";
+import { X, Calendar, Clock, BarChart2 } from "lucide-react";
 import type { CategoriaGetDto } from "@/types/dtos";
 import { painelApi } from "@/services/painelApi";
 import { ROUTES } from "@/utils/constants";
@@ -91,29 +91,14 @@ export const CategoriaDetailModal = ({
           </DialogTitle>
 
           <DialogContent sx={{ px: 4, pt: 3, pb: 4, display: "flex", flexDirection: "column", gap: 3.5 }}>
-            {/* Flex row containing Image (left) and Description (right) */}
-            <div className="flex flex-col md:flex-row gap-5 items-start mt-4">
-              {/* Image/Icon on the left */}
-              <div className="flex h-36 w-36 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/20 select-none">
-                {categoria.imagemUrl ? (
-                  <img
-                    src={categoria.imagemUrl}
-                    alt={categoria.nome}
-                    className="h-20 w-20 object-contain"
-                  />
-                ) : (
-                  <LayoutList className="h-12 w-12 text-azul-unb" />
-                )}
-              </div>
-
-              {/* Description & Dates card */}
-              <div className="flex-1 rounded p-5 bg-borda-padrao/40 min-w-0 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-start gap-4 mb-2">
+            {/* Description & Dates card */}
+            <div className="w-full rounded p-5 bg-borda-padrao/40 min-w-0 flex flex-col justify-between mt-4">
+              <div>
+                <div className="flex justify-between items-start gap-4 mb-6">
                     <h4 className="text-xs font-black uppercase tracking-wider text-texto-secundario">
                       Descrição
                     </h4>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-start gap-2">
                       <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-fundo-superficie text-texto-secundario select-none">
                         Ordem: {categoria.sortOrdem}
                       </span>
@@ -137,14 +122,14 @@ export const CategoriaDetailModal = ({
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-borda-padrao/55 text-xs text-texto-secundario">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mt-4 pt-4 border-t border-borda-padrao/55 text-xs text-texto-secundario">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <Calendar className="h-4 w-4 text-texto-secundario/80 shrink-0" />
                     <span className="truncate">
                       <strong>Criada em:</strong> {formatDataLocal(categoria.createdAt)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="flex items-center sm:justify-end gap-1.5 min-w-0">
                     <Clock className="h-4 w-4 text-texto-secundario/80 shrink-0" />
                     <span className="truncate">
                       <strong>Atualizada em:</strong> {formatDataLocal(categoria.updatedAt)}
@@ -152,7 +137,6 @@ export const CategoriaDetailModal = ({
                   </div>
                 </div>
               </div>
-            </div>
 
             {/* List of Dashboards */}
             <div className="flex flex-col gap-2 flex-1 min-w-0">

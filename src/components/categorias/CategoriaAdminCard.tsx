@@ -10,6 +10,7 @@ interface CategoriaAdminCardProps {
   onDeactivate: (c: CategoriaGetDto) => void;
   onRestore: (c: CategoriaGetDto) => void;
   onDelete: (c: CategoriaGetDto) => void;
+  onViewImage: (c: CategoriaGetDto) => void;
   isToggling: boolean;
 }
 
@@ -37,6 +38,7 @@ export const CategoriaAdminCard = ({
   onDeactivate,
   onRestore,
   onDelete,
+  onViewImage,
   isToggling,
 }: CategoriaAdminCardProps) => {
   const formatDataLocal = (dataStr?: string | null) => {
@@ -64,12 +66,22 @@ export const CategoriaAdminCard = ({
     >
       {/* Column 1: Image and Info (col-span-5) */}
       <div className="col-span-5 flex items-center gap-4 w-full min-w-0">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/20">
+        <div
+          onClick={(e) => {
+            if (categoria.imagemUrl) {
+              e.stopPropagation();
+              onViewImage(categoria);
+            }
+          }}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/20 overflow-hidden ${
+            categoria.imagemUrl ? "cursor-zoom-in hover:brightness-95 transition" : ""
+          }`}
+        >
           {categoria.imagemUrl ? (
             <img
               src={categoria.imagemUrl}
               alt={categoria.nome}
-              className="h-8 w-8 object-contain"
+              className="h-full w-full object-contain"
             />
           ) : (
             <LayoutList className="h-6 w-6 text-azul-unb" />
