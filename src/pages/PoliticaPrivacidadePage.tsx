@@ -38,7 +38,10 @@ export const PoliticaPrivacidadePage = () => {
 
           {/* Intro */}
           <p className="text-texto-principal text-sm leading-relaxed">
-            Esta Política de Privacidade descreve como o Portal de Dados UnB coleta, armazena, protege e utiliza as informações fornecidas pelos usuários no âmbito de suas funcionalidades, em total conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
+            Esta Política de Privacidade descreve como o Portal de Dados UnB
+            coleta, armazena, protege e utiliza as informações fornecidas pelos
+            usuários no âmbito de suas funcionalidades, em total conformidade
+            com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
           </p>
 
           {/* Section 1 */}
@@ -48,14 +51,23 @@ export const PoliticaPrivacidadePage = () => {
               1. Coleta de Dados e Finalidade
             </h2>
             <p className="text-texto-secundario text-sm leading-relaxed">
-              Coletamos informações pessoais apenas nos casos estritamente necessários para o funcionamento e administração da plataforma:
+              Coletamos informações pessoais apenas nos casos estritamente
+              necessários para o funcionamento e administração da plataforma:
             </p>
             <ul className="list-disc list-inside text-texto-secundario text-sm space-y-2 pl-4">
               <li>
-                <strong className="text-texto-principal">Cadastro e Autenticação:</strong> Coletamos seu nome, sobrenome, e-mail e senha para criar sua conta de acesso seguro à Área Administrativa.
+                <strong className="text-texto-principal">
+                  Cadastro e Autenticação:
+                </strong>{" "}
+                Coletamos seu nome, sobrenome, e-mail e senha para criar sua
+                conta de acesso seguro à Área Administrativa.
               </li>
               <li>
-                <strong className="text-texto-principal">Sugestões e Apontamentos:</strong> Coletamos nome e e-mail de contato para viabilizar o envio de retornos da equipe técnica às sugestões cadastradas.
+                <strong className="text-texto-principal">
+                  Sugestões e Apontamentos:
+                </strong>{" "}
+                Coletamos nome e e-mail de contato para viabilizar o envio de
+                retornos da equipe técnica às sugestões cadastradas.
               </li>
             </ul>
           </div>
@@ -67,11 +79,20 @@ export const PoliticaPrivacidadePage = () => {
               2. Uso de Cookies
             </h2>
             <p className="text-texto-secundario text-sm leading-relaxed">
-              O Portal de Dados UnB utiliza apenas **cookies estritamente necessários** para o funcionamento da plataforma. Não utilizamos cookies de publicidade ou rastreamento de terceiros.
+              O Portal de Dados UnB utiliza apenas **cookies estritamente
+              necessários** para o funcionamento da plataforma. Não utilizamos
+              cookies de publicidade ou rastreamento de terceiros.
             </p>
             <ul className="list-disc list-inside text-texto-secundario text-sm space-y-2 pl-4">
               <li>
-                <strong className="text-texto-principal">Cookie de Refresh Token (HttpOnly):</strong> Um cookie seguro criptografado de nome `refreshToken` é armazenado no seu navegador para permitir a renovação automática da sua sessão de usuário administrativo sem que você precise inserir sua senha repetidamente. Este cookie é protegido contra scripts do lado do cliente (bloqueando ataques XSS).
+                <strong className="text-texto-principal">
+                  Cookie de Refresh Token (HttpOnly):
+                </strong>{" "}
+                Um cookie seguro criptografado de nome `refreshToken` é
+                armazenado no seu navegador para permitir a renovação automática
+                da sua sessão de usuário administrativo sem que você precise
+                inserir sua senha repetidamente. Este cookie é protegido contra
+                scripts do lado do cliente (bloqueando ataques XSS).
               </li>
             </ul>
           </div>
@@ -83,10 +104,16 @@ export const PoliticaPrivacidadePage = () => {
               3. Compartilhamento e Proteção
             </h2>
             <p className="text-texto-secundario text-sm leading-relaxed">
-              Os dados coletados são de uso exclusivo da Universidade de Brasília para o gerenciamento de suas pipelines e dashboards. Garantimos que os dados pessoais **não serão compartilhados**, vendidos ou distribuídos a terceiros externos sem consentimento expresso.
+              Os dados coletados são de uso exclusivo da Universidade de
+              Brasília para o gerenciamento de suas pipelines e dashboards.
+              Garantimos que os dados pessoais **não serão compartilhados**,
+              vendidos ou distribuídos a terceiros externos sem consentimento
+              expresso.
             </p>
             <p className="text-texto-secundario text-sm leading-relaxed">
-              Utilizamos chaves criptográficas fortes para a emissão de tokens de sessão (JWT) e conexões de rede seguras (HTTPS/SSL) em todas as comunicações entre o frontend e a API.
+              Utilizamos chaves criptográficas fortes para a emissão de tokens
+              de sessão (JWT) e conexões de rede seguras (HTTPS/SSL) em todas as
+              comunicações entre o frontend e a API.
             </p>
           </div>
 

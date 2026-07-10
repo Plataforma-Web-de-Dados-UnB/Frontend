@@ -22,13 +22,18 @@ const normalizeApiError = (error: unknown): ApiError => {
   }
 
   if (typeof data === "object" && data !== null) {
-    const maybeValidation = data as any;
-    const fieldErrors = maybeValidation.errors;
+    const maybeValidation = data as Record<string, unknown>;
+    const fieldErrors = maybeValidation.errors as
+      | Record<string, string[]>
+      | undefined;
     const fieldMessages = fieldErrors
       ? Object.values(fieldErrors).flat().filter(Boolean)
       : [];
     const message =
-      fieldMessages[0] ?? maybeValidation.message ?? maybeValidation.title ?? defaultMessage;
+      (fieldMessages[0] as string | undefined) ??
+      (maybeValidation.message as string | undefined) ??
+      (maybeValidation.title as string | undefined) ??
+      defaultMessage;
 
     const apiError = new Error(message) as ApiError;
     apiError.status = status;
@@ -50,9 +55,12 @@ export const api = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue: { resolve: (token: string | null) => void; reject: (err: any) => void }[] = [];
+let failedQueue: {
+  resolve: (token: string | null) => void;
+  reject: (err: unknown) => void;
+}[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -103,7 +111,9 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await api.post<{ accessToken: string }>("/usuario/refresh");
+        const response = await api.post<{ accessToken: string }>(
+          "/usuario/refresh",
+        );
         const { accessToken } = response.data;
         localStorage.setItem("portal@access_token", accessToken);
         api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;

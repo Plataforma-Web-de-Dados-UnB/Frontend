@@ -29,18 +29,27 @@ export const PipelinesPage = (): React.JSX.Element => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ativos" | "desativados" | "todos">("ativos");
+  const [statusFilter, setStatusFilter] = useState<
+    "ativos" | "desativados" | "todos"
+  >("ativos");
   const [loadingDetail, setLoadingDetail] = useState(false);
 
   // Dialog states
-  const [viewingPipeline, setViewingPipeline] = useState<PipelineGetDto | null>(null);
+  const [viewingPipeline, setViewingPipeline] = useState<PipelineGetDto | null>(
+    null,
+  );
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingPipeline, setEditingPipeline] = useState<PipelineGetDto | null>(null);
-  
+  const [editingPipeline, setEditingPipeline] = useState<PipelineGetDto | null>(
+    null,
+  );
+
   // Confirmation dialog states
-  const [deactivatingPipeline, setDeactivatingPipeline] = useState<PipelineGetDto | null>(null);
-  const [restoringPipeline, setRestoringPipeline] = useState<PipelineGetDto | null>(null);
-  const [deletingPipeline, setDeletingPipeline] = useState<PipelineGetDto | null>(null);
+  const [deactivatingPipeline, setDeactivatingPipeline] =
+    useState<PipelineGetDto | null>(null);
+  const [restoringPipeline, setRestoringPipeline] =
+    useState<PipelineGetDto | null>(null);
+  const [deletingPipeline, setDeletingPipeline] =
+    useState<PipelineGetDto | null>(null);
 
   // Keyboard shortcut Ctrl+K to focus search input
   useEffect(() => {
@@ -64,7 +73,8 @@ export const PipelinesPage = (): React.JSX.Element => {
   // Queries
   const { data, isLoading, isPlaceholderData } = useQuery({
     queryKey: ["pipelines", page, searchQuery, statusFilter],
-    queryFn: () => pipelineApi.list(page, PAGE_SIZE, searchQuery, getAtivoParam()),
+    queryFn: () =>
+      pipelineApi.list(page, PAGE_SIZE, searchQuery, getAtivoParam()),
     placeholderData: (prev) => prev,
   });
 
@@ -102,8 +112,13 @@ export const PipelinesPage = (): React.JSX.Element => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: PipelineFormValues }) =>
-      pipelineApi.update(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: number;
+      payload: PipelineFormValues;
+    }) => pipelineApi.update(id, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pipelines"] });
       setIsFormOpen(false);
@@ -123,9 +138,11 @@ export const PipelinesPage = (): React.JSX.Element => {
       qc.invalidateQueries({ queryKey: ["pipelines"] });
       setDeactivatingPipeline(null);
       setRestoringPipeline(null);
-      toast.success(res?.message || "Status da pipeline atualizado com sucesso!");
+      toast.success(
+        res?.message || "Status da pipeline atualizado com sucesso!",
+      );
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Erro ao atualizar status da pipeline.");
     },
   });
@@ -137,7 +154,7 @@ export const PipelinesPage = (): React.JSX.Element => {
       setDeletingPipeline(null);
       toast.success("Pipeline de dados excluída permanentemente!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Erro ao excluir pipeline.");
     },
   });
@@ -161,7 +178,7 @@ export const PipelinesPage = (): React.JSX.Element => {
     try {
       const fullDetail = await pipelineApi.detail(p.id);
       setViewingPipeline(fullDetail);
-    } catch (err) {
+    } catch {
       toast.error("Erro ao carregar detalhes da pipeline.");
     } finally {
       setLoadingDetail(false);
@@ -179,7 +196,7 @@ export const PipelinesPage = (): React.JSX.Element => {
         scriptPython: fullDetail.scriptPython,
       });
       setIsFormOpen(true);
-    } catch (err) {
+    } catch {
       toast.error("Erro ao carregar detalhes para edição.");
     } finally {
       setLoadingDetail(false);
@@ -246,16 +263,16 @@ export const PipelinesPage = (): React.JSX.Element => {
       {/* Divider or loading progress line */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
         {loadingDetail && (
-          <LinearProgress 
-            color="primary" 
-            className="absolute inset-0" 
-            sx={{ 
-              height: 3, 
+          <LinearProgress
+            color="primary"
+            className="absolute inset-0"
+            sx={{
+              height: 3,
               bgcolor: "transparent",
               "& .MuiLinearProgress-bar": {
-                bgcolor: "var(--color-azul-unb-destaque)"
-              }
-            }} 
+                bgcolor: "var(--color-azul-unb-destaque)",
+              },
+            }}
           />
         )}
       </div>
@@ -271,32 +288,47 @@ export const PipelinesPage = (): React.JSX.Element => {
         {!isLoading && totalItens === 0 && (
           <div className="flex flex-col items-center justify-start py-26 text-center bg-fundo-superficie rounded shadow-sm min-h-[612px]">
             <Code className="h-12 w-12 text-texto-secundario/40 mb-3" />
-            <p className="font-semibold text-texto-principal">Nenhuma pipeline encontrada</p>
-            <p className="text-sm text-texto-secundario mt-1">Experimente alterar os filtros ou cadastrar uma nova pipeline.</p>
+            <p className="font-semibold text-texto-principal">
+              Nenhuma pipeline encontrada
+            </p>
+            <p className="text-sm text-texto-secundario mt-1">
+              Experimente alterar os filtros ou cadastrar uma nova pipeline.
+            </p>
           </div>
         )}
 
-        {!isLoading && data?.itens.map((p) => (
-          <PipelineCard
-            key={p.id}
-            pipeline={p}
-            onView={handleViewPipeline}
-            onEdit={handleEditPipeline}
-            onDeactivate={setDeactivatingPipeline}
-            onRestore={setRestoringPipeline}
-            onDelete={setDeletingPipeline}
-            formatData={formatData}
-          />
-        ))}
+        {!isLoading &&
+          data?.itens.map((p) => (
+            <PipelineCard
+              key={p.id}
+              pipeline={p}
+              onView={handleViewPipeline}
+              onEdit={handleEditPipeline}
+              onDeactivate={setDeactivatingPipeline}
+              onRestore={setRestoringPipeline}
+              onDelete={setDeletingPipeline}
+              formatData={formatData}
+            />
+          ))}
       </div>
 
       {/* Pagination Footer */}
       {data && totalItens > 0 && (
         <div className="p-4 bg-fundo-superficie flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-texto-secundario rounded shadow-sm">
           <div>
-            Mostrando <span className="font-semibold text-texto-principal">{startRange}</span> a{" "}
-            <span className="font-semibold text-texto-principal">{endRange}</span> de{" "}
-            <span className="font-semibold text-texto-principal">{totalItens}</span> registros
+            Mostrando{" "}
+            <span className="font-semibold text-texto-principal">
+              {startRange}
+            </span>{" "}
+            a{" "}
+            <span className="font-semibold text-texto-principal">
+              {endRange}
+            </span>{" "}
+            de{" "}
+            <span className="font-semibold text-texto-principal">
+              {totalItens}
+            </span>{" "}
+            registros
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -314,16 +346,16 @@ export const PipelinesPage = (): React.JSX.Element => {
                 border: "2px solid transparent",
                 bgcolor: "var(--color-fundo-superficie-suave)",
                 color: "var(--color-texto-principal)",
-                "&:hover": { 
+                "&:hover": {
                   border: "2px solid var(--color-destaque)",
                   bgcolor: "var(--color-destaque)",
-                  color: "#ffffff"
+                  color: "#ffffff",
                 },
                 "&.Mui-disabled": {
                   bgcolor: "var(--color-fundo-superficie-suave)",
                   border: "2px solid transparent",
-                  opacity: 0.35
-                }
+                  opacity: 0.35,
+                },
               }}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -347,16 +379,16 @@ export const PipelinesPage = (): React.JSX.Element => {
                 border: "2px solid transparent",
                 bgcolor: "var(--color-fundo-superficie-suave)",
                 color: "var(--color-texto-principal)",
-                "&:hover": { 
+                "&:hover": {
                   border: "2px solid var(--color-destaque)",
                   bgcolor: "var(--color-destaque)",
-                  color: "#ffffff"
+                  color: "#ffffff",
                 },
                 "&.Mui-disabled": {
                   bgcolor: "var(--color-fundo-superficie-suave)",
                   border: "2px solid transparent",
-                  opacity: 0.35
-                }
+                  opacity: 0.35,
+                },
               }}
             >
               <ChevronRight className="h-5 w-5" />
@@ -395,7 +427,9 @@ export const PipelinesPage = (): React.JSX.Element => {
         confirmText="Desativar"
         confirmTone="warning"
         isLoading={toggleMutation.isPending}
-        onConfirm={() => deactivatingPipeline && toggleMutation.mutate(deactivatingPipeline.id)}
+        onConfirm={() =>
+          deactivatingPipeline && toggleMutation.mutate(deactivatingPipeline.id)
+        }
       />
 
       {/* CONFIRM RESTORE DIALOG */}
@@ -407,7 +441,9 @@ export const PipelinesPage = (): React.JSX.Element => {
         confirmText="Reativar"
         confirmTone="success"
         isLoading={toggleMutation.isPending}
-        onConfirm={() => restoringPipeline && toggleMutation.mutate(restoringPipeline.id)}
+        onConfirm={() =>
+          restoringPipeline && toggleMutation.mutate(restoringPipeline.id)
+        }
       />
 
       {/* CONFIRM HARD DELETE DIALOG (WITH NAME INPUT REQUIREMENT) */}
@@ -419,7 +455,9 @@ export const PipelinesPage = (): React.JSX.Element => {
         confirmText="Excluir"
         confirmTone="danger"
         isLoading={deleteMutation.isPending}
-        onConfirm={() => deletingPipeline && deleteMutation.mutate(deletingPipeline.id)}
+        onConfirm={() =>
+          deletingPipeline && deleteMutation.mutate(deletingPipeline.id)
+        }
         requireTextInput={true}
         textInputExpectedValue={deletingPipeline?.nome || ""}
       />

@@ -5,7 +5,7 @@ import type {
   PipelineUpdateDto,
   PipelineExecucaoGetDto,
   PipelineExecucaoCreateDto,
-  UploadPreviewDto,
+  PipelineExecucaoExecutarResultDto,
   ResultadoPaginado,
 } from "@/types/dtos";
 
@@ -14,11 +14,11 @@ export const pipelineApi = {
     const { data } = await api.get<ResultadoPaginado<PipelineGetDto>>(
       "/pipeline",
       {
-        params: { 
-          page, 
-          limit, 
-          busca: busca || undefined, 
-          ativo: ativo !== null && ativo !== undefined ? ativo : undefined 
+        params: {
+          page,
+          limit,
+          busca: busca || undefined,
+          ativo: ativo !== null && ativo !== undefined ? ativo : undefined,
         },
       },
     );
@@ -47,36 +47,47 @@ export const pipelineApi = {
   },
   async remove(id: number, hardDelete = false) {
     await api.delete(`/pipeline/${id}`, {
-      params: { hardDelete }
+      params: { hardDelete },
     });
   },
 
-  async uploadCsv(arquivo: File) {
-    const form = new FormData();
-    form.append("Arquivo", arquivo);
-    const { data } = await api.post<UploadPreviewDto>(
-      "/pipeline/execucoes/upload",
-      form,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      },
-    );
-    return data;
-  },
   async executar(payload: PipelineExecucaoCreateDto) {
-    const { data } = await api.post<PipelineExecucaoGetDto>(
+    const form = new FormData();
+    form.append("Arquivo", payload.arquivo);
+    form.append("PipelineId", String(payload.pipelineId));
+    form.append("TabelaSilver", payload.tabelaSilver);
+    form.append("TabelaGold", payload.tabelaGold);
+    if (payload.colunasSensiveisJson) {
+      form.append("ColunasSensiveisJson", payload.colunasSensiveisJson);
+    }
+    const { data } = await api.post<PipelineExecucaoExecutarResultDto>(
       "/pipeline/execucoes/executar",
-      payload,
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return data;
   },
   async rollback(execucaoId: number) {
     await api.post(`/pipeline/execucoes/${execucaoId}/rollback`);
   },
-  async listExecucoes(page = 1, limit = 10) {
+  async listExecucoes(
+    page = 1,
+    limit = 10,
+    status?: string | number | null,
+    pipelineId?: number | null,
+    busca?: string | null,
+  ) {
     const { data } = await api.get<ResultadoPaginado<PipelineExecucaoGetDto>>(
       "/pipeline/execucoes",
-      { params: { page, limit } },
+      {
+        params: {
+          page,
+          limit,
+          status: status !== undefined && status !== null ? status : undefined,
+          pipelineId: pipelineId || undefined,
+          busca: busca || undefined,
+        },
+      },
     );
     return data;
   },
@@ -87,7 +98,9 @@ export const pipelineApi = {
     return data;
   },
   async toggleActive(id: number) {
-    const { data } = await api.patch<{ message: string }>(`/pipeline/${id}/toggle`);
+    const { data } = await api.patch<{ message: string }>(
+      `/pipeline/${id}/toggle`,
+    );
     return data;
   },
 };

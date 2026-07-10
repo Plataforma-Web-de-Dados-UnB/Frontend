@@ -18,9 +18,7 @@ export const AlertBanner = ({
   <Collapse in={!!message} unmountOnExit>
     <Alert severity={severity} variant="outlined" sx={{ mb: 1 }}>
       {title && (
-        <AlertTitle sx={{ fontWeight: 700, mb: 0.25 }}>
-          {title}
-        </AlertTitle>
+        <AlertTitle sx={{ fontWeight: 700, mb: 0.25 }}>{title}</AlertTitle>
       )}
       {message}
     </Alert>

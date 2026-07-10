@@ -1,18 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import {
-  LogIn,
-  Menu,
-  UserPlus,
-  X,
-  LogOut,
-  User,
-} from "lucide-react";
+import { LogIn, Menu, UserPlus, X, LogOut, User } from "lucide-react";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { useAuth } from "@/features/auth/useAuth";
 import { APP_CONFIG, ROUTES } from "@/utils/constants";
-import unbLogo from "@/../public/unb-logo.png";
 
 const sharpButton = {
   borderRadius: "4px",
@@ -88,9 +80,10 @@ export const Navbar = () => {
   };
 
   const getNavButtonStyle = (route: string, isDestaque = false) => {
-    const isActive = route === "/admin"
-      ? location.pathname.startsWith("/admin")
-      : location.pathname === route;
+    const isActive =
+      route === "/admin"
+        ? location.pathname.startsWith("/admin")
+        : location.pathname === route;
 
     const baseStyle = isDestaque ? navTextButtonDestaque : navTextButton;
     return {
@@ -106,18 +99,29 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 w-full bg-azul-unb shadow-md">
       <div className="flex h-16 w-full items-center justify-between px-6 lg:px-7">
         {/* Logo / Título */}
-        <Link to={ROUTES.home} className="flex items-center gap-3 shrink-0 select-none cursor-pointer">
-          <img src={unbLogo} alt="UnB Logo" className="sm:h-[35px] h-[35.5px] w-auto object-contain" />
+        <Link
+          to={ROUTES.home}
+          className="flex items-center gap-3 shrink-0 select-none cursor-pointer"
+        >
+          <img
+            src="/unb-logo.png"
+            alt="UnB Logo"
+            className="sm:h-[31.25px] h-[34.25px] w-auto object-contain"
+          />
           <div className="flex flex-col leading-tight">
-            <span className="hidden font-black uppercase tracking-wide text-white sm:block">
+            <span className="hidden text-[13px] uppercase font-semibold tracking-wide text-white sm:block">
               Portal de Dados Institucionais
             </span>
-            <span className="hidden text-[12px] font-semibold tracking-widest text-white/90 sm:block">
+            <span className="hidden text-[12px] tracking-widest text-white/90 sm:block">
               Universidade de Brasília - FCTE
             </span>
-            <div className="text-sm font-black tracking-wide text-white sm:hidden flex flex-col leading-tight">
-              <span className="uppercase">Portal de Dados Institucionais</span>
-              <span className="text-xs font-semibold text-white/90 mt-0.5 tracking-wider">Universidade de Brasília - FCTE</span>
+            <div className="text-sm tracking-wide text-white sm:hidden flex flex-col leading-tight">
+              <span className="uppercase text-[13px] font-semibold">
+                Portal de Dados Institucionais
+              </span>
+              <span className="text-xs text-white/90 mt-0.5 tracking-wider">
+                Universidade de Brasília - FCTE
+              </span>
             </div>
           </div>
         </Link>
@@ -166,21 +170,21 @@ export const Navbar = () => {
                   Área administrativa
                 </Button>
               )}
-                <Button
-                  component={Link}
-                  to={ROUTES.perfil}
-                  startIcon={<User className="h-4 w-4" />}
-                  sx={getNavButtonStyle(ROUTES.perfil)}
-                >
-                  Perfil
-                </Button>
-                <Button
-                  onClick={handleLogout}
-                  startIcon={<LogOut className="h-4 w-4" />}
-                  sx={navTextButtonRed}
-                >
-                  Sair
-                </Button>
+              <Button
+                component={Link}
+                to={ROUTES.perfil}
+                startIcon={<User className="h-4 w-4" />}
+                sx={getNavButtonStyle(ROUTES.perfil)}
+              >
+                Perfil
+              </Button>
+              <Button
+                onClick={handleLogout}
+                startIcon={<LogOut className="h-4 w-4" />}
+                sx={navTextButtonRed}
+              >
+                Sair
+              </Button>
             </>
           ) : (
             <>

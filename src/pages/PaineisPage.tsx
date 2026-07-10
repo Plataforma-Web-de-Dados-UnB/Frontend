@@ -30,13 +30,17 @@ export const PaineisPage = () => {
 
   const searchNormalized = normalizeText(q);
 
-  const filteredPaineis = q && paineisRes?.itens
-    ? paineisRes.itens.filter((painel) => {
-        const nameNorm = normalizeText(painel.nome);
-        const descNorm = normalizeText(painel.descricao ?? "");
-        return nameNorm.includes(searchNormalized) || descNorm.includes(searchNormalized);
-      })
-    : [];
+  const filteredPaineis =
+    q && paineisRes?.itens
+      ? paineisRes.itens.filter((painel) => {
+          const nameNorm = normalizeText(painel.nome);
+          const descNorm = normalizeText(painel.descricao ?? "");
+          return (
+            nameNorm.includes(searchNormalized) ||
+            descNorm.includes(searchNormalized)
+          );
+        })
+      : [];
 
   const filteredCategorias = !q && categorias ? categorias : [];
 
@@ -52,10 +56,11 @@ export const PaineisPage = () => {
         }
       />
 
-      <div className="mt-6 border-l-4 border-destaque pl-4">
+      <div className="mt-6 text-center">
         <h1 className="text-3xl font-black uppercase tracking-tight text-azul-unb">
           {q ? `Busca: ${q}` : "Painéis"}
         </h1>
+        <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
       </div>
 
       {isLoading && (
@@ -110,23 +115,23 @@ export const PaineisPage = () => {
 
       {/* Categorias sem busca */}
       {!isLoading && !q && filteredCategorias.length > 0 && (
-        <div className="mt-8 grid grid-cols-3 gap-5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+        <div className="mt-8 flex flex-wrap justify-center gap-5 w-full">
           {filteredCategorias.map((cat) => (
             <Link
               key={cat.id}
               to={ROUTES.categoria.replace(":id", String(cat.id))}
-              className="group perspective aspect-square cursor-pointer"
+              className="group perspective aspect-square cursor-pointer w-[calc(50%-10px)] sm:w-[calc(25%-15px)] md:w-[calc(16.666%-17px)] lg:w-[calc(12.5%-17.5px)]"
               aria-label={cat.nome}
             >
               <div className="flip-card-inner relative h-full w-full transform-style-3d transition-transform duration-500">
                 {/* Frente */}
-                <div className="backface-hidden absolute inset-0 flex flex-col items-center p-3 text-center shadow-sm bg-fundo-superficie">
+                <div className="backface-hidden absolute inset-0 flex flex-col items-center p-3 text-center shadow-xs bg-fundo-superficie">
                   <div className="flex flex-1 w-full items-center justify-center min-h-0">
                     {cat.imagemUrl ? (
                       <img
                         src={cat.imagemUrl}
                         alt={cat.nome}
-                        className="h-full w-full object-contain"
+                        className="max-h-full max-w-full w-auto h-auto rounded-[3.5px]"
                       />
                     ) : (
                       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-fundo-superficie-suave">
@@ -139,7 +144,7 @@ export const PaineisPage = () => {
                   </span>
                 </div>
                 {/* Verso */}
-                <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center p-3.5 text-center shadow-md bg-azul-unb">
+                <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center p-3.5 text-center bg-azul-unb">
                   {cat.descricao ? (
                     <p className="line-clamp-6 text-sm font-medium leading-relaxed text-texto-invertido">
                       {cat.descricao}

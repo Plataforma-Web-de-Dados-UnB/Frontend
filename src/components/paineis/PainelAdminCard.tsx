@@ -1,22 +1,23 @@
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   Clock,
   Pencil,
   Power,
-  ArchiveRestore,
   Trash2,
+  ArchiveRestore,
 } from "lucide-react";
-import type { PipelineGetDto } from "@/types/dtos";
+import type { PainelGetDto } from "@/types/dtos";
 
-export interface PipelineCardProps {
-  pipeline: PipelineGetDto;
-  onView: (p: PipelineGetDto) => void;
-  onEdit: (p: PipelineGetDto) => void;
-  onDeactivate: (p: PipelineGetDto) => void;
-  onRestore: (p: PipelineGetDto) => void;
-  onDelete: (p: PipelineGetDto) => void;
+export interface PainelAdminCardProps {
+  painel: PainelGetDto;
+  onView: (p: PainelGetDto) => void;
+  onEdit: (p: PainelGetDto) => void;
+  onToggleActive: (p: PainelGetDto) => void;
+  onDelete: (p: PainelGetDto) => void;
   formatData: (dt: string) => string;
 }
 
@@ -38,15 +39,14 @@ const tooltipSlotProps = {
   },
 };
 
-export const PipelineCard = ({
-  pipeline,
+export const PainelAdminCard = ({
+  painel,
   onView,
   onEdit,
-  onDeactivate,
-  onRestore,
+  onToggleActive,
   onDelete,
   formatData,
-}: PipelineCardProps) => {
+}: PainelAdminCardProps) => {
   const getDisplayDesc = (desc: string | null | undefined) => {
     if (!desc) return "";
     const lines = desc
@@ -61,17 +61,17 @@ export const PipelineCard = ({
     return firstLine;
   };
 
-  const displayDesc = getDisplayDesc(pipeline.descricao);
+  const displayDesc = getDisplayDesc(painel.descricao);
 
   return (
     <div
-      onClick={() => onView(pipeline)}
+      onClick={() => onView(painel)}
       className="group flex flex-col md:grid md:grid-cols-12 items-center gap-4 bg-fundo-superficie p-5 transition hover:bg-fundo-superficie-suave cursor-pointer rounded shadow-sm"
     >
-      {/* Column 1: Name and Description (col-span-5) */}
+      {/* Column 1: Name, Description and Link (col-span-5) */}
       <div className="col-span-5 min-w-0 w-full">
         <h3 className="font-bold text-texto-principal text-base group-hover:text-destaque transition-colors truncate">
-          {pipeline.nome}
+          {painel.nome}
         </h3>
         <p className="text-sm text-texto-secundario mt-1 truncate h-[20px] leading-normal">
           {displayDesc || (
@@ -80,46 +80,102 @@ export const PipelineCard = ({
             </span>
           )}
         </p>
+        <Button
+          component={Link}
+          to={painel.graphEmbedLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          sx={{
+            color: "var(--color-azul-unb)",
+            textTransform: "none",
+            fontWeight: 600,
+            fontSize: "0.75rem",
+            padding: "4px 0px 2px 0px",
+            minWidth: "auto",
+            borderRadius: "2px",
+            position: "relative",
+            lineHeight: 1.2,
+            maxWidth: "100%",
+            display: "inline-block",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            textAlign: "left",
+            justifyContent: "flex-start",
+            "&::after": {
+              content: '""',
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "2px",
+              backgroundColor: "var(--color-azul-unb)",
+              transform: "scaleX(0)",
+              transition: "transform 0.2s ease-in-out",
+            },
+            "&:hover::after": {
+              transform: "scaleX(1)",
+            },
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+          }}
+        >
+          {painel.graphEmbedLink}
+        </Button>
       </div>
 
-      {/* Column 2: Status Badge matching Dashboard (col-span-2) */}
+      {/* Column 2: Status Badge (col-span-2) */}
       <div className="col-span-2 flex justify-start w-full select-none">
         <span
           className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold ${
-            pipeline.ativo
+            painel.active
               ? "bg-[#16a34a] text-white"
               : "bg-[#dc2626] text-white"
           }`}
         >
-          {pipeline.ativo ? "Ativa" : "Desativada"}
+          {painel.active ? "Ativo" : "Inativo"}
         </span>
       </div>
 
-      {/* Column 3: Dates Panel (col-span-4) */}
-      <div className="col-span-4 flex flex-col gap-1 w-full text-xs text-texto-secundario">
+      {/* Column 3: Categoria Badge (col-span-2) */}
+      <div className="col-span-2 flex justify-start w-full select-none">
+        <span
+          className="inline-block max-w-[200px] truncate px-2.5 py-1 rounded text-xs font-bold bg-azul-unb text-white uppercase tracking-wider text-left"
+          title={painel.categoriaNome || "Sem Categoria"}
+        >
+          {painel.categoriaNome || "Sem Categoria"}
+        </span>
+      </div>
+
+      {/* Column 4: Dates Panel (col-span-2) */}
+      <div className="col-span-2 flex flex-col gap-1 w-full text-xs text-texto-secundario">
         <div className="flex items-center gap-1.5">
           <Calendar className="h-3.5 w-3.5 text-texto-secundario/65" />
-          <span>Criada: {formatData(pipeline.createdAt)}</span>
+          <span>Criado: {formatData(painel.createdAt)}</span>
         </div>
-        {pipeline.updatedAt && (
+        {painel.updatedAt && (
           <div className="flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5 text-texto-secundario/65" />
-            <span>Atualizada: {formatData(pipeline.updatedAt)}</span>
+            <span>Atualizado: {formatData(painel.updatedAt)}</span>
           </div>
         )}
       </div>
 
-      {/* Column 4: Circular Action Buttons (col-span-1) */}
+      {/* Column 5: Circular Action Buttons (col-span-1) */}
       <div
-        className="col-span-1 flex items-center justify-end gap-2 w-full"
-        onClick={(e) => e.stopPropagation()} // Prevent modal details popup
+        className="col-span-1 flex items-center justify-end gap-1.5 w-full"
+        onClick={(e) => e.stopPropagation()} // Prevent card view click
       >
-        {pipeline.ativo ? (
+        {painel.active ? (
           <>
-            <Tooltip title="Editar Pipeline" arrow slotProps={tooltipSlotProps}>
+            <Tooltip title="Editar Painel" arrow slotProps={tooltipSlotProps}>
               <IconButton
                 size="medium"
-                onClick={() => onEdit(pipeline)}
+                onClick={() => onEdit(painel)}
                 sx={{
                   color: "primary.main",
                   bgcolor: "rgba(59, 130, 246, 0.08)",
@@ -133,13 +189,13 @@ export const PipelineCard = ({
             </Tooltip>
 
             <Tooltip
-              title="Desativar Pipeline"
+              title="Desativar Painel"
               arrow
               slotProps={tooltipSlotProps}
             >
               <IconButton
                 size="medium"
-                onClick={() => onDeactivate(pipeline)}
+                onClick={() => onToggleActive(painel)}
                 sx={{
                   color: "#d97706",
                   bgcolor: "rgba(217, 119, 6, 0.08)",
@@ -154,10 +210,10 @@ export const PipelineCard = ({
           </>
         ) : (
           <>
-            <Tooltip title="Restaurar" arrow slotProps={tooltipSlotProps}>
+            <Tooltip title="Reativar Painel" arrow slotProps={tooltipSlotProps}>
               <IconButton
                 size="medium"
-                onClick={() => onRestore(pipeline)}
+                onClick={() => onToggleActive(painel)}
                 sx={{
                   color: "success.main",
                   bgcolor: "rgba(16, 185, 129, 0.08)",
@@ -170,14 +226,10 @@ export const PipelineCard = ({
               </IconButton>
             </Tooltip>
 
-            <Tooltip
-              title="Excluir Permanentemente"
-              arrow
-              slotProps={tooltipSlotProps}
-            >
+            <Tooltip title="Excluir Painel" arrow slotProps={tooltipSlotProps}>
               <IconButton
                 size="medium"
-                onClick={() => onDelete(pipeline)}
+                onClick={() => onDelete(painel)}
                 sx={{
                   color: "error.main",
                   bgcolor: "rgba(239, 68, 68, 0.08)",

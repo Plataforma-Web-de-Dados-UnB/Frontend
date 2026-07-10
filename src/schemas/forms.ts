@@ -47,11 +47,7 @@ export const painelSchema = z.object({
   nome: z.string().min(2, "Nome obrigatório."),
   descricao: z.string().optional(),
   graphEmbedLink: z.url("Informe uma URL válida."),
-  embedDashboardUuid: z
-    .string()
-    .uuid("Informe um UUID válido.")
-    .optional()
-    .or(z.literal("")),
+  embedDashboardUuid: z.uuid("Informe um UUID válido."),
   sortOrdem: z.number().int().min(0).optional(),
   categoriaId: z.number().int().min(1, "Selecione uma categoria."),
 });
@@ -64,10 +60,19 @@ export const pipelineSchema = z.object({
 
 export const sugestaoSchema = z.object({
   tipo: z.string().min(1, "Selecione o tipo de solicitação."),
-  titulo: z.string().min(3, "O título deve ter ao menos 3 caracteres.").max(255, "Máximo de 255 caracteres."),
+  titulo: z
+    .string()
+    .min(3, "O título deve ter ao menos 3 caracteres.")
+    .max(255, "Máximo de 255 caracteres."),
   descricao: z.string().min(10, "A descrição deve ter ao menos 10 caracteres."),
-  nomeContato: z.string().min(2, "O nome de contato é obrigatório.").max(255, "Máximo de 255 caracteres."),
-  emailContato: z.string().min(1, "O e-mail de contato é obrigatório.").email("E-mail inválido."),
+  nomeContato: z
+    .string()
+    .min(2, "O nome de contato é obrigatório.")
+    .max(255, "Máximo de 255 caracteres."),
+  emailContato: z
+    .string()
+    .min(1, "O e-mail de contato é obrigatório.")
+    .email("E-mail inválido."),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;

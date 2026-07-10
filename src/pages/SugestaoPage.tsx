@@ -46,7 +46,8 @@ export const SugestaoPage = () => {
           </h2>
           <div className="h-1 w-16 rounded bg-destaque" />
           <p className="text-base text-texto-secundario max-w-md">
-            Obrigado pela sua contribuição. Nossa equipe irá analisar a sua mensagem.
+            Obrigado pela sua contribuição. Nossa equipe irá analisar a sua
+            mensagem.
           </p>
           <Button
             component={Link}
@@ -71,7 +72,8 @@ export const SugestaoPage = () => {
           </h1>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
           <p className="mt-4 text-sm text-texto-secundario">
-            Não encontrou o painel que procurava, identificou algum erro ou gostaria de enviar um relato/sugestão? Preencha o formulário abaixo.
+            Não encontrou o painel que procurava, identificou algum erro ou
+            gostaria de enviar um relato/sugestão? Preencha o formulário abaixo.
           </p>
         </div>
 

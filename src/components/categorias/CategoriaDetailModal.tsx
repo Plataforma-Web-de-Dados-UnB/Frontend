@@ -24,7 +24,10 @@ export const CategoriaDetailModal = ({
   // Query to fetch dashboards belonging to this category
   const { data: paineis, isLoading } = useQuery({
     queryKey: ["categoria-paineis", categoria?.id],
-    queryFn: () => (categoria ? painelApi.listAdmin(1, 100, categoria.id).then((res) => res.itens) : []),
+    queryFn: () =>
+      categoria
+        ? painelApi.listAdmin(1, 100, categoria.id).then((res) => res.itens)
+        : [],
     enabled: open && !!categoria?.id,
   });
 
@@ -62,13 +65,24 @@ export const CategoriaDetailModal = ({
             border: "1px solid var(--color-borda-padrao)",
             backgroundImage: "none",
             maxHeight: "85vh",
-          }
-        }
+          },
+        },
       }}
     >
       {categoria && (
         <>
-          <DialogTitle sx={{ m: 0, px: 4, pt: 2.5, pb: 2, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-borda-padrao)" }}>
+          <DialogTitle
+            sx={{
+              m: 0,
+              px: 4,
+              pt: 2.5,
+              pb: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid var(--color-borda-padrao)",
+            }}
+          >
             <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
               {categoria.nome}
             </h2>
@@ -83,60 +97,71 @@ export const CategoriaDetailModal = ({
                 "&:hover": {
                   bgcolor: "var(--color-vermelho-claro)",
                   color: "var(--color-vermelho-escuro)",
-                }
+                },
               }}
             >
               <X className="h-5 w-5" />
             </IconButton>
           </DialogTitle>
 
-          <DialogContent sx={{ px: 4, pt: 3, pb: 4, display: "flex", flexDirection: "column", gap: 3.5 }}>
+          <DialogContent
+            sx={{
+              px: 4,
+              pt: 3,
+              pb: 4,
+              display: "flex",
+              flexDirection: "column",
+              gap: 3.5,
+            }}
+          >
             {/* Description & Dates card */}
             <div className="w-full rounded p-5 bg-borda-padrao/40 min-w-0 flex flex-col justify-between mt-4">
               <div>
                 <div className="flex justify-between items-start gap-4 mb-6">
-                    <h4 className="text-xs font-black uppercase tracking-wider text-texto-secundario">
-                      Descrição
-                    </h4>
-                    <div className="flex items-start gap-2">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-fundo-superficie text-texto-secundario select-none">
-                        Ordem: {categoria.sortOrdem}
-                      </span>
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold select-none ${
-                          categoria.active
-                            ? "bg-[#16a34a] text-white"
-                            : "bg-[#dc2626] text-white"
-                        }`}
-                      >
-                        {categoria.active ? "Ativa" : "Desativada"}
-                      </span>
-                    </div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-texto-secundario">
+                    Descrição
+                  </h4>
+                  <div className="flex items-start gap-2">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-fundo-superficie text-texto-secundario select-none">
+                      Ordem: {categoria.sortOrdem}
+                    </span>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold select-none ${
+                        categoria.active
+                          ? "bg-[#16a34a] text-white"
+                          : "bg-[#dc2626] text-white"
+                      }`}
+                    >
+                      {categoria.active ? "Ativa" : "Desativada"}
+                    </span>
                   </div>
-                  <p className="text-sm text-texto-principal leading-relaxed whitespace-pre-wrap break-words">
-                    {categoria.descricao || (
-                      <span className="italic text-texto-secundario/50">
-                        Nenhuma descrição informada para esta categoria.
-                      </span>
-                    )}
-                  </p>
                 </div>
+                <p className="text-sm text-texto-principal leading-relaxed whitespace-pre-wrap break-words">
+                  {categoria.descricao || (
+                    <span className="italic text-texto-secundario/50">
+                      Nenhuma descrição informada para esta categoria.
+                    </span>
+                  )}
+                </p>
+              </div>
 
-                <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mt-4 pt-4 border-t border-borda-padrao/55 text-xs text-texto-secundario">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <Calendar className="h-4 w-4 text-texto-secundario/80 shrink-0" />
-                    <span className="truncate">
-                      <strong>Criada em:</strong> {formatDataLocal(categoria.createdAt)}
-                    </span>
-                  </div>
-                  <div className="flex items-center sm:justify-end gap-1.5 min-w-0">
-                    <Clock className="h-4 w-4 text-texto-secundario/80 shrink-0" />
-                    <span className="truncate">
-                      <strong>Atualizada em:</strong> {formatDataLocal(categoria.updatedAt)}
-                    </span>
-                  </div>
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mt-4 pt-4 border-t border-borda-padrao/55 text-xs text-texto-secundario">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Calendar className="h-4 w-4 text-texto-secundario/80 shrink-0" />
+                  <span className="truncate">
+                    <strong>Criada em:</strong>{" "}
+                    {formatDataLocal(categoria.createdAt)}
+                  </span>
+                </div>
+                <div className="flex items-center sm:justify-end gap-1.5 min-w-0">
+                  <Clock className="h-4 w-4 text-texto-secundario/80 shrink-0" />
+                  <span className="truncate">
+                    <strong>Atualizada em:</strong>{" "}
+                    {formatDataLocal(categoria.updatedAt)}
+                  </span>
                 </div>
               </div>
+            </div>
 
             {/* List of Dashboards */}
             <div className="flex flex-col gap-2 flex-1 min-w-0">

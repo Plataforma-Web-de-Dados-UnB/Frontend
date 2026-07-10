@@ -1,50 +1,51 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import { Search, Plus } from "lucide-react";
+import type { CategoriaGetDto } from "@/types/dtos";
 
-export interface CategoriaFilterBarProps {
+export interface PainelFilterBarProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  onSearchSubmit: (e: React.SyntheticEvent) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onSearchSubmit: (e?: React.SyntheticEvent<HTMLFormElement>) => void;
   onClearSearch: () => void;
+  filterCat: number | "";
+  setFilterCat: (val: number | "") => void;
+  categorias: CategoriaGetDto[] | undefined;
   statusFilter: "ativos" | "inativos" | "todos";
   setStatusFilter: (val: "ativos" | "inativos" | "todos") => void;
   onNewClick: () => void;
 }
 
-export const CategoriaFilterBar = ({
+export const PainelFilterBar = ({
   searchTerm,
   setSearchTerm,
+  inputRef,
   onSearchSubmit,
   onClearSearch,
+  filterCat,
+  setFilterCat,
+  categorias,
   statusFilter,
   setStatusFilter,
   onNewClick,
-}: CategoriaFilterBarProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
+}: PainelFilterBarProps) => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
-      {/* Search Input Box */}
-      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto">
+      {/* Search and Category Select Box */}
+      <form
+        onSubmit={onSearchSubmit}
+        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+      >
         <TextField
           inputRef={inputRef}
-          placeholder="Buscar categoria..."
+          placeholder="Buscar painel..."
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -111,10 +112,70 @@ export const CategoriaFilterBar = ({
             color: "#ffffff",
             "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Buscar
         </Button>
+
+        {/* Categoria Select with Green Border, No Hover Border Change, and Max Height Scroll */}
+        <Select
+          value={filterCat}
+          displayEmpty
+          onChange={(e) =>
+            setFilterCat(e.target.value ? Number(e.target.value) : "")
+          }
+          MenuProps={{
+            slotProps: {
+              paper: {
+                sx: {
+                  backgroundColor: "var(--color-fundo-superficie)",
+                  color: "var(--color-texto-principal)",
+                  border: "1px solid var(--color-borda-padrao)",
+                  "& .MuiMenuItem-root": {
+                    fontSize: "0.875rem",
+                    "&:hover": {
+                      backgroundColor: "var(--color-fundo-superficie-suave)",
+                    },
+                    "&.Mui-selected": {
+                      backgroundColor: "var(--color-destaque-suave)",
+                      color: "var(--color-destaque)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-destaque-suave)",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }}
+          sx={{
+            height: "40px",
+            minWidth: "180px",
+            boxSizing: "border-box",
+            borderRadius: "4px",
+            bgcolor: "var(--color-fundo-superficie)",
+            color: "var(--color-texto-principal)",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-destaque) !important",
+            },
+          }}
+        >
+          <MenuItem value="">
+            <em>Todas as Categorias</em>
+          </MenuItem>
+          {categorias?.map((c) => (
+            <MenuItem key={c.id} value={c.id}>
+              {c.nome}
+            </MenuItem>
+          ))}
+        </Select>
 
         <Button
           type="button"
@@ -133,13 +194,14 @@ export const CategoriaFilterBar = ({
               color: "var(--color-texto-secundario)",
             },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Limpar
         </Button>
       </form>
 
-      {/* Group Tabs & Nova Categoria button together on the right */}
+      {/* Tabs and Create Button on the right */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
         {/* Status Tabs */}
         <Tabs
@@ -175,12 +237,12 @@ export const CategoriaFilterBar = ({
             },
           }}
         >
-          <Tab value="ativos" label="Ativas" />
-          <Tab value="inativos" label="Desativadas" />
-          <Tab value="todos" label="Todas" />
+          <Tab value="ativos" label="Ativos" />
+          <Tab value="inativos" label="Inativos" />
+          <Tab value="todos" label="Todos" />
         </Tabs>
 
-        {/* New Category Button */}
+        {/* New Panel Button */}
         <Button
           variant="contained"
           color="primary"
@@ -200,7 +262,7 @@ export const CategoriaFilterBar = ({
             },
           }}
         >
-          Nova Categoria
+          Novo Painel
         </Button>
       </div>
     </div>

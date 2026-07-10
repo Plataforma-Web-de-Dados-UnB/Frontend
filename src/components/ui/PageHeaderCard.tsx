@@ -12,9 +12,7 @@ export const PageHeaderCard: React.FC<PageHeaderCardProps> = ({
   return (
     <div className="relative overflow-hidden rounded bg-gradient-to-r from-azul-unb/90 to-azul-unb p-6 text-white shadow-md">
       <div className="relative z-10 w-full">
-        <h1 className="text-2xl font-black tracking-tight">
-          {title}
-        </h1>
+        <h1 className="text-2xl font-black tracking-tight">{title}</h1>
         <p className="mt-2 text-white/80 text-sm w-full font-medium">
           {description}
         </p>

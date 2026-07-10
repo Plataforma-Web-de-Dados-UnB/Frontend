@@ -1,30 +1,36 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import type { SyntheticEvent } from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Search, Plus } from "lucide-react";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Search } from "lucide-react";
+import type { StatusSugestao, TipoSugestao } from "@/types/dtos";
 
-export interface CategoriaFilterBarProps {
+export interface SugestaoFilterBarProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  onSearchSubmit: (e: React.SyntheticEvent) => void;
+  onSearchSubmit: (e?: SyntheticEvent<HTMLFormElement>) => void;
   onClearSearch: () => void;
-  statusFilter: "ativos" | "inativos" | "todos";
-  setStatusFilter: (val: "ativos" | "inativos" | "todos") => void;
-  onNewClick: () => void;
+  tipoFilter: TipoSugestao | "";
+  setTipoFilter: (val: TipoSugestao | "") => void;
+  statusFilter: StatusSugestao | "";
+  setStatusFilter: (val: StatusSugestao | "") => void;
 }
 
-export const CategoriaFilterBar = ({
+export const SugestaoFilterBar = ({
   searchTerm,
   setSearchTerm,
   onSearchSubmit,
   onClearSearch,
+  tipoFilter,
+  setTipoFilter,
   statusFilter,
   setStatusFilter,
-  onNewClick,
-}: CategoriaFilterBarProps) => {
+}: SugestaoFilterBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -40,11 +46,14 @@ export const CategoriaFilterBar = ({
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
-      {/* Search Input Box */}
-      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto">
+      {/* Search and Type Select Box */}
+      <form
+        onSubmit={onSearchSubmit}
+        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+      >
         <TextField
           inputRef={inputRef}
-          placeholder="Buscar categoria..."
+          placeholder="Buscar sugestão..."
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -74,7 +83,9 @@ export const CategoriaFilterBar = ({
                   <span className="text-[10px] font-bold text-texto-principal bg-borda-padrao px-1.5 py-0.5 rounded select-none">
                     Ctrl
                   </span>
-                  <Plus className="h-3 w-3 text-texto-primario" />
+                  <span className="text-texto-secundario text-xs font-semibold select-none">
+                    +
+                  </span>
                   <span className="text-[10px] font-bold text-texto-principal bg-borda-padrao px-2.5 py-0.5 rounded select-none">
                     K
                   </span>
@@ -111,10 +122,69 @@ export const CategoriaFilterBar = ({
             color: "#ffffff",
             "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Buscar
         </Button>
+
+        {/* Tipo Select */}
+        <Select
+          value={tipoFilter}
+          displayEmpty
+          onChange={(e) => {
+            const val = e.target.value as string | number;
+            setTipoFilter(val !== "" ? (Number(val) as TipoSugestao) : "");
+          }}
+          MenuProps={{
+            slotProps: {
+              paper: {
+                sx: {
+                  backgroundColor: "var(--color-fundo-superficie)",
+                  color: "var(--color-texto-principal)",
+                  border: "1px solid var(--color-borda-padrao)",
+                  "& .MuiMenuItem-root": {
+                    fontSize: "0.875rem",
+                    "&:hover": {
+                      backgroundColor: "var(--color-fundo-superficie-suave)",
+                    },
+                    "&.Mui-selected": {
+                      backgroundColor: "var(--color-destaque-suave)",
+                      color: "var(--color-destaque)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-destaque-suave)",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }}
+          sx={{
+            height: "40px",
+            minWidth: "150px",
+            boxSizing: "border-box",
+            borderRadius: "4px",
+            bgcolor: "var(--color-fundo-superficie)",
+            color: "var(--color-texto-principal)",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-destaque) !important",
+            },
+          }}
+        >
+          <MenuItem value="">
+            <em>Todos os Tipos</em>
+          </MenuItem>
+          <MenuItem value={0}>Sugestão</MenuItem>
+          <MenuItem value={1}>Erro</MenuItem>
+          <MenuItem value={2}>Relato</MenuItem>
+        </Select>
 
         <Button
           type="button"
@@ -133,15 +203,15 @@ export const CategoriaFilterBar = ({
               color: "var(--color-texto-secundario)",
             },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Limpar
         </Button>
       </form>
 
-      {/* Group Tabs & Nova Categoria button together on the right */}
+      {/* Tabs on the right */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
-        {/* Status Tabs */}
         <Tabs
           value={statusFilter}
           onChange={(_, newValue) => {
@@ -175,33 +245,11 @@ export const CategoriaFilterBar = ({
             },
           }}
         >
-          <Tab value="ativos" label="Ativas" />
-          <Tab value="inativos" label="Desativadas" />
-          <Tab value="todos" label="Todas" />
+          <Tab value={0} label="Pendentes" />
+          <Tab value={1} label="Analisadas" />
+          <Tab value={2} label="Descartadas" />
+          <Tab value="" label="Todas" />
         </Tabs>
-
-        {/* New Category Button */}
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Plus className="h-4 w-4" />}
-          onClick={onNewClick}
-          sx={{
-            borderRadius: "4px",
-            px: 3,
-            py: 1,
-            textTransform: "none",
-            fontWeight: 700,
-            boxShadow: "none",
-            bgcolor: "var(--color-azul-unb)",
-            "&:hover": {
-              bgcolor: "var(--color-azul-unb-hover)",
-              boxShadow: "none",
-            },
-          }}
-        >
-          Nova Categoria
-        </Button>
       </div>
     </div>
   );

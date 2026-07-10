@@ -95,7 +95,10 @@ export const CategoriaPage = () => {
 
       {/* Sugestão */}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-1 text-center text-sm text-texto-secundario">
-        <span>Não encontrou o painel que procurava, identificou algum erro ou gostaria de enviar um relato?</span>
+        <span>
+          Não encontrou o painel que procurava, identificou algum erro ou
+          gostaria de enviar um relato?
+        </span>
         <Button
           component={Link}
           to={ROUTES.sugestao}

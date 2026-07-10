@@ -20,7 +20,10 @@ export const sugestaoApi = {
     page?: number;
     limit?: number;
   }) {
-    const response = await api.get<ResultadoPaginado<SugestaoListDto>>("/sugestao", { params });
+    const response = await api.get<ResultadoPaginado<SugestaoListDto>>(
+      "/sugestao",
+      { params },
+    );
     return response.data;
   },
 
@@ -30,7 +33,10 @@ export const sugestaoApi = {
   },
 
   async updateStatus(id: number, status: StatusSugestao) {
-    const response = await api.patch<{ message: string }>(`/sugestao/${id}/status`, { status });
+    const response = await api.patch<{ message: string }>(
+      `/sugestao/${id}/status`,
+      { status },
+    );
     return response.data;
   },
 };

@@ -2,7 +2,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
-import Editor from "@monaco-editor/react";
+import Editor, { type BeforeMount } from "@monaco-editor/react";
 import { X, Calendar, Clock, Code } from "lucide-react";
 import type { PipelineGetDto } from "@/types/dtos";
 
@@ -19,7 +19,7 @@ export const PipelineDetailModal = ({
   pipeline,
   formatData,
 }: PipelineDetailModalProps) => {
-  const handleEditorBeforeMount = (monaco: any) => {
+  const handleEditorBeforeMount: BeforeMount = (monaco) => {
     monaco.editor.defineTheme("unb-dark-theme", {
       base: "vs-dark",
       inherit: true,
@@ -50,13 +50,24 @@ export const PipelineDetailModal = ({
             maxWidth: "1440px",
             width: "100%",
             maxHeight: "80vh",
-          }
-        }
+          },
+        },
       }}
     >
       {pipeline && (
         <>
-          <DialogTitle sx={{ m: 0, px: 4, pt: 2.5, pb: 2, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-borda-padrao)" }}>
+          <DialogTitle
+            sx={{
+              m: 0,
+              px: 4,
+              pt: 2.5,
+              pb: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid var(--color-borda-padrao)",
+            }}
+          >
             <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
               {pipeline.nome}
             </h2>
@@ -71,14 +82,23 @@ export const PipelineDetailModal = ({
                 "&:hover": {
                   bgcolor: "var(--color-vermelho-claro)",
                   color: "var(--color-vermelho-escuro)",
-                }
+                },
               }}
             >
               <X className="h-5 w-5" />
             </IconButton>
           </DialogTitle>
 
-          <DialogContent sx={{ px: 4, pt: 3, pb: 4, display: "flex", flexDirection: "column", gap: 3.5 }}>
+          <DialogContent
+            sx={{
+              px: 4,
+              pt: 3,
+              pb: 4,
+              display: "flex",
+              flexDirection: "column",
+              gap: 3.5,
+            }}
+          >
             {/* Description & Dates info */}
             <div className="rounded p-5 bg-borda-padrao/40 mt-6">
               <div className="flex justify-between items-start gap-4 mb-2">
@@ -96,18 +116,27 @@ export const PipelineDetailModal = ({
                 </span>
               </div>
               <p className="text-sm text-texto-principal leading-relaxed whitespace-pre-wrap">
-                {pipeline.descricao || <span className="italic text-texto-secundario/50">Nenhuma descrição informada para esta pipeline.</span>}
+                {pipeline.descricao || (
+                  <span className="italic text-texto-secundario/50">
+                    Nenhuma descrição informada para esta pipeline.
+                  </span>
+                )}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-borda-padrao/55 text-xs text-texto-secundario">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="h-4 w-4 text-texto-secundario/80" />
-                  <span><strong>Criada em:</strong> {formatData(pipeline.createdAt)}</span>
+                  <span>
+                    <strong>Criada em:</strong> {formatData(pipeline.createdAt)}
+                  </span>
                 </div>
                 {pipeline.updatedAt && (
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-texto-secundario/80" />
-                    <span><strong>Última atualização:</strong> {formatData(pipeline.updatedAt)}</span>
+                    <span>
+                      <strong>Última atualização:</strong>{" "}
+                      {formatData(pipeline.updatedAt)}
+                    </span>
                   </div>
                 )}
               </div>

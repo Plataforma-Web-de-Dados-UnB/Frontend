@@ -30,13 +30,10 @@ export const PipelineFilterBar = ({
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
       {/* Search Input Box (Wider / max-w-2xl) */}
-      <form 
-        onSubmit={onSearchSubmit} 
-        className="flex gap-2 w-full lg:max-w-2xl flex-1"
-      >
+      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto">
         <TextField
           inputRef={inputRef}
-          placeholder="Buscar pipeline pelo nome..."
+          placeholder="Buscar pipeline..."
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -45,7 +42,7 @@ export const PipelineFilterBar = ({
               inputRef.current?.blur();
             }
           }}
-          fullWidth
+          sx={{ width: { xs: "100%", lg: 400 } }}
           slotProps={{
             input: {
               startAdornment: (
@@ -54,8 +51,8 @@ export const PipelineFilterBar = ({
                 </InputAdornment>
               ),
               endAdornment: (
-                <InputAdornment 
-                  position="end" 
+                <InputAdornment
+                  position="end"
                   className="hidden sm:flex gap-1 select-none"
                   onMouseDown={(e) => {
                     e.preventDefault();
@@ -79,10 +76,14 @@ export const PipelineFilterBar = ({
                 bgcolor: "var(--color-fundo-superficie)",
                 color: "var(--color-texto-principal)",
                 "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-              }
-            }
+                "&:hover fieldset": {
+                  borderColor: "var(--color-borda-padrao) !important",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "var(--color-destaque) !important",
+                },
+              },
+            },
           }}
         />
 
@@ -118,7 +119,7 @@ export const PipelineFilterBar = ({
             color: "var(--color-texto-principal)",
             "&:hover": {
               bgcolor: "var(--color-fundo-superficie-suave)",
-              color: "var(--color-texto-secundario)"
+              color: "var(--color-texto-secundario)",
             },
             px: 3,
           }}
@@ -128,7 +129,7 @@ export const PipelineFilterBar = ({
       </form>
 
       {/* Group Tabs & Nova Pipeline button together on the right */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
         {/* Status Tabs */}
         <Tabs
           value={statusFilter}
@@ -148,13 +149,19 @@ export const PipelineFilterBar = ({
               color: "var(--color-texto-secundario)",
               px: 2.5,
               minHeight: 40,
+              height: 40,
+              paddingTop: 0,
+              paddingBottom: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
               "&.Mui-selected": {
                 color: "var(--color-azul-unb)",
               },
               "&:hover": {
                 color: "var(--color-texto-principal)",
-              }
-            }
+              },
+            },
           }}
         >
           <Tab value="ativos" label="Ativas" />
@@ -178,8 +185,8 @@ export const PipelineFilterBar = ({
             bgcolor: "var(--color-azul-unb)",
             "&:hover": {
               bgcolor: "var(--color-azul-unb-hover)",
-              boxShadow: "none"
-            }
+              boxShadow: "none",
+            },
           }}
         >
           Nova Pipeline

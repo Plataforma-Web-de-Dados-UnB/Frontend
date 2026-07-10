@@ -7,8 +7,14 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-import Editor from "@monaco-editor/react";
-import { Controller, type Control, type UseFormRegister, type FieldErrors, type UseFormSetValue } from "react-hook-form";
+import Editor, { type BeforeMount } from "@monaco-editor/react";
+import {
+  Controller,
+  type Control,
+  type UseFormRegister,
+  type FieldErrors,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { X, Code } from "lucide-react";
 import { AlertBanner } from "@/components/ui/AlertBanner";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
@@ -40,7 +46,7 @@ export const PipelineFormModal = ({
 }: PipelineFormModalProps) => {
   const [showConfirmClose, setShowConfirmClose] = useState(false);
 
-  const handleEditorBeforeMount = (monaco: any) => {
+  const handleEditorBeforeMount: BeforeMount = (monaco) => {
     monaco.editor.defineTheme("unb-dark-theme", {
       base: "vs-dark",
       inherit: true,
@@ -76,13 +82,26 @@ export const PipelineFormModal = ({
               maxWidth: "1440px",
               width: "100%",
               maxHeight: "80vh",
-            }
-          }
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ m: 0, px: 4, pt: 2.5, pb: 2, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-borda-padrao)" }}>
+        <DialogTitle
+          sx={{
+            m: 0,
+            px: 4,
+            pt: 2.5,
+            pb: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid var(--color-borda-padrao)",
+          }}
+        >
           <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
-            {editingPipeline ? "Editar Pipeline de Dados" : "Nova Pipeline de Dados"}
+            {editingPipeline
+              ? "Editar Pipeline de Dados"
+              : "Nova Pipeline de Dados"}
           </h2>
           <IconButton
             onClick={() => setShowConfirmClose(true)}
@@ -96,7 +115,7 @@ export const PipelineFormModal = ({
               "&:hover": {
                 bgcolor: "var(--color-vermelho-claro)",
                 color: "var(--color-vermelho-escuro)",
-              }
+              },
             }}
           >
             <X className="h-5 w-5" />
@@ -104,7 +123,16 @@ export const PipelineFormModal = ({
         </DialogTitle>
 
         <form onSubmit={onSubmit}>
-          <DialogContent sx={{ px: 4, pt: 3, pb: 4, display: "flex", flexDirection: "column", gap: 3 }}>
+          <DialogContent
+            sx={{
+              px: 4,
+              pt: 3,
+              pb: 4,
+              display: "flex",
+              flexDirection: "column",
+              gap: 3,
+            }}
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
               <TextField
                 label="Nome da Pipeline de Dados"
@@ -120,17 +148,25 @@ export const PipelineFormModal = ({
                       borderRadius: "4px",
                       bgcolor: "var(--color-fundo-superficie)",
                       color: "var(--color-texto-principal)",
-                      "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                      "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                      "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-                    }
+                      "& fieldset": {
+                        borderColor: "var(--color-borda-padrao)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "var(--color-borda-padrao) !important",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "var(--color-destaque) !important",
+                      },
+                    },
                   },
                   inputLabel: {
                     sx: {
                       color: "var(--color-texto-secundario)",
-                      "&.Mui-focused": { color: "var(--color-destaque) !important" }
-                    }
-                  }
+                      "&.Mui-focused": {
+                        color: "var(--color-destaque) !important",
+                      },
+                    },
+                  },
                 }}
               />
 
@@ -148,17 +184,25 @@ export const PipelineFormModal = ({
                       borderRadius: "4px",
                       bgcolor: "var(--color-fundo-superficie)",
                       color: "var(--color-texto-principal)",
-                      "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                      "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                      "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-                    }
+                      "& fieldset": {
+                        borderColor: "var(--color-borda-padrao)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "var(--color-borda-padrao) !important",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "var(--color-destaque) !important",
+                      },
+                    },
                   },
                   inputLabel: {
                     sx: {
                       color: "var(--color-texto-secundario)",
-                      "&.Mui-focused": { color: "var(--color-destaque) !important" }
-                    }
-                  }
+                      "&.Mui-focused": {
+                        color: "var(--color-destaque) !important",
+                      },
+                    },
+                  },
                 }}
               />
             </div>
@@ -169,7 +213,7 @@ export const PipelineFormModal = ({
                 <Code className="h-4 w-4 text-destaque" />
                 Script Python
               </h4>
-              
+
               <div className="rounded overflow-hidden border border-borda-padrao bg-[#161b27] p-1 shadow-inner">
                 <Controller
                   name="scriptPython"
@@ -205,7 +249,14 @@ export const PipelineFormModal = ({
             <AlertBanner message={errors.root?.message} />
           </DialogContent>
 
-          <DialogActions sx={{ px: 4, pb: 4, pt: 2, borderTop: "1px solid var(--color-borda-padrao)" }}>
+          <DialogActions
+            sx={{
+              px: 4,
+              pb: 4,
+              pt: 2,
+              borderTop: "1px solid var(--color-borda-padrao)",
+            }}
+          >
             <Button
               type="submit"
               variant="contained"
@@ -222,7 +273,7 @@ export const PipelineFormModal = ({
                 textTransform: "none",
                 fontWeight: 700,
                 bgcolor: "var(--color-azul-unb)",
-                "&:hover": { bgcolor: "var(--color-azul-unb-hover)" }
+                "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
               }}
             >
               {editingPipeline ? "Salvar Alterações" : "Criar Pipeline"}

@@ -25,33 +25,40 @@ export const CategoriasAdminPage = () => {
   const [page, setPage] = useState(1);
   const [buscaInput, setBuscaInput] = useState("");
   const [busca, setBusca] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ativos" | "inativos" | "todos">("ativos");
+  const [statusFilter, setStatusFilter] = useState<
+    "ativos" | "inativos" | "todos"
+  >("ativos");
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<CategoriaGetDto | null>(null);
   const [viewing, setViewing] = useState<CategoriaGetDto | null>(null);
-  const [viewingImage, setViewingImage] = useState<CategoriaGetDto | null>(null);
-  const [deactivating, setDeactivating] = useState<CategoriaGetDto | null>(null);
+  const [viewingImage, setViewingImage] = useState<CategoriaGetDto | null>(
+    null,
+  );
+  const [deactivating, setDeactivating] = useState<CategoriaGetDto | null>(
+    null,
+  );
   const [restoring, setRestoring] = useState<CategoriaGetDto | null>(null);
   const [deleting, setDeleting] = useState<CategoriaGetDto | null>(null);
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
-
   // Compute active parameter for API
-  const activeParam = 
-    statusFilter === "ativos" 
-      ? true 
-      : statusFilter === "inativos" 
-      ? false 
-      : undefined;
+  const activeParam =
+    statusFilter === "ativos"
+      ? true
+      : statusFilter === "inativos"
+        ? false
+        : undefined;
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["categorias-admin", page, busca, statusFilter],
-    queryFn: () => categoriasApi.listAdmin(page, PAGE_SIZE, busca || undefined, activeParam),
+    queryFn: () =>
+      categoriasApi.listAdmin(page, PAGE_SIZE, busca || undefined, activeParam),
   });
 
   const createMutation = useMutation({
-    mutationFn: (v: CategoriaFormValues & { imagem?: File }) => categoriasApi.create(v),
+    mutationFn: (v: CategoriaFormValues & { imagem?: File }) =>
+      categoriasApi.create(v),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
@@ -65,8 +72,13 @@ export const CategoriasAdminPage = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, v }: { id: number; v: CategoriaFormValues & { imagem?: File } }) =>
-      categoriasApi.update(id, v),
+    mutationFn: ({
+      id,
+      v,
+    }: {
+      id: number;
+      v: CategoriaFormValues & { imagem?: File };
+    }) => categoriasApi.update(id, v),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categorias-admin"] });
       qc.invalidateQueries({ queryKey: ["categorias-all"] });
@@ -88,9 +100,9 @@ export const CategoriasAdminPage = () => {
       setDeleting(null);
       toast.success("Categoria excluída com sucesso.");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Erro ao excluir categoria.");
-    }
+    },
   });
 
   const toggleMutation = useMutation({
@@ -102,7 +114,7 @@ export const CategoriasAdminPage = () => {
       setRestoring(null);
       toast.success(res?.message || "Status alterado com sucesso!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Erro ao alterar status da categoria.");
     },
   });
@@ -147,7 +159,9 @@ export const CategoriasAdminPage = () => {
     setDeleting(c);
   };
 
-  const handleFormSubmit = async (values: CategoriaFormValues & { imagem?: File }) => {
+  const handleFormSubmit = async (
+    values: CategoriaFormValues & { imagem?: File },
+  ) => {
     if (editing) {
       await updateMutation.mutateAsync({ id: editing.id, v: values });
     } else {
@@ -202,16 +216,16 @@ export const CategoriasAdminPage = () => {
       {/* Linear progress for background updates */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
         {isFetching && !isLoading && (
-          <LinearProgress 
-            color="primary" 
-            className="absolute inset-0" 
-            sx={{ 
-              height: 3, 
+          <LinearProgress
+            color="primary"
+            className="absolute inset-0"
+            sx={{
+              height: 3,
               bgcolor: "transparent",
               "& .MuiLinearProgress-bar": {
-                bgcolor: "var(--color-azul-unb-destaque)"
-              }
-            }} 
+                bgcolor: "var(--color-azul-unb-destaque)",
+              },
+            }}
           />
         )}
       </div>
@@ -227,8 +241,12 @@ export const CategoriasAdminPage = () => {
         {!isLoading && totalItens === 0 && (
           <div className="flex flex-col items-center justify-start py-26 text-center bg-fundo-superficie rounded shadow-sm min-h-[612px]">
             <LayoutList className="h-12 w-12 text-texto-secundario/40 mb-3" />
-            <p className="font-semibold text-texto-principal">Nenhuma categoria encontrada</p>
-            <p className="text-sm text-texto-secundario mt-1">Experimente alterar os filtros ou cadastrar uma nova categoria.</p>
+            <p className="font-semibold text-texto-principal">
+              Nenhuma categoria encontrada
+            </p>
+            <p className="text-sm text-texto-secundario mt-1">
+              Experimente alterar os filtros ou cadastrar uma nova categoria.
+            </p>
           </div>
         )}
 
@@ -255,9 +273,19 @@ export const CategoriasAdminPage = () => {
       {data && totalItens > 0 && (
         <div className="p-4 bg-fundo-superficie flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-texto-secundario rounded shadow-sm">
           <div>
-            Mostrando <span className="font-semibold text-texto-principal">{startRange}</span> a{" "}
-            <span className="font-semibold text-texto-principal">{endRange}</span> de{" "}
-            <span className="font-semibold text-texto-principal">{totalItens}</span> registros
+            Mostrando{" "}
+            <span className="font-semibold text-texto-principal">
+              {startRange}
+            </span>{" "}
+            a{" "}
+            <span className="font-semibold text-texto-principal">
+              {endRange}
+            </span>{" "}
+            de{" "}
+            <span className="font-semibold text-texto-principal">
+              {totalItens}
+            </span>{" "}
+            registros
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -275,16 +303,16 @@ export const CategoriasAdminPage = () => {
                 border: "2px solid transparent",
                 bgcolor: "var(--color-fundo-superficie-suave)",
                 color: "var(--color-texto-principal)",
-                "&:hover": { 
+                "&:hover": {
                   border: "2px solid var(--color-destaque)",
                   bgcolor: "var(--color-destaque)",
-                  color: "#ffffff"
+                  color: "#ffffff",
                 },
                 "&.Mui-disabled": {
                   bgcolor: "var(--color-fundo-superficie-suave)",
                   border: "2px solid transparent",
-                  opacity: 0.35
-                }
+                  opacity: 0.35,
+                },
               }}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -308,16 +336,16 @@ export const CategoriasAdminPage = () => {
                 border: "2px solid transparent",
                 bgcolor: "var(--color-fundo-superficie-suave)",
                 color: "var(--color-texto-principal)",
-                "&:hover": { 
+                "&:hover": {
                   border: "2px solid var(--color-destaque)",
                   bgcolor: "var(--color-destaque)",
-                  color: "#ffffff"
+                  color: "#ffffff",
                 },
                 "&.Mui-disabled": {
                   bgcolor: "var(--color-fundo-superficie-suave)",
                   border: "2px solid transparent",
-                  opacity: 0.35
-                }
+                  opacity: 0.35,
+                },
               }}
             >
               <ChevronRight className="h-5 w-5" />

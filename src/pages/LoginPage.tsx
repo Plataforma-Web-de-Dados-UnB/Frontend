@@ -30,8 +30,13 @@ export const LoginPage = () => {
     if (result.ok) {
       navigate("/admin");
     } else {
-      if (result.error === "Seu cadastro está pendente de aprovação pelo administrador.") {
-        navigate(ROUTES.cadastroPendente, { state: { email: values.email, allowed: true } });
+      if (
+        result.error ===
+        "Seu cadastro está pendente de aprovação pelo administrador."
+      ) {
+        navigate(ROUTES.cadastroPendente, {
+          state: { email: values.email, allowed: true },
+        });
       } else {
         setError("root", { message: result.error ?? "Credenciais inválidas." });
       }
@@ -76,7 +81,11 @@ export const LoginPage = () => {
                       edge="end"
                       sx={{ borderRadius: "50%" }}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),

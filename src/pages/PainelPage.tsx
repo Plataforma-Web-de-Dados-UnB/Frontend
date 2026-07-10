@@ -26,7 +26,7 @@ export const PainelPage = () => {
 
     setEmbedError(null);
     let unmounted = false;
-    let intervalId: any = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
 
     embedDashboard({
       id: painel.embedDashboardUuid,
@@ -50,12 +50,15 @@ export const PainelPage = () => {
             const size = await dashboard.getScrollSize();
             const iframe = embedRef.current?.querySelector("iframe");
             if (iframe && size?.height) {
-              const currentIframeHeight = parseInt(iframe.style.height || "0", 10);
-              
+              const currentIframeHeight = parseInt(
+                iframe.style.height || "0",
+                10,
+              );
+
               // Only update if the height changed significantly (more than 5px difference)
               if (Math.abs(currentIframeHeight - size.height) > 5) {
                 iframe.style.height = `${size.height}px`;
-                
+
                 if (embedRef.current) {
                   embedRef.current.style.height = `${size.height}px`;
                 }

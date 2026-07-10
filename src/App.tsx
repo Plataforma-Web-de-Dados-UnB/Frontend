@@ -40,8 +40,14 @@ export default function App() {
           <Route path={ROUTES.sugestao} element={<SugestaoPage />} />
           <Route path={ROUTES.login} element={<LoginPage />} />
           <Route path={ROUTES.cadastro} element={<CadastroPage />} />
-          <Route path={ROUTES.politicaPrivacidade} element={<PoliticaPrivacidadePage />} />
-          <Route path={ROUTES.cadastroPendente} element={<CadastroPendentePage />} />
+          <Route
+            path={ROUTES.politicaPrivacidade}
+            element={<PoliticaPrivacidadePage />}
+          />
+          <Route
+            path={ROUTES.cadastroPendente}
+            element={<CadastroPendentePage />}
+          />
           <Route
             path={ROUTES.perfil}
             element={
@@ -52,13 +58,10 @@ export default function App() {
           />
         </Route>
 
-        {/* Área admin — PrivateRoute sem children usa Outlet internamente */}
+        {/* Área admin - PrivateRoute sem children usa Outlet internamente */}
         <Route path="admin" element={<PrivateRoute requireAdmin />}>
           <Route element={<AdminLayout />}>
-            <Route
-              index
-              element={<AdminDashboardPage />}
-            />
+            <Route index element={<AdminDashboardPage />} />
             <Route path="pipelines" element={<PipelinesPage />} />
             <Route path="upload" element={<UploadPage />} />
             <Route path="categorias" element={<CategoriasAdminPage />} />

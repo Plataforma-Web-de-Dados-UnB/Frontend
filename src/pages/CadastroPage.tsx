@@ -37,7 +37,10 @@ export const CadastroPage = () => {
     { label: "Uma letra maiúscula", met: /[A-Z]/.test(senhaValue) },
     { label: "Uma letra minúscula", met: /[a-z]/.test(senhaValue) },
     { label: "Um número", met: /[0-9]/.test(senhaValue) },
-    { label: "Um caractere especial (ex: !@#$)", met: /[^A-Za-z0-9]/.test(senhaValue) },
+    {
+      label: "Um caractere especial (ex: !@#$)",
+      met: /[^A-Za-z0-9]/.test(senhaValue),
+    },
   ];
 
   const onSubmit = async (values: CadastroFormValues) => {
@@ -72,13 +75,19 @@ export const CadastroPage = () => {
           </h2>
           <div className="h-1 w-16 rounded bg-destaque" />
           <p className="text-base text-texto-secundario">
-            Sua conta foi criada com sucesso e está aguardando aprovação de um administrador.
+            Sua conta foi criada com sucesso e está aguardando aprovação de um
+            administrador.
           </p>
           <div className="w-full space-y-2 mt-2">
             <p className="text-xs text-texto-secundario">
-              Redirecionando para a tela de login em {Math.ceil((progress / 100) * 5)} segundos...
+              Redirecionando para a tela de login em{" "}
+              {Math.ceil((progress / 100) * 5)} segundos...
             </p>
-            <LinearProgress variant="determinate" value={progress} color="secondary" />
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              color="secondary"
+            />
           </div>
           <Button
             onClick={() => {
@@ -154,7 +163,11 @@ export const CadastroPage = () => {
                       edge="end"
                       sx={{ borderRadius: "50%" }}
                     >
-                      {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPasswords ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -198,7 +211,11 @@ export const CadastroPage = () => {
                       edge="end"
                       sx={{ borderRadius: "50%" }}
                     >
-                      {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPasswords ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),

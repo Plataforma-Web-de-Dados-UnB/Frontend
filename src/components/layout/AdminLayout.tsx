@@ -15,7 +15,7 @@ import {
   Sun,
   Moon,
   LogOut,
-  User
+  User,
 } from "lucide-react";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
@@ -45,13 +45,17 @@ const adminItems: AdminNavItem[] = [
   },
   { to: ROUTES.adminPaineis, label: "Gestão de Painéis", icon: ChartColumnBig },
   { to: ROUTES.adminUsuarios, label: "Usuários", icon: Users },
-  { to: ROUTES.adminSugestoes, label: "Sugestões e Relatos", icon: MessageSquare },
+  {
+    to: ROUTES.adminSugestoes,
+    label: "Sugestões e Relatos",
+    icon: MessageSquare,
+  },
 ];
 
 export const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, isSuperAdmin } = useAuth();
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     const saved = localStorage.getItem("sidebar-collapsed");
     return saved ? JSON.parse(saved) === true : false;
@@ -69,21 +73,29 @@ export const AdminLayout = () => {
         color: "#ffffff",
         fontSize: "0.875rem",
         fontWeight: "600",
-        boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)",
+        boxShadow:
+          "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)",
         padding: "6px 12px",
         borderRadius: "6px",
         "& .MuiTooltip-arrow": {
-          color: "var(--color-azul-unb-hover)"
-        }
-      }
-    }
+          color: "var(--color-azul-unb-hover)",
+        },
+      },
+    },
   };
   const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
+    document.documentElement.classList.contains("dark"),
   );
 
-  const activeItem = adminItems.find((item) =>
-    location.pathname.startsWith(item.to)
+  const filteredItems = adminItems.filter((item) => {
+    if (item.to === ROUTES.adminUsuarios) {
+      return isSuperAdmin;
+    }
+    return true;
+  });
+
+  const activeItem = filteredItems.find((item) =>
+    location.pathname.startsWith(item.to),
   );
 
   const toggleTheme = () => {
@@ -106,7 +118,7 @@ export const AdminLayout = () => {
 
   const sidebarList = (collapsed = false, onClick = () => {}) => (
     <List disablePadding>
-      {adminItems.map((item) => {
+      {filteredItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeItem?.to === item.to;
         return (
@@ -131,14 +143,22 @@ export const AdminLayout = () => {
                 py: 1.25,
                 justifyContent: "flex-start",
                 minHeight: 44,
-                color: isActive ? "var(--color-destaque)" : "var(--color-texto-secundario)",
-                bgcolor: isActive ? "var(--color-destaque-suave)" : "transparent",
-                borderLeft: isActive ? "4px solid var(--color-destaque)" : "4px solid transparent",
+                color: isActive
+                  ? "var(--color-destaque)"
+                  : "var(--color-texto-secundario)",
+                bgcolor: isActive
+                  ? "var(--color-destaque-suave)"
+                  : "transparent",
+                borderLeft: isActive
+                  ? "4px solid var(--color-destaque)"
+                  : "4px solid transparent",
                 "&:hover": {
                   bgcolor: isActive
                     ? "var(--color-destaque-suave)"
                     : "var(--color-fundo-superficie-suave)",
-                  color: isActive ? "var(--color-destaque-hover)" : "var(--color-texto-principal)",
+                  color: isActive
+                    ? "var(--color-destaque-hover)"
+                    : "var(--color-texto-principal)",
                 },
                 "&.Mui-disabled": {
                   bgcolor: "var(--color-fundo-superficie-suave)",
@@ -146,8 +166,8 @@ export const AdminLayout = () => {
                   color: "var(--color-texto-secundario)",
                   "& .MuiListItemIcon-root": {
                     color: "inherit",
-                  }
-                }
+                  },
+                },
               }}
             >
               <ListItemIcon
@@ -209,8 +229,8 @@ export const AdminLayout = () => {
               color: "var(--color-texto-secundario)",
               "& .MuiListItemIcon-root": {
                 color: "inherit",
-              }
-            }
+              },
+            },
           }}
         >
           <ListItemIcon
@@ -221,7 +241,11 @@ export const AdminLayout = () => {
               mr: collapsed ? 0 : 1,
             }}
           >
-            {isDark ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5 text-amber-500" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </ListItemIcon>
           <div
             className={`transition-all duration-200 ease-in-out whitespace-nowrap overflow-hidden ${
@@ -267,8 +291,8 @@ export const AdminLayout = () => {
               color: "var(--color-texto-secundario)",
               "& .MuiListItemIcon-root": {
                 color: "inherit",
-              }
-            }
+              },
+            },
           }}
         >
           <ListItemIcon
@@ -324,8 +348,8 @@ export const AdminLayout = () => {
               color: "var(--color-erro)",
               "& .MuiListItemIcon-root": {
                 color: "inherit",
-              }
-            }
+              },
+            },
           }}
         >
           <ListItemIcon
@@ -372,21 +396,32 @@ export const AdminLayout = () => {
                   width: 32,
                   height: 32,
                   borderRadius: "50%",
-                  bgcolor: location.pathname === "/admin" ? "#ffffff" : "var(--color-destaque)",
-                  border: location.pathname === "/admin" ? "1px solid var(--color-borda-padrao)" : "none",
+                  bgcolor:
+                    location.pathname === "/admin"
+                      ? "#ffffff"
+                      : "var(--color-destaque)",
+                  border:
+                    location.pathname === "/admin"
+                      ? "1px solid var(--color-borda-padrao)"
+                      : "none",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  color: location.pathname === "/admin" ? "var(--color-texto-secundario)" : "#ffffff",
+                  color:
+                    location.pathname === "/admin"
+                      ? "var(--color-texto-secundario)"
+                      : "#ffffff",
                   p: 0,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   "&:hover": {
-                    bgcolor: location.pathname === "/admin"
-                      ? "var(--color-fundo-superficie-suave)"
-                      : "var(--color-destaque-hover)",
-                    color: location.pathname === "/admin"
-                      ? "var(--color-texto-principal)"
-                      : "#ffffff"
+                    bgcolor:
+                      location.pathname === "/admin"
+                        ? "var(--color-fundo-superficie-suave)"
+                        : "var(--color-destaque-hover)",
+                    color:
+                      location.pathname === "/admin"
+                        ? "var(--color-texto-principal)"
+                        : "#ffffff",
                   },
                 }}
               >
@@ -418,14 +453,27 @@ export const AdminLayout = () => {
                   py: 1.25,
                   justifyContent: "flex-start",
                   minHeight: 44,
-                  color: location.pathname === "/admin" ? "var(--color-destaque)" : "var(--color-texto-secundario)",
-                  bgcolor: location.pathname === "/admin" ? "var(--color-destaque-suave)" : "transparent",
-                  borderLeft: location.pathname === "/admin" ? "4px solid var(--color-destaque)" : "4px solid transparent",
-                  "&:hover": {
-                    bgcolor: location.pathname === "/admin"
+                  color:
+                    location.pathname === "/admin"
+                      ? "var(--color-destaque)"
+                      : "var(--color-texto-secundario)",
+                  bgcolor:
+                    location.pathname === "/admin"
                       ? "var(--color-destaque-suave)"
-                      : "var(--color-fundo-superficie-suave)",
-                    color: location.pathname === "/admin" ? "var(--color-destaque-hover)" : "var(--color-texto-principal)",
+                      : "transparent",
+                  borderLeft:
+                    location.pathname === "/admin"
+                      ? "4px solid var(--color-destaque)"
+                      : "4px solid transparent",
+                  "&:hover": {
+                    bgcolor:
+                      location.pathname === "/admin"
+                        ? "var(--color-destaque-suave)"
+                        : "var(--color-fundo-superficie-suave)",
+                    color:
+                      location.pathname === "/admin"
+                        ? "var(--color-destaque-hover)"
+                        : "var(--color-texto-principal)",
                   },
                   "&.Mui-disabled": {
                     bgcolor: "var(--color-fundo-superficie-suave)",
@@ -433,8 +481,8 @@ export const AdminLayout = () => {
                     color: "var(--color-texto-secundario)",
                     "& .MuiListItemIcon-root": {
                       color: "inherit",
-                    }
-                  }
+                    },
+                  },
                 }}
               >
                 <ListItemIcon
@@ -449,7 +497,9 @@ export const AdminLayout = () => {
                 </ListItemIcon>
                 <div
                   className={`transition-all duration-200 ease-in-out whitespace-nowrap overflow-hidden ${
-                    collapsed ? "opacity-0 max-w-0" : "opacity-100 max-w-[200px]"
+                    collapsed
+                      ? "opacity-0 max-w-0"
+                      : "opacity-100 max-w-[200px]"
                   }`}
                 >
                   <span className="text-sm font-semibold">Painel</span>
@@ -458,7 +508,9 @@ export const AdminLayout = () => {
             </Tooltip>
           </div>
 
-          <nav className="flex-1 overflow-y-auto p-2">{sidebarList(collapsed)}</nav>
+          <nav className="flex-1 overflow-y-auto p-2">
+            {sidebarList(collapsed)}
+          </nav>
           {bottomSection(collapsed)}
         </aside>
 
@@ -467,9 +519,9 @@ export const AdminLayout = () => {
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           variant="temporary"
-          ModalProps={{ 
+          ModalProps={{
             keepMounted: true,
-            disablePortal: true
+            disablePortal: true,
           }}
           sx={{
             position: "fixed",
@@ -486,7 +538,7 @@ export const AdminLayout = () => {
             "& .MuiBackdrop-root": {
               position: "absolute",
               height: "100%",
-            }
+            },
           }}
         >
           <div className="flex h-16 items-center justify-between border-b border-borda-padrao p-2 pl-0">
@@ -502,14 +554,27 @@ export const AdminLayout = () => {
                 py: 1.25,
                 justifyContent: "flex-start",
                 minHeight: 44,
-                color: location.pathname === "/admin" ? "var(--color-destaque)" : "var(--color-texto-secundario)",
-                bgcolor: location.pathname === "/admin" ? "var(--color-destaque-suave)" : "transparent",
-                borderLeft: location.pathname === "/admin" ? "4px solid var(--color-destaque)" : "4px solid transparent",
-                "&:hover": {
-                  bgcolor: location.pathname === "/admin"
+                color:
+                  location.pathname === "/admin"
+                    ? "var(--color-destaque)"
+                    : "var(--color-texto-secundario)",
+                bgcolor:
+                  location.pathname === "/admin"
                     ? "var(--color-destaque-suave)"
-                    : "var(--color-fundo-superficie-suave)",
-                  color: location.pathname === "/admin" ? "var(--color-destaque-hover)" : "var(--color-texto-principal)",
+                    : "transparent",
+                borderLeft:
+                  location.pathname === "/admin"
+                    ? "4px solid var(--color-destaque)"
+                    : "4px solid transparent",
+                "&:hover": {
+                  bgcolor:
+                    location.pathname === "/admin"
+                      ? "var(--color-destaque-suave)"
+                      : "var(--color-fundo-superficie-suave)",
+                  color:
+                    location.pathname === "/admin"
+                      ? "var(--color-destaque-hover)"
+                      : "var(--color-texto-principal)",
                 },
               }}
             >
@@ -540,7 +605,10 @@ export const AdminLayout = () => {
               <X className="h-5 w-5" />
             </IconButton>
           </div>
-          <nav className="flex-1 overflow-y-auto p-2" onClick={() => setMobileOpen(false)}>
+          <nav
+            className="flex-1 overflow-y-auto p-2"
+            onClick={() => setMobileOpen(false)}
+          >
             {sidebarList(false, () => setMobileOpen(false))}
           </nav>
           {bottomSection(false, () => setMobileOpen(false))}

@@ -1,81 +1,100 @@
-import { useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Play, Eye, RotateCcw, Upload } from "lucide-react";
+import { FileSpreadsheet, ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+import LinearProgress from "@mui/material/LinearProgress";
 import { pipelineApi } from "@/services/pipelineApi";
-import { Pagination } from "@/components/ui/Pagination";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { openDialog, closeDialog } from "@/utils/dialog";
-import type { PipelineExecucaoGetDto, UploadPreviewDto } from "@/types/dtos";
+import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
+import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import type { PipelineExecucaoGetDto } from "@/types/dtos";
+import type { PipelineGetDto } from "@/types/dtos";
 import { StatusPipelineLabel } from "@/types/dtos";
 import { toast } from "sonner";
 
-const MODAL_ROLLBACK = "upload-rollback-modal";
-const PAGE_SIZE = 10;
+import { UploadFilterBar } from "@/components/uploads/UploadFilterBar";
+import { UploadExecucaoCard } from "@/components/uploads/UploadExecucaoCard";
+import { UploadExecucaoDetailModal } from "@/components/uploads/UploadExecucaoDetailModal";
+import { UploadNovoProcessamentoModal } from "@/components/uploads/UploadNovoProcessamentoModal";
+import { PipelineDetailModal } from "@/components/pipelines/PipelineDetailModal";
 
-export const UploadPage = () => {
+const PAGE_SIZE = 5;
+
+export const UploadPage = (): React.JSX.Element => {
   const qc = useQueryClient();
-  const fileRef = useRef<HTMLInputElement>(null);
+
+  // History filter states
   const [page, setPage] = useState(1);
-  const [selectedPipelineId, setSelectedPipelineId] = useState<number | "">("");
-  const [preview, setPreview] = useState<UploadPreviewDto | null>(null);
-  const [log, setLog] = useState<string[]>([]);
+  const [pipelineFilter, setPipelineFilter] = useState<number | "">("");
+  const [statusFilter, setStatusFilter] = useState<number | "">("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Ctrl+K to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Modal states
+  const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const [viewing, setViewing] = useState<PipelineExecucaoGetDto | null>(null);
   const [rollbackTarget, setRollbackTarget] =
     useState<PipelineExecucaoGetDto | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [viewingPipeline, setViewingPipeline] = useState<PipelineGetDto | null>(
+    null,
+  );
+  const [loadingPipelineDetail, setLoadingPipelineDetail] = useState(false);
 
+  const [log, setLog] = useState<string[]>([]);
+
+  // Queries
   const { data: pipelines } = useQuery({
     queryKey: ["pipelines-all"],
     queryFn: () => pipelineApi.listAll(),
   });
 
-  const { data: execucoes, isLoading: loadingExec } = useQuery({
-    queryKey: ["execucoes", page],
-    queryFn: () => pipelineApi.listExecucoes(page, PAGE_SIZE),
+  const {
+    data: execucoes,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: [
+      "execucoes-admin",
+      page,
+      statusFilter,
+      pipelineFilter,
+      searchQuery,
+    ],
+    queryFn: () =>
+      pipelineApi.listExecucoes(
+        page,
+        PAGE_SIZE,
+        statusFilter === "" ? null : Number(statusFilter),
+        pipelineFilter === "" ? null : Number(pipelineFilter),
+        searchQuery || null,
+      ),
   });
 
-  const uploadMutation = useMutation({
-    mutationFn: pipelineApi.uploadCsv,
-    onSuccess: (data) => {
-      setPreview(data);
-      appendLog(
-        `✓ Upload realizado. ${data.totalLinhas} linhas detectadas. Batch: ${data.batchId}`,
-      );
-    },
-    onError: (err) => appendLog(`✗ Erro: ${err.message}`),
+  const { data: detailData, isLoading: isLoadingDetail } = useQuery({
+    queryKey: ["execucao-detail", viewing?.id],
+    queryFn: () => (viewing ? pipelineApi.getExecucao(viewing.id) : null),
+    enabled: !!viewing,
   });
 
-  const executarMutation = useMutation({
-    mutationFn: pipelineApi.executar,
-    onSuccess: (exec) => {
-      appendLog(
-        `▶ Pipeline iniciada. Execução #${exec.id} — status: ${StatusPipelineLabel[exec.status]}`,
-      );
-      qc.invalidateQueries({ queryKey: ["execucoes"] });
-      pollStatus(exec.id);
-    },
-    onError: (err) => appendLog(`✗ Erro ao executar: ${err.message}`),
-  });
-
-  const rollbackMutation = useMutation({
-    mutationFn: pipelineApi.rollback,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["execucoes"] });
-      closeDialog(MODAL_ROLLBACK);
-      setRollbackTarget(null);
-      toast.success("Rollback realizado com sucesso.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
+  // Helpers
   const appendLog = (msg: string) =>
-    setLog((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+    setLog((prev) => [
+      ...prev,
+      `[${new Date().toLocaleTimeString("pt-BR")}] ${msg}`,
+    ]);
 
   const pollStatus = (execId: number) => {
     let attempts = 0;
@@ -83,265 +102,344 @@ export const UploadPage = () => {
       attempts++;
       try {
         const exec = await pipelineApi.getExecucao(execId);
-        appendLog(
-          `  Status: ${StatusPipelineLabel[exec.status]}${exec.mensagem ? ` — ${exec.mensagem}` : ""}`,
-        );
-        if (
-          exec.status === 2 ||
-          exec.status === 3 ||
-          exec.status === 4 ||
-          exec.status === 5
-        ) {
+        const statusStr = String(exec.status).toLowerCase();
+        const label =
+          StatusPipelineLabel[
+            exec.status as keyof typeof StatusPipelineLabel
+          ] ?? exec.status;
+        const msgPart = exec.mensagem ? ` - ${exec.mensagem}` : "";
+        appendLog(`  • Verificacao ${attempts}: ${label}${msgPart}`);
+
+        const isTerminal = [
+          "2",
+          "3",
+          "4",
+          "5",
+          "sucesso",
+          "erro",
+          "cancelado",
+          "rollback",
+        ].includes(statusStr);
+        if (isTerminal) {
           clearInterval(interval);
-          qc.invalidateQueries({ queryKey: ["execucoes"] });
-          if (exec.status === 2)
-            toast.success("Pipeline concluída com sucesso!");
-          if (exec.status === 3)
-            toast.error("Pipeline falhou. Verifique o log.");
+          qc.invalidateQueries({ queryKey: ["execucoes-admin"] });
+          if (statusStr === "2" || statusStr === "sucesso") {
+            appendLog(`✓ Execucao #${execId} finalizada com Sucesso!`);
+            toast.success("Pipeline finalizada com sucesso!");
+          } else {
+            appendLog(`✗ Execucao #${execId} encerrada com status: ${label}`);
+            toast.error(
+              "O processamento da pipeline falhou. Verifique os logs.",
+            );
+          }
         }
       } catch {
         clearInterval(interval);
+        appendLog(`✗ Erro ao consultar status da Execucao #${execId}.`);
       }
-      if (attempts >= 20) clearInterval(interval);
+      if (attempts >= 20) {
+        clearInterval(interval);
+        appendLog(
+          `⚠ Timeout de monitoramento da Execucao #${execId} (60s). Verifique o historico.`,
+        );
+      }
     }, 3000);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setFileName(file.name);
-    appendLog(`📁 Arquivo selecionado: ${file.name}`);
-    uploadMutation.mutate(file);
+  // Mutations
+  const executarMutation = useMutation({
+    mutationFn: pipelineApi.executar,
+    onSuccess: (exec) => {
+      appendLog(
+        `✓ Upload recebido: ${exec.totalLinhas} linhas · ${exec.colunas.length} colunas`,
+      );
+      appendLog(
+        `▶ Execução #${exec.id} iniciada - Pipeline: "${exec.pipelineNome}" | Silver: ${exec.tabelaSilver} | Gold: ${exec.tabelaGold}`,
+      );
+      qc.invalidateQueries({ queryKey: ["execucoes-admin"] });
+      pollStatus(exec.id);
+      toast.success("Processamento da pipeline iniciado!");
+    },
+    onError: (err: Error) => {
+      appendLog(`✗ Erro: ${err.message}`);
+      toast.error(err.message || "Erro ao iniciar processamento.");
+    },
+  });
+
+  const rollbackMutation = useMutation({
+    mutationFn: pipelineApi.rollback,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["execucoes-admin"] });
+      setRollbackTarget(null);
+      toast.success("Rollback executado com sucesso.");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Erro ao executar rollback.");
+    },
+  });
+
+  const handleSearchSubmit = (e?: React.SyntheticEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+    setSearchQuery(searchTerm);
+    setPage(1);
   };
 
-  const handleIniciar = () => {
-    if (!preview || !selectedPipelineId) {
-      toast.error("Selecione uma pipeline e faça o upload do CSV.");
-      return;
+  const handleClearFilters = () => {
+    setSearchTerm("");
+    setSearchQuery("");
+    setPipelineFilter("");
+    setStatusFilter("");
+    setPage(1);
+  };
+
+  // Full date + time for cards: dd/mm/aaaa HH:mm
+  const formatDataHora = (dateStr?: string | null) => {
+    if (!dateStr) return "Não iniciado";
+    try {
+      return new Date(dateStr).toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "-";
     }
-    executarMutation.mutate({
-      pipelineId: Number(selectedPipelineId),
-      batchId: preview.batchId,
-      tabelaSilver: "dados",
-      tabelaGold: "dados_gold",
-    });
   };
 
-  const statusBadge = (status: any) => {
-    const s = String(status).toLowerCase();
-    const map: Record<string, string> = {
-      "0": "bg-[#f1f5f9] text-slate-500",
-      "pendente": "bg-[#f1f5f9] text-slate-500",
-      "1": "bg-[#e0f2fe] text-sky-700",
-      "processando": "bg-[#e0f2fe] text-sky-700",
-      "2": "bg-[#e6f7ed] text-emerald-600",
-      "sucesso": "bg-[#e6f7ed] text-emerald-600",
-      "3": "bg-[#fef2f2] text-red-500",
-      "erro": "bg-[#fef2f2] text-red-500",
-      "4": "bg-[#f1f5f9] text-slate-400",
-      "cancelado": "bg-[#f1f5f9] text-slate-400",
-      "5": "bg-[#fef2f2] text-red-400",
-      "rollback": "bg-[#fef2f2] text-red-400",
-    };
-    return map[s] ?? "bg-[#f1f5f9] text-slate-500";
-  };
-
-  const getStatusLabel = (status: any) => {
-    const s = String(status).toLowerCase();
-    if (s === "0" || s === "pendente") return "Pendente";
-    if (s === "1" || s === "processando") return "Processando";
-    if (s === "2" || s === "sucesso") return "Sucesso";
-    if (s === "3" || s === "erro") return "Erro";
-    if (s === "4" || s === "cancelado") return "Cancelado";
-    if (s === "5" || s === "rollback") return "Rollback";
-    return String(status);
-  };
+  // Pagination
+  const totalItens = execucoes?.totalItens ?? 0;
+  const totalPages = execucoes?.totalPaginas ?? 1;
+  const startRange = totalItens === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const endRange = Math.min(page * PAGE_SIZE, totalItens);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-texto-principal">
-          Upload de Dados (.csv)
-        </h1>
-      </div>
+    <div className="flex flex-col gap-6">
+      {/* Page Header */}
+      <PageHeaderCard
+        title="Upload de Dados"
+        description="Monitore as execuções das pipelines de processamento de dados e envie arquivos em lote para iniciar o fluxo de transformação Bronze, Prata e Ouro."
+      />
 
-      {/* Upload card */}
-      <div className="rounded border border-borda-padrao bg-fundo-superficie p-6 shadow-sm space-y-4">
-        <p className="text-sm text-texto-secundario">
-          Escolha a <em>pipeline</em> que será usada para tratar os dados que
-          serão enviados. É possível fazer <em>rollback</em> das alterações,
-          caso necessário.
-        </p>
+      {/* Filter Bar (with "Novo Processamento" button) */}
+      <UploadFilterBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        inputRef={inputRef}
+        onSearchSubmit={handleSearchSubmit}
+        pipelineFilter={pipelineFilter}
+        setPipelineFilter={(val) => {
+          setPipelineFilter(val);
+          setPage(1);
+        }}
+        statusFilter={statusFilter}
+        setStatusFilter={(val) => {
+          setStatusFilter(val);
+          setPage(1);
+        }}
+        pipelines={pipelines || []}
+        onClearFilters={handleClearFilters}
+        onNewClick={() => setIsNewModalOpen(true)}
+      />
 
-        <div className="w-full max-w-xs">
-          <FormControl fullWidth size="small">
-            <InputLabel id="select-pipeline-label" shrink>
-              Pipeline de Dados
-            </InputLabel>
-            <Select
-              labelId="select-pipeline-label"
-              value={selectedPipelineId}
-              displayEmpty
-              notched
-              label="Pipeline de Dados"
-              onChange={(e) =>
-                setSelectedPipelineId(e.target.value ? Number(e.target.value) : "")
-              }
-              sx={{ backgroundColor: "#ffffff" }}
-            >
-              <MenuItem value="">
-                <em>Selecione a pipeline de dados</em>
-              </MenuItem>
-              {pipelines?.map((p) => (
-                <MenuItem key={p.id} value={p.id}>
-                  {p.nome}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-
-        <div className="flex gap-3">
-          <div className="flex flex-1 items-center gap-2 rounded border border-borda-padrao bg-fundo-superficie-suave px-4 py-2.5 text-sm text-texto-secundario">
-            <span className="flex-1 truncate">
-              {fileName ?? "Arquivo selecionado..."}
-            </span>
-          </div>
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".csv"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          <Button
-            variant="contained"
+      {/* Background refetch indicator */}
+      <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
+        {isFetching && !isLoading && (
+          <LinearProgress
             color="primary"
-            onClick={() => fileRef.current?.click()}
-            disabled={uploadMutation.isPending}
-            startIcon={
-              uploadMutation.isPending ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : (
-                <Upload className="h-4 w-4" />
-              )
-            }
-          >
-            Fazer Upload
-          </Button>
-          {preview && (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleIniciar}
-              disabled={executarMutation.isPending}
-              startIcon={
-                executarMutation.isPending ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <Play className="h-4 w-4" />
-                )
-              }
-            >
-              Iniciar Pipeline
-            </Button>
-          )}
-        </div>
-
-        {/* Terminal */}
-        <div className="rounded border border-borda-padrao bg-azul-unb p-4 font-mono text-xs text-verde-escuro min-h-[120px] max-h-48 overflow-y-auto">
-          {log.length === 0 ? (
-            <span className="text-texto-invertido/40">
-              Terminal Informativo
-            </span>
-          ) : (
-            log.map((l, i) => <p key={i}>{l}</p>)
-          )}
-        </div>
+            className="absolute inset-0"
+            sx={{
+              height: 3,
+              bgcolor: "transparent",
+              "& .MuiLinearProgress-bar": {
+                bgcolor: "var(--color-azul-unb-destaque)",
+              },
+            }}
+          />
+        )}
       </div>
 
-      {/* Histórico */}
-      <div className="rounded border border-borda-padrao bg-fundo-superficie shadow-sm">
-        <div className="border-b border-borda-padrao px-5 py-4">
-          <h2 className="font-bold text-texto-principal">Uploads</h2>
-        </div>
-
-        {loadingExec && (
-          <div className="flex justify-center py-8">
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-destaque border-t-transparent" />
+      {/* Executions List */}
+      <div className="flex flex-col gap-5 min-h-[520px] relative">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
+            <CircularProgress color="primary" />
           </div>
         )}
 
-        {!loadingExec && execucoes?.itens.length === 0 && (
-          <p className="py-8 text-center text-sm text-texto-secundario">
-            Nenhum upload realizado.
-          </p>
+        {!isLoading && totalItens === 0 && (
+          <div className="flex flex-col items-center justify-start py-26 text-center bg-fundo-superficie rounded shadow-sm min-h-[612px]">
+            <FileSpreadsheet className="h-12 w-12 text-texto-secundario/40 mb-3" />
+            <p className="font-semibold text-texto-principal">
+              Nenhuma execução registrada
+            </p>
+            <p className="text-sm text-texto-secundario mt-1">
+              Experimente alterar os filtros ou inicie um novo processamento.
+            </p>
+          </div>
         )}
 
-        {!loadingExec &&
-          execucoes?.itens.map((exec) => (
-            <div
-              key={exec.id}
-              className="flex items-center gap-4 border-b border-borda-padrao px-5 py-4 last:border-none"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-texto-principal truncate">
-                  {exec.pipelineNome}
-                </p>
-                <div className="mt-0.5 flex items-center gap-2 text-xs text-texto-secundario">
-                  <span>
-                    📅 {new Date(exec.createdAt).toLocaleString("pt-BR")}
-                  </span>
-                  <span
-                    className={`rounded-full px-2 py-0.5 font-semibold ${statusBadge(exec.status)}`}
-                  >
-                    {getStatusLabel(exec.status)}
-                  </span>
-                </div>
-              </div>
-              <IconButton
-                size="small"
-                title="Ver detalhes"
-                sx={{ borderRadius: "50%", p: 1.5 }}
-              >
-                <Eye className="h-4 w-4" />
-              </IconButton>
-              {(exec.status === 2 || String(exec.status).toLowerCase() === "sucesso") && (
-                <IconButton
-                  size="small"
-                  title="Rollback"
-                  color="warning"
-                  sx={{ borderRadius: "50%", p: 1.5 }}
-                  onClick={() => {
-                    setRollbackTarget(exec);
-                    openDialog(MODAL_ROLLBACK);
-                  }}
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </IconButton>
-              )}
-            </div>
-          ))}
+        {!isLoading && totalItens > 0 && execucoes?.itens && (
+          <div className="flex flex-col gap-3">
+            {execucoes.itens.map((exec) => (
+              <UploadExecucaoCard
+                key={exec.id}
+                exec={exec}
+                onView={setViewing}
+                onRollbackClick={setRollbackTarget}
+                formatDataHora={formatDataHora}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {execucoes && (
-        <Pagination
-          page={page}
-          totalPages={execucoes.totalPaginas}
-          onPageChange={setPage}
-        />
+      {/* Pagination Footer */}
+      {execucoes && totalItens > 0 && (
+        <div className="p-4 bg-fundo-superficie flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-texto-secundario rounded shadow-sm">
+          <div>
+            Mostrando{" "}
+            <span className="font-semibold text-texto-principal">
+              {startRange}
+            </span>{" "}
+            a{" "}
+            <span className="font-semibold text-texto-principal">
+              {endRange}
+            </span>{" "}
+            de{" "}
+            <span className="font-semibold text-texto-principal">
+              {totalItens}
+            </span>{" "}
+            registros
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              sx={{
+                borderRadius: "50%",
+                minWidth: "36px",
+                width: "36px",
+                height: "36px",
+                p: 0,
+                border: "2px solid transparent",
+                bgcolor: "var(--color-fundo-superficie-suave)",
+                color: "var(--color-texto-principal)",
+                "&:hover": {
+                  border: "2px solid var(--color-destaque)",
+                  bgcolor: "var(--color-destaque)",
+                  color: "#ffffff",
+                },
+                "&.Mui-disabled": {
+                  bgcolor: "var(--color-fundo-superficie-suave)",
+                  border: "2px solid transparent",
+                  opacity: 0.35,
+                },
+              }}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            <div className="flex items-center px-3 font-semibold text-texto-principal">
+              Página {page} de {totalPages}
+            </div>
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              sx={{
+                borderRadius: "50%",
+                minWidth: "36px",
+                width: "36px",
+                height: "36px",
+                p: 0,
+                border: "2px solid transparent",
+                bgcolor: "var(--color-fundo-superficie-suave)",
+                color: "var(--color-texto-principal)",
+                "&:hover": {
+                  border: "2px solid var(--color-destaque)",
+                  bgcolor: "var(--color-destaque)",
+                  color: "#ffffff",
+                },
+                "&.Mui-disabled": {
+                  bgcolor: "var(--color-fundo-superficie-suave)",
+                  border: "2px solid transparent",
+                  opacity: 0.35,
+                },
+              }}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
       )}
 
-      <ConfirmDialog
-        id={MODAL_ROLLBACK}
-        title="Confirmar Rollback"
-        description={`Tem certeza que deseja desfazer a execução #${rollbackTarget?.id}? Os dados inseridos serão removidos.`}
-        confirmText="Fazer Rollback"
-        confirmTone="danger"
-        isLoading={rollbackMutation.isPending}
-        onConfirm={() =>
-          rollbackTarget && rollbackMutation.mutate(rollbackTarget.id)
+      {/* NEW PROCESSING MODAL */}
+      <UploadNovoProcessamentoModal
+        open={isNewModalOpen}
+        onClose={() => setIsNewModalOpen(false)}
+        pipelines={pipelines || []}
+        onExecutar={(params) => executarMutation.mutate(params)}
+        isExecuting={executarMutation.isPending}
+        log={log}
+        onClearLog={() => setLog([])}
+      />
+
+      {/* DETAIL VIEW MODAL */}
+      <UploadExecucaoDetailModal
+        open={viewing !== null}
+        onClose={() => setViewing(null)}
+        execucao={detailData ?? null}
+        isLoading={isLoadingDetail}
+        onViewPipeline={async (pipelineId) => {
+          setViewing(null);
+          setLoadingPipelineDetail(true);
+          try {
+            const detail = await pipelineApi.detail(pipelineId);
+            setViewingPipeline(detail);
+          } catch {
+            toast.error("Erro ao carregar detalhes da pipeline.");
+          } finally {
+            setLoadingPipelineDetail(false);
+          }
+        }}
+      />
+
+      {/* PIPELINE DETAIL MODAL (opened from execucao detail) */}
+      <PipelineDetailModal
+        open={viewingPipeline !== null || loadingPipelineDetail}
+        onClose={() => setViewingPipeline(null)}
+        pipeline={viewingPipeline}
+        formatData={(dt) =>
+          new Date(dt).toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
         }
+      />
+
+      {/* ROLLBACK CONFIRM DIALOG */}
+      <MuiConfirmDialog
+        open={rollbackTarget !== null}
+        onClose={() => setRollbackTarget(null)}
+        title="Confirmar Rollback"
+        description={`Tem certeza que deseja desfazer a execução #${rollbackTarget?.id}? Todos os dados correspondentes a este lote (batch ID: ${rollbackTarget?.batchId}) inseridos nas camadas bronze, prata e ouro serão removidos permanentemente.`}
+        confirmText="Executar Rollback"
+        cancelText="Cancelar"
+        confirmTone="danger"
+        onConfirm={async () => {
+          if (rollbackTarget) {
+            const id = rollbackTarget.id;
+            setRollbackTarget(null);
+            await rollbackMutation.mutateAsync(id);
+          }
+        }}
       />
     </div>
   );

@@ -16,7 +16,7 @@ import {
   MessageSquare,
   Users,
   Database,
-  CodeXml
+  CodeXml,
 } from "lucide-react";
 
 interface KpiData {
@@ -40,6 +40,7 @@ const CharacterRoll = ({ text }: { text: string }) => {
   return (
     <span className="flex overflow-hidden select-none">
       {text.split("").map((char, index) => {
+        // eslint-disable-next-line react-hooks/purity
         const direction = Math.random() > 0.5 ? 1 : -1;
         return (
           <motion.span
@@ -51,7 +52,7 @@ const CharacterRoll = ({ text }: { text: string }) => {
               type: "spring",
               stiffness: 450,
               damping: 24,
-              delay: index * 0.05
+              delay: index * 0.05,
             }}
             style={{ display: "inline-block" }}
           >
@@ -72,13 +73,13 @@ const VolumeCard = ({
   loading,
   formatRows,
   iconColor,
-  iconBg
+  iconBg,
 }: {
   title: string;
   value: string;
   rows: number;
   desc: string;
-  icon: any;
+  icon: React.ElementType;
   loading: boolean;
   formatRows: (n: number) => string;
   iconColor: string;
@@ -94,8 +95,10 @@ const VolumeCard = ({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-bold text-texto-secundario">{title}</span>
-          
+          <span className="text-sm font-bold text-texto-secundario">
+            {title}
+          </span>
+
           <div className="h-8 relative mt-1 overflow-hidden">
             <AnimatePresence>
               {!isHovered ? (
@@ -107,7 +110,11 @@ const VolumeCard = ({
                   transition={{ duration: 0.15 }}
                   className="text-2xl font-black text-azul-unb truncate select-none absolute inset-0 flex items-center"
                 >
-                  {loading ? <CircularProgress size={16} /> : <CharacterRoll text={value} />}
+                  {loading ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <CharacterRoll text={value} />
+                  )}
                 </motion.div>
               ) : (
                 <motion.div
@@ -118,7 +125,11 @@ const VolumeCard = ({
                   transition={{ duration: 0.15 }}
                   className="text-2xl font-black text-azul-unb truncate select-none absolute inset-0 flex items-center"
                 >
-                  {loading ? <CircularProgress size={16} /> : <CharacterRoll text={`${formatRows(rows)} registros`} />}
+                  {loading ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <CharacterRoll text={`${formatRows(rows)} registros`} />
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -183,6 +194,7 @@ export const AdminDashboardPage = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchKpis();
     fetchExecutions();
   }, []);
@@ -209,7 +221,7 @@ export const AdminDashboardPage = () => {
     return num.toLocaleString("pt-BR");
   };
 
-  const getStatusBadgeStyle = (status: any) => {
+  const getStatusBadgeStyle = (status: string | number) => {
     const s = String(status).toLowerCase();
     switch (s) {
       case "0":
@@ -235,7 +247,7 @@ export const AdminDashboardPage = () => {
     }
   };
 
-  const getStatusLabel = (status: any) => {
+  const getStatusLabel = (status: string | number) => {
     const s = String(status).toLowerCase();
     if (s === "0" || s === "pendente") return "Pendente";
     if (s === "1" || s === "processando") return "Processando";
@@ -268,16 +280,24 @@ export const AdminDashboardPage = () => {
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-sm font-bold text-texto-secundario">Pipelines</span>
+                  <span className="text-sm font-bold text-texto-secundario">
+                    Pipelines
+                  </span>
                   <h3 className="mt-2 text-3xl font-black text-texto-principal">
-                    {loading ? <CircularProgress size={24} /> : kpis.totalPipelines}
+                    {loading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      kpis.totalPipelines
+                    )}
                   </h3>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
                   <CodeXml className="h-5 w-5" />
                 </div>
               </div>
-              <p className="mt-4 text-xs text-texto-secundario font-medium">Pipelines de dados cadastradas</p>
+              <p className="mt-4 text-xs text-texto-secundario font-medium">
+                Pipelines de dados cadastradas
+              </p>
             </div>
           </Link>
 
@@ -289,16 +309,24 @@ export const AdminDashboardPage = () => {
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-sm font-bold text-texto-secundario">Categorias</span>
+                  <span className="text-sm font-bold text-texto-secundario">
+                    Categorias
+                  </span>
                   <h3 className="mt-2 text-3xl font-black text-texto-principal">
-                    {loading ? <CircularProgress size={24} /> : kpis.totalCategorias}
+                    {loading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      kpis.totalCategorias
+                    )}
                   </h3>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
                   <LayoutList className="h-5 w-5" />
                 </div>
               </div>
-              <p className="mt-4 text-xs text-texto-secundario font-medium">Agrupamentos temáticos dos painéis públicos</p>
+              <p className="mt-4 text-xs text-texto-secundario font-medium">
+                Agrupamentos temáticos dos painéis públicos
+              </p>
             </div>
           </Link>
 
@@ -310,16 +338,24 @@ export const AdminDashboardPage = () => {
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-sm font-bold text-texto-secundario">Painéis Publicados</span>
+                  <span className="text-sm font-bold text-texto-secundario">
+                    Painéis Publicados
+                  </span>
                   <h3 className="mt-2 text-3xl font-black text-texto-principal">
-                    {loading ? <CircularProgress size={24} /> : kpis.totalPaineis}
+                    {loading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      kpis.totalPaineis
+                    )}
                   </h3>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
                   <ChartColumnBig className="h-5 w-5" />
                 </div>
               </div>
-              <p className="mt-4 text-xs text-texto-secundario font-medium">Dashboards do Superset integrados ao Portal</p>
+              <p className="mt-4 text-xs text-texto-secundario font-medium">
+                Dashboards do Superset integrados ao Portal
+              </p>
             </div>
           </Link>
 
@@ -331,16 +367,24 @@ export const AdminDashboardPage = () => {
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-sm font-bold text-texto-secundario">Solicitações Pendentes</span>
+                  <span className="text-sm font-bold text-texto-secundario">
+                    Solicitações Pendentes
+                  </span>
                   <h3 className="mt-2 text-3xl font-black text-texto-principal">
-                    {loading ? <CircularProgress size={24} /> : kpis.totalSugestoesPendentes}
+                    {loading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      kpis.totalSugestoesPendentes
+                    )}
                   </h3>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
                   <MessageSquare className="h-5 w-5" />
                 </div>
               </div>
-              <p className="mt-4 text-xs text-texto-secundario font-medium">Sugestões, erros e relatos aguardando análise</p>
+              <p className="mt-4 text-xs text-texto-secundario font-medium">
+                Sugestões, erros e relatos aguardando análise
+              </p>
             </div>
           </Link>
 
@@ -354,16 +398,24 @@ export const AdminDashboardPage = () => {
               <div>
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-sm font-bold text-texto-secundario">Cadastros Pendentes</span>
+                    <span className="text-sm font-bold text-texto-secundario">
+                      Cadastros Pendentes
+                    </span>
                     <h3 className="mt-2 text-3xl font-black text-texto-principal">
-                      {loading ? <CircularProgress size={24} /> : kpis.totalUsuariosPendentes}
+                      {loading ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        kpis.totalUsuariosPendentes
+                      )}
                     </h3>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
                     <Users className="h-5 w-5" />
                   </div>
                 </div>
-                <p className="mt-4 text-xs text-texto-secundario font-medium">Novos usuários aguardando aprovação de acesso</p>
+                <p className="mt-4 text-xs text-texto-secundario font-medium">
+                  Novos usuários aguardando aprovação de acesso
+                </p>
               </div>
             </Link>
           )}
@@ -388,7 +440,7 @@ export const AdminDashboardPage = () => {
             formatRows={formatRows}
           />
           <VolumeCard
-            title="Volume Silver"
+            title="Volume Prata"
             value={formatBytes(kpis.volumeSilver)}
             rows={kpis.linhasSilver}
             desc="Dados limpos e estruturados"
@@ -399,7 +451,7 @@ export const AdminDashboardPage = () => {
             formatRows={formatRows}
           />
           <VolumeCard
-            title="Volume Gold"
+            title="Volume Ouro"
             value={formatBytes(kpis.volumeGold)}
             rows={kpis.linhasGold}
             desc="Agregações e modelos de negócios"
@@ -425,7 +477,11 @@ export const AdminDashboardPage = () => {
               variant="contained"
               onClick={fetchExecutions}
               disabled={execLoading}
-              startIcon={<RefreshCw className={`h-4 w-4 ${execLoading ? "animate-spin" : ""}`} />}
+              startIcon={
+                <RefreshCw
+                  className={`h-4 w-4 ${execLoading ? "animate-spin" : ""}`}
+                />
+              }
               sx={{ textTransform: "none", fontWeight: 700 }}
             >
               Atualizar Execuções
@@ -455,14 +511,25 @@ export const AdminDashboardPage = () => {
                   {executions.slice(0, 3).map((exec) => {
                     const dataHora = exec.createdAt
                       ? new Date(exec.createdAt).toLocaleString("pt-BR")
-                      : "—";
+                      : "-";
                     return (
-                      <tr key={exec.id} className="text-texto-principal hover:bg-fundo-superficie-suave transition-colors">
-                        <td className="py-3 px-4 font-mono text-xs text-texto-secundario">{exec.id}</td>
-                        <td className="py-3 px-4 text-texto-secundario">{exec.pipelineNome}</td>
-                        <td className="py-3 px-4 text-xs text-texto-secundario">{dataHora}</td>
+                      <tr
+                        key={exec.id}
+                        className="text-texto-principal hover:bg-fundo-superficie-suave transition-colors"
+                      >
+                        <td className="py-3 px-4 font-mono text-xs text-texto-secundario">
+                          {exec.id}
+                        </td>
+                        <td className="py-3 px-4 text-texto-secundario">
+                          {exec.pipelineNome}
+                        </td>
+                        <td className="py-3 px-4 text-xs text-texto-secundario">
+                          {dataHora}
+                        </td>
                         <td className="py-3 px-4 text-right select-none">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold ${getStatusBadgeStyle(exec.status)}`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold ${getStatusBadgeStyle(exec.status)}`}
+                          >
                             {getStatusLabel(exec.status)}
                           </span>
                         </td>
@@ -495,7 +562,9 @@ export const AdminDashboardPage = () => {
                   <CircularProgress size={12} />
                 ) : (
                   <span className="inline-flex items-center gap-2 font-semibold text-texto-principal">
-                    <span className={`h-2.5 w-2.5 rounded-full ${kpis.databaseOnline ? "bg-sucesso" : "bg-erro"}`} />
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${kpis.databaseOnline ? "bg-sucesso" : "bg-erro"}`}
+                    />
                     {kpis.databaseOnline ? "Conectado" : "Desconectado"}
                   </span>
                 )}
@@ -506,7 +575,9 @@ export const AdminDashboardPage = () => {
                   <CircularProgress size={12} />
                 ) : (
                   <span className="inline-flex items-center gap-2 font-semibold text-texto-principal">
-                    <span className={`h-2.5 w-2.5 rounded-full ${kpis.redisOnline ? "bg-sucesso" : "bg-[#f59e0b]"}`} />
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${kpis.redisOnline ? "bg-sucesso" : "bg-[#f59e0b]"}`}
+                    />
                     {kpis.redisOnline ? "Online" : "Instável"}
                   </span>
                 )}
@@ -517,7 +588,9 @@ export const AdminDashboardPage = () => {
                   <CircularProgress size={12} />
                 ) : (
                   <span className="inline-flex items-center gap-2 font-semibold text-texto-principal">
-                    <span className={`h-2.5 w-2.5 rounded-full ${kpis.supersetOnline ? "bg-sucesso" : "bg-erro"}`} />
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${kpis.supersetOnline ? "bg-sucesso" : "bg-erro"}`}
+                    />
                     {kpis.supersetOnline ? "Online" : "Offline"}
                   </span>
                 )}

@@ -19,11 +19,17 @@ export const painelApi = {
     });
     return data.itens;
   },
-  async listAdmin(page = 1, limit = 10, categoriaId?: number) {
+  async listAdmin(
+    page = 1,
+    limit = 10,
+    categoriaId?: number,
+    busca?: string,
+    active?: boolean,
+  ) {
     const { data } = await api.get<ResultadoPaginado<PainelGetDto>>(
       "/painel/admin",
       {
-        params: { page, limit, categoriaId },
+        params: { page, limit, categoriaId, busca, active },
       },
     );
     return data;
@@ -44,7 +50,9 @@ export const painelApi = {
     await api.delete(`/painel/${id}`);
   },
   async toggleActive(id: number) {
-    const { data } = await api.patch<{ message: string }>(`/painel/${id}/toggle`);
+    const { data } = await api.patch<{ message: string }>(
+      `/painel/${id}/toggle`,
+    );
     return data;
   },
 };

@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ─── TOKENS SEMÂNTICOS — IDENTIDADE UnB ─────────────────── */
+/* ─── TOKENS SEMÂNTICOS - IDENTIDADE UnB ─────────────────── */
 @theme {
   /* Superfícies */
   --color-fundo-pagina: #f4f5f7;
@@ -17,7 +17,7 @@
   --color-texto-secundario: #6b7280;
   --color-texto-invertido: #ffffff;
 
-  /* Identidade UnB — verde e azul escuro */
+  /* Identidade UnB - verde e azul escuro */
   --color-destaque: #009c3b;
   --color-destaque-hover: #007a2f;
   --color-destaque-suave: #e6f7ed;
@@ -212,6 +212,9 @@ input:-webkit-autofill:active {
   .backface-hidden {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .rotate-y-180 {
@@ -282,4 +285,10 @@ select:not([class*="Mui"]):focus {
 
 [data-sonner-toast] button {
   color: currentColor !important;
+}
+
+/* Limit dropdown menu height */
+.MuiMenu-paper {
+  max-height: 250px !important;
+  overflow-y: auto !important;
 }

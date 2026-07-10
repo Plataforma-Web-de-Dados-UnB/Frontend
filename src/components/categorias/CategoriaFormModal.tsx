@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useLayoutEffect, useMemo, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Dialog from "@mui/material/Dialog";
@@ -41,11 +41,18 @@ export const CategoriaFormModal = ({
   } = useForm<CategoriaFormValues>({ resolver: zodResolver(categoriaSchema) });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showConfirmClose, setShowConfirmClose] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  const previewUrl = useMemo(
+    () =>
+      selectedFile
+        ? URL.createObjectURL(selectedFile)
+        : (editing?.imagemUrl ?? null),
+    [selectedFile, editing?.imagemUrl],
+  );
+
+  useLayoutEffect(() => {
     if (open) {
       if (editing) {
         reset({
@@ -53,13 +60,11 @@ export const CategoriaFormModal = ({
           descricao: editing.descricao ?? "",
           sortOrdem: editing.sortOrdem,
         });
-        setPreviewUrl(editing.imagemUrl);
-        setSelectedFile(null);
       } else {
         reset({ nome: "", descricao: "", sortOrdem: 0 });
-        setPreviewUrl(null);
-        setSelectedFile(null);
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedFile(null);
       setShowConfirmClose(false);
     }
   }, [editing, reset, open]);
@@ -68,7 +73,6 @@ export const CategoriaFormModal = ({
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -107,13 +111,26 @@ export const CategoriaFormModal = ({
               border: "1px solid var(--color-borda-padrao)",
               backgroundImage: "none",
               maxHeight: "85vh",
-            }
-          }
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ m: 0, px: 4, pt: 2.5, pb: 2, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-borda-padrao)" }}>
+        <DialogTitle
+          sx={{
+            m: 0,
+            px: 4,
+            pt: 2.5,
+            pb: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid var(--color-borda-padrao)",
+          }}
+        >
           <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
-            {editing ? "Editar Categoria de Painéis" : "Nova Categoria de Painéis"}
+            {editing
+              ? "Editar Categoria de Painéis"
+              : "Nova Categoria de Painéis"}
           </h2>
           <IconButton
             onClick={handleAttemptClose}
@@ -127,7 +144,7 @@ export const CategoriaFormModal = ({
               "&:hover": {
                 bgcolor: "var(--color-vermelho-claro)",
                 color: "var(--color-vermelho-escuro)",
-              }
+              },
             }}
           >
             <X className="h-5 w-5" />
@@ -135,7 +152,16 @@ export const CategoriaFormModal = ({
         </DialogTitle>
 
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <DialogContent sx={{ px: 4, pt: 3, pb: 4, display: "flex", flexDirection: "column", gap: 3.5 }}>
+          <DialogContent
+            sx={{
+              px: 4,
+              pt: 3,
+              pb: 4,
+              display: "flex",
+              flexDirection: "column",
+              gap: 3.5,
+            }}
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               <TextField
                 label="Nome da Categoria"
@@ -151,17 +177,25 @@ export const CategoriaFormModal = ({
                       borderRadius: "4px",
                       bgcolor: "var(--color-fundo-superficie)",
                       color: "var(--color-texto-principal)",
-                      "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                      "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                      "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-                    }
+                      "& fieldset": {
+                        borderColor: "var(--color-borda-padrao)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "var(--color-borda-padrao) !important",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "var(--color-destaque) !important",
+                      },
+                    },
                   },
                   inputLabel: {
                     sx: {
                       color: "var(--color-texto-secundario)",
-                      "&.Mui-focused": { color: "var(--color-destaque) !important" }
-                    }
-                  }
+                      "&.Mui-focused": {
+                        color: "var(--color-destaque) !important",
+                      },
+                    },
+                  },
                 }}
               />
 
@@ -179,17 +213,25 @@ export const CategoriaFormModal = ({
                       borderRadius: "4px",
                       bgcolor: "var(--color-fundo-superficie)",
                       color: "var(--color-texto-principal)",
-                      "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                      "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                      "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-                    }
+                      "& fieldset": {
+                        borderColor: "var(--color-borda-padrao)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "var(--color-borda-padrao) !important",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "var(--color-destaque) !important",
+                      },
+                    },
                   },
                   inputLabel: {
                     sx: {
                       color: "var(--color-texto-secundario)",
-                      "&.Mui-focused": { color: "var(--color-destaque) !important" }
-                    }
-                  }
+                      "&.Mui-focused": {
+                        color: "var(--color-destaque) !important",
+                      },
+                    },
+                  },
                 }}
               />
             </div>
@@ -211,97 +253,94 @@ export const CategoriaFormModal = ({
                     bgcolor: "var(--color-fundo-superficie)",
                     color: "var(--color-texto-principal)",
                     "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                    "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                    "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
-                  }
+                    "&:hover fieldset": {
+                      borderColor: "var(--color-borda-padrao) !important",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "var(--color-destaque) !important",
+                    },
+                  },
                 },
                 inputLabel: {
                   sx: {
                     color: "var(--color-texto-secundario)",
-                    "&.Mui-focused": { color: "var(--color-destaque) !important" }
-                  }
-                }
+                    "&.Mui-focused": {
+                      color: "var(--color-destaque) !important",
+                    },
+                  },
+                },
               }}
             />
 
-             {/* Upload de Imagem/Ícone */}
-             <div className="flex flex-col gap-2">
-               <label className="text-xs font-black uppercase tracking-wider text-texto-secundario select-none">
-                 Imagem / Ícone (Opcional)
-               </label>
-               <div className="flex items-center gap-4 border border-dashed border-borda-padrao rounded p-3 bg-fundo-superficie-suave/30">
-                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/50 overflow-hidden">
-                   {previewUrl ? (
-                     <img
-                       src={previewUrl}
-                       alt="Preview"
-                       className="h-full w-full object-contain"
-                     />
-                   ) : (
-                     <Upload className="h-6 w-6 text-azul-unb" />
-                   )}
-                 </div>
-                 <div className="flex-1 flex gap-3 items-center min-w-0">
-                   <div className="flex-1 flex items-center gap-2 rounded border border-borda-padrao bg-fundo-superficie px-4 py-2 text-sm text-texto-secundario min-h-[40px] box-sizing-border-box">
-                     <span className="flex-1 truncate text-xs">
-                       {selectedFile?.name ?? (editing?.imagemUrl ? "Imagem atual conservada" : "Nenhum arquivo selecionado")}
-                     </span>
-                   </div>
-                   <input
-                     ref={fileInputRef}
-                     type="file"
-                     accept="image/png, image/jpeg, image/svg+xml"
-                     className="hidden"
-                     onChange={handleFileChange}
-                   />
-                   <Button
-                     type="button"
-                     variant="contained"
-                     onClick={() => fileInputRef.current?.click()}
-                     startIcon={<Upload className="h-4 w-4" />}
-                     sx={{
-                       height: "40px",
-                       textTransform: "none",
-                       fontWeight: 600,
-                       bgcolor: "var(--color-azul-unb)",
-                       color: "#ffffff",
-                       "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
-                       px: 3,
-                     }}
-                   >
-                     Selecionar
-                   </Button>
-                 </div>
-               </div>
-               <p className="text-[10px] text-texto-secundario font-medium -mt-1 pl-1">
-                 Suporta arquivos .svg, .png ou .jpg. Recomendado: SVG ou PNG quadrado com fundo transparente.
-               </p>
-             </div>
+            {/* Upload de Imagem/Ícone */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-wider text-texto-secundario select-none">
+                Imagem / Ícone (Opcional)
+              </label>
+              <div className="flex items-center gap-4 border border-dashed border-borda-padrao rounded p-3 bg-fundo-superficie-suave/30">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-azul-unb-suave border border-borda-padrao/50 overflow-hidden">
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <Upload className="h-6 w-6 text-azul-unb" />
+                  )}
+                </div>
+                <div className="flex-1 flex gap-3 items-center min-w-0">
+                  <div className="flex-1 flex items-center gap-2 rounded border border-borda-padrao bg-fundo-superficie px-4 py-2 text-sm text-texto-secundario min-h-[40px] box-sizing-border-box">
+                    <span className="flex-1 truncate text-xs">
+                      {selectedFile?.name ??
+                        (editing?.imagemUrl
+                          ? "Imagem atual conservada"
+                          : "Nenhum arquivo selecionado")}
+                    </span>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png, image/jpeg, image/svg+xml"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={() => fileInputRef.current?.click()}
+                    startIcon={<Upload className="h-4 w-4" />}
+                    sx={{
+                      height: "40px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      bgcolor: "var(--color-azul-unb)",
+                      color: "#ffffff",
+                      "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
+                      px: 3,
+                    }}
+                  >
+                    Selecionar
+                  </Button>
+                </div>
+              </div>
+              <p className="text-[10px] text-texto-secundario font-medium -mt-1 pl-1">
+                Suporta arquivos .svg, .png ou .jpg. Recomendado: SVG ou PNG
+                quadrado com fundo transparente.
+              </p>
+            </div>
 
             <AlertBanner message={rootError} />
           </DialogContent>
 
-          <DialogActions sx={{ px: 4, pb: 4, pt: 2, borderTop: "1px solid var(--color-borda-padrao)" }}>
-            <Button
-              type="button"
-              variant="text"
-              onClick={handleAttemptClose}
-              disabled={isSubmitting}
-              sx={{
-                borderRadius: "4px",
-                px: 3,
-                textTransform: "none",
-                fontWeight: 600,
-                bgcolor: "var(--color-borda-padrao)",
-                color: "var(--color-texto-principal)",
-                "&:hover": {
-                  bgcolor: "var(--color-fundo-superficie-suave)",
-                  color: "var(--color-texto-secundario)"
-                }
-              }}
-            >
-              Cancelar
-            </Button>
+          <DialogActions
+            sx={{
+              px: 4,
+              pb: 4,
+              pt: 2,
+              borderTop: "1px solid var(--color-borda-padrao)",
+            }}
+          >
             <Button
               type="submit"
               variant="contained"
@@ -317,7 +356,7 @@ export const CategoriaFormModal = ({
                 textTransform: "none",
                 fontWeight: 700,
                 bgcolor: "var(--color-azul-unb)",
-                "&:hover": { bgcolor: "var(--color-azul-unb-hover)" }
+                "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
               }}
             >
               {editing ? "Salvar Alterações" : "Criar Categoria"}

@@ -58,7 +58,8 @@ export const CadastroPendentePage = () => {
         </div>
 
         <p className="text-sm text-texto-secundario">
-          Sua conta foi criada com sucesso, mas o acesso à Área Administrativa requer aprovação manual da equipe administrativa.
+          Sua conta foi criada com sucesso, mas o acesso à Área Administrativa
+          requer aprovação manual da equipe administrativa.
         </p>
 
         <div className="w-full space-y-2 rounded bg-azul-unb-suave p-4 text-sm text-left">
@@ -78,7 +79,9 @@ export const CadastroPendentePage = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-texto-secundario">Próximo Passo:</span>
-            <span className="text-texto-principal">Aguarde notificação por e-mail</span>
+            <span className="text-texto-principal">
+              Aguarde notificação por e-mail
+            </span>
           </div>
         </div>
 
@@ -90,7 +93,9 @@ export const CadastroPendentePage = () => {
           sx={{ mt: 2 }}
           //startIcon={<LogOut className="h-4 w-4" />}
         >
-          {isAuthenticated ? "Sair e Voltar para a Página Inicial" : "Ir para a Página Inicial"}
+          {isAuthenticated
+            ? "Sair e Voltar para a Página Inicial"
+            : "Ir para a Página Inicial"}
         </Button>
       </div>
     </div>

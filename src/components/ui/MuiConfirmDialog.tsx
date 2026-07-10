@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -38,16 +38,13 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
 }): React.JSX.Element => {
   const [inputValue, setInputValue] = useState("");
 
-  // Reset input when dialog opens/closes
-  useEffect(() => {
-    if (!open) {
-      setInputValue("");
-    }
-  }, [open]);
+  const handleClose = () => {
+    setInputValue("");
+    onClose();
+  };
 
   const isConfirmDisabled =
-    isLoading ||
-    (requireTextInput && inputValue !== textInputExpectedValue);
+    isLoading || (requireTextInput && inputValue !== textInputExpectedValue);
 
   const getToneColor = () => {
     switch (confirmTone) {
@@ -66,11 +63,17 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
   const getIcon = () => {
     switch (confirmTone) {
       case "danger":
-        return <OctagonX className="h-5.5 w-5.5 text-vermelho-escuro shrink-0" />;
+        return (
+          <OctagonX className="h-5.5 w-5.5 text-vermelho-escuro shrink-0" />
+        );
       case "warning":
-        return <AlertTriangle className="h-5.5 w-5.5 text-amber-500 shrink-0" />;
+        return (
+          <AlertTriangle className="h-5.5 w-5.5 text-amber-500 shrink-0" />
+        );
       case "success":
-        return <CheckCircle2 className="h-5.5 w-5.5 text-emerald-500 shrink-0" />;
+        return (
+          <CheckCircle2 className="h-5.5 w-5.5 text-emerald-500 shrink-0" />
+        );
       case "primary":
       default:
         return <Info className="h-5.5 w-5.5 text-azul-unb shrink-0" />;
@@ -80,7 +83,7 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
   return (
     <Dialog
       open={open}
-      onClose={isLoading ? undefined : onClose}
+      onClose={isLoading ? undefined : handleClose}
       maxWidth="sm"
       fullWidth
       slotProps={{
@@ -96,11 +99,23 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
         },
       }}
     >
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, pb: 1.5, px: 3, pt: 2, fontWeight: 800 }}>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          pb: 1.5,
+          px: 3,
+          pt: 2,
+          fontWeight: 800,
+        }}
+      >
         {getIcon()}
-        <span className="font-sans text-lg font-extrabold text-texto-principal">{title}</span>
+        <span className="font-sans text-lg font-extrabold text-texto-principal">
+          {title}
+        </span>
       </DialogTitle>
-      
+
       <DialogContent sx={{ px: 3, py: 1 }}>
         <DialogContentText
           lang="pt-BR"
@@ -121,7 +136,11 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
         {requireTextInput && (
           <div className="flex flex-col gap-2 mt-4">
             <p className="text-[0.875rem] leading-[2rem] font-semibold text-texto-secundario">
-              Para confirmar, digite <span className="text-[0.875rem] text-texto-principal bg-borda-padrao px-1.5 py-1.5 rounded">{textInputExpectedValue}</span> abaixo:
+              Para confirmar, digite{" "}
+              <span className="text-[0.875rem] text-texto-principal bg-borda-padrao px-1.5 py-1.5 rounded">
+                {textInputExpectedValue}
+              </span>{" "}
+              abaixo:
             </p>
             <TextField
               fullWidth
@@ -140,8 +159,12 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "4px",
                   "& fieldset": { borderColor: "var(--color-borda-padrao)" },
-                  "&:hover fieldset": { borderColor: "var(--color-borda-padrao) !important" },
-                  "&.Mui-focused fieldset": { borderColor: "var(--color-destaque) !important" },
+                  "&:hover fieldset": {
+                    borderColor: "var(--color-borda-padrao) !important",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "var(--color-destaque) !important",
+                  },
                 },
               }}
             />
@@ -149,9 +172,18 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 2, pt: 2, display: "flex", justifyContent: "flex-end", gap: 1.5 }}>
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 2,
+          pt: 2,
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 1.5,
+        }}
+      >
         <Button
-          onClick={onClose}
+          onClick={handleClose}
           disabled={isLoading}
           variant="text"
           sx={{
@@ -162,7 +194,7 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
             color: "var(--color-texto-principal)",
             "&:hover": {
               bgcolor: "var(--color-fundo-superficie-suave)",
-              color: "var(--color-texto-secundario)"
+              color: "var(--color-texto-secundario)",
             },
             px: 2.5,
             py: 1,

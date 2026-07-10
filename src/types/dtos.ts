@@ -131,38 +131,57 @@ export type PipelineExecucaoGetDto = {
   tabelaGold: string;
   status: StatusPipelineExecucao;
   mensagem: string | null;
+  iniciadoEm: string | null;
+  finalizadoEm: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
-export type UploadPreviewDto = {
-  batchId: string;
+export type ColunaSensivelDto = {
+  coluna: string;
+  estrategia: "hmac" | "suprimir";
+};
+
+export type PipelineExecucaoCreateDto = {
+  arquivo: File;
+  pipelineId: number;
+  tabelaSilver: string;
+  tabelaGold: string;
+  colunasSensiveisJson?: string;
+};
+
+export type PipelineExecucaoExecutarResultDto = PipelineExecucaoGetDto & {
   colunas: string[];
   totalLinhas: number;
   primeirasLinhas: Record<string, string>[];
 };
 
-export type PipelineExecucaoCreateDto = {
-  pipelineId: number;
-  batchId: string;
-  tabelaSilver: string;
-  tabelaGold: string;
-};
-
 // ─── Sugestão ─────────────────────────────────────────────────
-export type TipoSugestao = 0 | 1 | 2;
-export type StatusSugestao = 0 | 1 | 2;
+export type TipoSugestao = 0 | 1 | 2 | "Sugestao" | "Erro" | "Relato";
+export type StatusSugestao =
+  | 0
+  | 1
+  | 2
+  | "Pendente"
+  | "Analisado"
+  | "Descartado";
 
 export const TipoSugestaoLabel: Record<TipoSugestao, string> = {
   0: "Sugestão",
   1: "Erro",
   2: "Relato",
+  Sugestao: "Sugestão",
+  Erro: "Erro",
+  Relato: "Relato",
 };
 
 export const StatusSugestaoLabel: Record<StatusSugestao, string> = {
   0: "Pendente",
-  1: "Analisado",
-  2: "Descartado",
+  1: "Analisada",
+  2: "Descartada",
+  Pendente: "Pendente",
+  Analisado: "Analisada",
+  Descartado: "Descartada",
 };
 
 export type SugestaoCreateDto = {
@@ -189,8 +208,10 @@ export type SugestaoListDto = {
   id: number;
   tipo: TipoSugestao;
   titulo: string;
+  descricao: string;
   nomeContato: string | null;
   emailContato: string | null;
   status: StatusSugestao;
   createdAt: string;
+  updatedAt: string;
 };

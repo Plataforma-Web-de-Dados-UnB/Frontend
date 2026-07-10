@@ -1,57 +1,57 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import { Search, Plus } from "lucide-react";
+import type { PipelineGetDto } from "@/types/dtos";
 
-export interface CategoriaFilterBarProps {
+export interface UploadFilterBarProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  onSearchSubmit: (e: React.SyntheticEvent) => void;
-  onClearSearch: () => void;
-  statusFilter: "ativos" | "inativos" | "todos";
-  setStatusFilter: (val: "ativos" | "inativos" | "todos") => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onSearchSubmit: (e?: React.SyntheticEvent<HTMLFormElement>) => void;
+  onClearFilters: () => void;
+  pipelineFilter: number | "";
+  setPipelineFilter: (val: number | "") => void;
+  statusFilter: number | "";
+  setStatusFilter: (val: number | "") => void;
+  pipelines: PipelineGetDto[];
   onNewClick: () => void;
 }
 
-export const CategoriaFilterBar = ({
+export const UploadFilterBar = ({
   searchTerm,
   setSearchTerm,
+  inputRef,
   onSearchSubmit,
-  onClearSearch,
+  onClearFilters,
+  pipelineFilter,
+  setPipelineFilter,
   statusFilter,
   setStatusFilter,
+  pipelines,
   onNewClick,
-}: CategoriaFilterBarProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
+}: UploadFilterBarProps) => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
-      {/* Search Input Box */}
-      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto">
+      {/* Left: Search + Pipeline dropdown + Clear */}
+      <form
+        onSubmit={onSearchSubmit}
+        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+      >
+        {/* Search field - mesmo padrão das outras FilterBars */}
         <TextField
           inputRef={inputRef}
-          placeholder="Buscar categoria..."
+          placeholder="Buscar execução..."
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              inputRef.current?.blur();
-            }
+            if (e.key === "Escape") inputRef.current?.blur();
           }}
           sx={{ width: { xs: "100%", lg: 400 } }}
           slotProps={{
@@ -98,6 +98,7 @@ export const CategoriaFilterBar = ({
           }}
         />
 
+        {/* Submit search */}
         <Button
           type="submit"
           variant="contained"
@@ -111,15 +112,89 @@ export const CategoriaFilterBar = ({
             color: "#ffffff",
             "&:hover": { bgcolor: "var(--color-azul-unb-hover)" },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Buscar
         </Button>
 
+        {/* Pipeline dropdown - max-width + truncate overflow */}
+        <Select
+          value={pipelineFilter}
+          displayEmpty
+          onChange={(e) => {
+            const val = e.target.value as string | number;
+            setPipelineFilter(val === "" ? "" : Number(val));
+          }}
+          MenuProps={{
+            slotProps: {
+              paper: {
+                sx: {
+                  maxHeight: 260,
+                  width: "280px !important",
+                  maxWidth: "280px !important",
+                  backgroundColor: "var(--color-fundo-superficie)",
+                  color: "var(--color-texto-principal)",
+                  border: "1px solid var(--color-borda-padrao)",
+                  "& .MuiMenuItem-root": {
+                    fontSize: "0.875rem",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    display: "block",
+                    "&:hover": {
+                      backgroundColor: "var(--color-fundo-superficie-suave)",
+                    },
+                    "&.Mui-selected": {
+                      backgroundColor: "var(--color-destaque-suave)",
+                      color: "var(--color-destaque)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-destaque-suave)",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }}
+          sx={{
+            height: "40px",
+            width: 280,
+            maxWidth: 280,
+            boxSizing: "border-box",
+            borderRadius: "4px",
+            bgcolor: "var(--color-fundo-superficie)",
+            color: "var(--color-texto-principal)",
+            "& .MuiSelect-select": {
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-borda-padrao) !important",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--color-destaque) !important",
+            },
+          }}
+        >
+          <MenuItem value="">
+            <em>Todas as Pipelines</em>
+          </MenuItem>
+          {pipelines.map((p) => (
+            <MenuItem key={p.id} value={p.id}>
+              {p.nome}
+            </MenuItem>
+          ))}
+        </Select>
+
         <Button
           type="button"
           variant="text"
-          onClick={onClearSearch}
+          onClick={onClearFilters}
           sx={{
             height: "40px",
             boxSizing: "border-box",
@@ -133,20 +208,18 @@ export const CategoriaFilterBar = ({
               color: "var(--color-texto-secundario)",
             },
             px: 3,
+            flexShrink: 0,
           }}
         >
           Limpar
         </Button>
       </form>
 
-      {/* Group Tabs & Nova Categoria button together on the right */}
+      {/* Right: Status Tabs + New Processing Button */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
-        {/* Status Tabs */}
         <Tabs
           value={statusFilter}
-          onChange={(_, newValue) => {
-            setStatusFilter(newValue);
-          }}
+          onChange={(_, newValue) => setStatusFilter(newValue)}
           sx={{
             minHeight: 40,
             "& .MuiTabs-indicator": {
@@ -166,21 +239,16 @@ export const CategoriaFilterBar = ({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              "&.Mui-selected": {
-                color: "var(--color-azul-unb)",
-              },
-              "&:hover": {
-                color: "var(--color-texto-principal)",
-              },
+              "&.Mui-selected": { color: "var(--color-azul-unb)" },
+              "&:hover": { color: "var(--color-texto-principal)" },
             },
           }}
         >
-          <Tab value="ativos" label="Ativas" />
-          <Tab value="inativos" label="Desativadas" />
-          <Tab value="todos" label="Todas" />
+          <Tab value="" label="Todas" />
+          <Tab value={2} label="Sucesso" />
+          <Tab value={3} label="Erro" />
         </Tabs>
 
-        {/* New Category Button */}
         <Button
           variant="contained"
           color="primary"
@@ -190,6 +258,7 @@ export const CategoriaFilterBar = ({
             borderRadius: "4px",
             px: 3,
             py: 1,
+            height: "40px",
             textTransform: "none",
             fontWeight: 700,
             boxShadow: "none",
@@ -200,7 +269,7 @@ export const CategoriaFilterBar = ({
             },
           }}
         >
-          Nova Categoria
+          Novo Processamento
         </Button>
       </div>
     </div>
