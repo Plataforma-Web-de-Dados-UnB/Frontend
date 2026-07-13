@@ -108,7 +108,7 @@ const VolumeCard = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
-                  className="text-2xl font-black text-azul-unb truncate select-none absolute inset-0 flex items-center"
+                  className="text-2xl font-black text-titulo-destaque truncate select-none absolute inset-0 flex items-center"
                 >
                   {loading ? (
                     <CircularProgress size={16} />
@@ -123,7 +123,7 @@ const VolumeCard = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
-                  className="text-2xl font-black text-azul-unb truncate select-none absolute inset-0 flex items-center"
+                  className="text-2xl font-black text-titulo-destaque truncate select-none absolute inset-0 flex items-center"
                 >
                   {loading ? (
                     <CircularProgress size={16} />
@@ -291,7 +291,7 @@ export const AdminDashboardPage = () => {
                     )}
                   </h3>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-titulo-destaque shrink-0">
                   <CodeXml className="h-5 w-5" />
                 </div>
               </div>
@@ -320,7 +320,7 @@ export const AdminDashboardPage = () => {
                     )}
                   </h3>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-titulo-destaque shrink-0">
                   <LayoutList className="h-5 w-5" />
                 </div>
               </div>
@@ -349,7 +349,7 @@ export const AdminDashboardPage = () => {
                     )}
                   </h3>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-titulo-destaque shrink-0">
                   <ChartColumnBig className="h-5 w-5" />
                 </div>
               </div>
@@ -378,7 +378,7 @@ export const AdminDashboardPage = () => {
                     )}
                   </h3>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-titulo-destaque shrink-0">
                   <MessageSquare className="h-5 w-5" />
                 </div>
               </div>
@@ -409,7 +409,7 @@ export const AdminDashboardPage = () => {
                       )}
                     </h3>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-azul-unb shrink-0">
+                  <div className="flex h-12 w-12 items-center justify-center rounded bg-fundo-superficie-suave text-titulo-destaque shrink-0">
                     <Users className="h-5 w-5" />
                   </div>
                 </div>

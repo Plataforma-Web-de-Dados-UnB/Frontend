@@ -193,7 +193,7 @@ export const PainelPage = () => {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       {/* Header */}
-      <div className="bg-fundo-superficie px-6 py-8 lg:px-7">
+      <div className="bg-fundo-pagina px-6 pt-8 pb-14 lg:px-7">
         <Breadcrumb
           items={[
             { label: "Painéis", to: ROUTES.paineis },
@@ -201,20 +201,23 @@ export const PainelPage = () => {
             { label: painel.nome },
           ]}
         />
-        <div className="mt-8 border-l-4 border-destaque pl-4">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-texto-principal">
+        <div className="mt-6 text-center">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
             {painel.nome}
           </h1>
           {painel.descricao && (
-            <p className="mt-2 text-sm text-texto-secundario">
+            <p className="mt-1 text-base text-texto-secundario">
               {painel.descricao}
             </p>
           )}
+          <div
+            className={`mx-auto mt-3 h-1 rounded bg-destaque ${painel.descricao ? "w-24" : "w-16"}`}
+          />
         </div>
       </div>
 
       {/* Embed area */}
-      <div className="relative flex-1 bg-fundo-superficie flex flex-col">
+      <div className="relative flex-1 bg-fundo-pagina flex flex-col">
         {hasEmbed ? (
           <>
             <style>{`

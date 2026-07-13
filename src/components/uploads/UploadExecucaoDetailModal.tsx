@@ -180,7 +180,7 @@ export const UploadExecucaoDetailModal = ({
                         <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                       }
                       sx={{
-                        color: "var(--color-azul-unb)",
+                        color: "var(--color-titulo-destaque)",
                         textTransform: "none",
                         fontWeight: 700,
                         fontSize: "0.875rem",
@@ -209,7 +209,7 @@ export const UploadExecucaoDetailModal = ({
                           left: "4px",
                           right: "4px",
                           height: "2px",
-                          backgroundColor: "var(--color-azul-unb)",
+                          backgroundColor: "var(--color-titulo-destaque)",
                           transform: "scaleX(0)",
                           transition: "transform 0.2s ease-in-out",
                         },

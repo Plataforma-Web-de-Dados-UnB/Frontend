@@ -51,7 +51,7 @@ export const CadastroPendentePage = () => {
           <Clock className="h-8 w-8 text-texto-secundario" />
         </div>
         <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Cadastro Pendente
           </h1>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />

@@ -229,7 +229,7 @@ export const PainelFilterBar = ({
               alignItems: "center",
               justifyContent: "center",
               "&.Mui-selected": {
-                color: "var(--color-azul-unb)",
+                color: "var(--color-titulo-destaque)",
               },
               "&:hover": {
                 color: "var(--color-texto-principal)",

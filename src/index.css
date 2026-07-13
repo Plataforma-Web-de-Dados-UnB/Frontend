@@ -26,6 +26,7 @@
   --color-azul-unb: #1a2744;
   --color-azul-unb-hover: #243562;
   --color-azul-unb-suave: #eef0f7;
+  --color-titulo-destaque: #1a2744;
 
   /* Status */
   --color-sucesso: #10b981;
@@ -65,6 +66,7 @@
   --color-azul-unb: #386fad;
   --color-azul-unb-hover: #548ac4;
   --color-azul-unb-suave: #0f1e3a;
+  --color-titulo-destaque: #cbd5e1;
 
   --color-verde-claro: #052e16;
   --color-verde-escuro: #4ade80;
@@ -97,6 +99,7 @@
   --color-azul-unb: #5c93ff;
   --color-azul-unb-hover: #a3c2ff;
   --color-azul-unb-suave: #091224;
+  --color-titulo-destaque: #f1f5f9;
 
   --color-verde-claro: #002e11;
   --color-verde-escuro: #39ff14;

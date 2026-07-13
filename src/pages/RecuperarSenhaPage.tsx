@@ -5,7 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ArrowLeft, MailCheck } from "lucide-react";
-import { recuperarSenhaSchema, type RecuperarSenhaFormValues } from "@/schemas/forms";
+import {
+  recuperarSenhaSchema,
+  type RecuperarSenhaFormValues,
+} from "@/schemas/forms";
 import { FormField } from "@/components/ui/FormField";
 import { AlertBanner } from "@/components/ui/AlertBanner";
 import { usuarioApi } from "@/services/usuarioApi";
@@ -42,7 +45,7 @@ export const RecuperarSenhaPage = () => {
               <MailCheck className="h-8 w-8 text-destaque" />
             </div>
           </div>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Email Enviado
           </h1>
           <div className="mx-auto mt-3 mb-6 h-1 w-16 rounded bg-destaque" />
@@ -69,7 +72,7 @@ export const RecuperarSenhaPage = () => {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-fundo-pagina px-4 py-8">
       <div className="w-full max-w-md rounded bg-fundo-superficie p-8 shadow-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Recuperar Senha
           </h1>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />

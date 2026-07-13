@@ -121,7 +121,7 @@ export const PipelineCard = ({
                 size="medium"
                 onClick={() => onEdit(pipeline)}
                 sx={{
-                  color: "primary.main",
+                  color: "var(--color-titulo-destaque)",
                   bgcolor: "rgba(59, 130, 246, 0.08)",
                   borderRadius: "50%",
                   p: 1,

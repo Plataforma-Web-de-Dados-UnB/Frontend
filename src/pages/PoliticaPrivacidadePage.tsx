@@ -15,7 +15,7 @@ export const PoliticaPrivacidadePage = () => {
             sx={{
               textTransform: "none",
               fontWeight: 700,
-              color: "var(--color-azul-unb)",
+              color: "var(--color-titulo-destaque)",
             }}
           >
             Voltar
@@ -25,7 +25,7 @@ export const PoliticaPrivacidadePage = () => {
         <div className="bg-fundo-superficie rounded shadow-sm p-8 space-y-8">
           {/* Header */}
           <div className="border-b border-borda-padrao pb-6 flex items-center gap-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded bg-azul-unb/10 text-azul-unb shrink-0">
+            <div className="flex h-11 w-11 items-center justify-center rounded bg-titulo-destaque/10 text-titulo-destaque shrink-0">
               <Lock className="h-5 w-5" />
             </div>
             <div>

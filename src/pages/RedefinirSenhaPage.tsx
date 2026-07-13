@@ -7,7 +7,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { Eye, EyeOff, CheckCircle, ArrowLeft } from "lucide-react";
-import { redefinirSenhaSchema, type RedefinirSenhaFormValues } from "@/schemas/forms";
+import {
+  redefinirSenhaSchema,
+  type RedefinirSenhaFormValues,
+} from "@/schemas/forms";
 import { FormField } from "@/components/ui/FormField";
 import { AlertBanner } from "@/components/ui/AlertBanner";
 import { usuarioApi } from "@/services/usuarioApi";
@@ -26,16 +29,30 @@ export const RedefinirSenhaPage = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<RedefinirSenhaFormValues>({
     resolver: zodResolver(redefinirSenhaSchema),
   });
 
+  const novaSenhaValue = watch("novaSenha", "");
+
+  const criteria = [
+    { label: "Mínimo de 8 caracteres", met: novaSenhaValue.length >= 8 },
+    { label: "Uma letra maiúscula", met: /[A-Z]/.test(novaSenhaValue) },
+    { label: "Uma letra minúscula", met: /[a-z]/.test(novaSenhaValue) },
+    { label: "Um número", met: /[0-9]/.test(novaSenhaValue) },
+    {
+      label: "Um caractere especial (ex: !@#$)",
+      met: /[^A-Za-z0-9]/.test(novaSenhaValue),
+    },
+  ];
+
   if (!token) {
     return (
       <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-fundo-pagina px-4 py-8">
         <div className="w-full max-w-md rounded bg-fundo-superficie p-8 shadow-sm text-center">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Link Inválido
           </h1>
           <div className="mx-auto mt-3 mb-6 h-1 w-16 rounded bg-destaque" />
@@ -67,7 +84,7 @@ export const RedefinirSenhaPage = () => {
               <CheckCircle className="h-8 w-8 text-destaque" />
             </div>
           </div>
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Senha Redefinida
           </h1>
           <div className="mx-auto mt-3 mb-6 h-1 w-16 rounded bg-destaque" />
@@ -105,7 +122,7 @@ export const RedefinirSenhaPage = () => {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-fundo-pagina px-4 py-8">
       <div className="w-full max-w-md rounded bg-fundo-superficie p-8 shadow-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Nova Senha
           </h1>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
@@ -145,6 +162,27 @@ export const RedefinirSenhaPage = () => {
               },
             }}
           />
+
+          {novaSenhaValue.length > 0 && (
+            <div className="mt-0.5 mb-2 text-xs pl-1">
+              <ul className="space-y-1">
+                {criteria.map((c, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full transition-colors duration-200 ${
+                        c.met
+                          ? "bg-emerald-500"
+                          : "bg-rose-300 dark:bg-rose-800"
+                      }`}
+                    />
+                    <span className="text-texto-secundario font-normal text-[11px]">
+                      {c.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <FormField
             label="Confirmar Nova Senha"

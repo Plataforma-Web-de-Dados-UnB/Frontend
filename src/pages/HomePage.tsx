@@ -16,9 +16,9 @@ export const HomePage = () => {
   return (
     <div className="flex-1 flex flex-col">
       {/* Hero */}
-      <section className="bg-fundo-superficie flex-1 flex items-center justify-center py-12 px-4 text-center">
+      <section className="bg-fundo-pagina flex-1 flex items-center justify-center py-12 px-4 text-center">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-4xl font-black uppercase tracking-tight text-azul-unb lg:text-5xl">
+          <h1 className="text-4xl font-black uppercase tracking-tight text-titulo-destaque lg:text-5xl">
             Portal de Dados Institucionais
           </h1>
           <div className="mx-auto mt-4 h-1 w-24 rounded bg-destaque" />
@@ -39,7 +39,7 @@ export const HomePage = () => {
                 placeholder="Procurar painel..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded border border-borda-padrao hover:border-borda-padrao bg-fundo-superficie py-2.5 pl-9 pr-4 text-sm text-texto-principal placeholder:text-texto-secundario focus:border-destaque focus:outline-none"
+                className="w-full rounded border border-borda-padrao hover:border-borda-padrao bg-fundo-pagina py-2.5 pl-9 pr-4 text-sm text-texto-principal placeholder:text-texto-secundario focus:border-destaque focus:outline-none"
               />
             </div>
             <Button
@@ -85,7 +85,7 @@ export const HomePage = () => {
       {/* Sobre */}
       <section className="bg-fundo-superficie-suave px-4 py-12 shrink-0">
         <div className="mx-auto max-w-7xl">
-          <h2 className="text-center text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h2 className="text-center text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Sobre
           </h2>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />

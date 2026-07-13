@@ -181,7 +181,7 @@ export const UploadExecucaoCard = ({
               size="medium"
               onClick={() => onView(exec)}
               sx={{
-                color: "var(--color-azul-unb)",
+                color: "var(--color-titulo-destaque)",
                 bgcolor: "var(--color-fundo-superficie-suave)",
                 borderRadius: "50%",
                 p: 1,

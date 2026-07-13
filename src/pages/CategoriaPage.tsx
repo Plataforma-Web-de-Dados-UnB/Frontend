@@ -41,18 +41,21 @@ export const CategoriaPage = () => {
       />
 
       {/* Header */}
-      <div className="mt-6 border-l-4 border-destaque pl-4">
-        <h1 className="text-3xl font-black uppercase tracking-tight text-azul-unb">
+      <div className="mt-6 text-center">
+        <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
           {categoria?.nome ?? "Categoria"}
         </h1>
         {categoria?.descricao && (
-          <p className="mt-3 text-base text-texto-secundario">
+          <p className="mt-1 text-base text-texto-secundario">
             {categoria.descricao}
           </p>
         )}
+        <div
+          className={`mx-auto mt-3 h-1 rounded bg-destaque ${categoria?.descricao ? "w-24" : "w-16"}`}
+        />
       </div>
 
-      <hr className="my-6 border-borda-padrao" />
+      <hr className="mb-6 mt-12 border-borda-padrao" />
 
       {/* Lista de painéis */}
       {loadingPaineis && (
@@ -91,7 +94,7 @@ export const CategoriaPage = () => {
         </div>
       )}
 
-      <hr className="my-8 border-borda-padrao" />
+      <hr className="mt-6 mb-10 border-borda-padrao" />
 
       {/* Sugestão */}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-1 text-center text-sm text-texto-secundario">

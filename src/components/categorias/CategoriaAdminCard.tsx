@@ -96,7 +96,7 @@ export const CategoriaAdminCard = ({
               className="h-full w-full object-contain"
             />
           ) : (
-            <LayoutList className="h-6 w-6 text-azul-unb" />
+            <LayoutList className="h-6 w-6 text-titulo-destaque" />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export const CategoriaAdminCard = ({
                 size="medium"
                 onClick={() => onEdit(categoria)}
                 sx={{
-                  color: "primary.main",
+                  color: "var(--color-titulo-destaque)",
                   bgcolor: "rgba(59, 130, 246, 0.08)",
                   borderRadius: "50%",
                   p: 1,

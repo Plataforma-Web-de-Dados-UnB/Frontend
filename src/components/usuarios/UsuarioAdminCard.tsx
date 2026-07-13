@@ -81,7 +81,7 @@ export const UsuarioAdminCard = ({
     >
       {/* Column 1: Info (col-span-5) */}
       <div className="col-span-5 flex items-center gap-3.5 w-full min-w-0">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-azul-unb/10 font-sans text-sm font-black text-azul-unb select-none">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-titulo-destaque/10 font-sans text-sm font-black text-titulo-destaque select-none">
           {getInitials(usuario.nome, usuario.ultimoNome)}
         </div>
         <div className="flex-1 min-w-0">

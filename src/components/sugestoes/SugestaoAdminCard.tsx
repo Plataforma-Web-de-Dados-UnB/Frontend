@@ -121,7 +121,7 @@ export const SugestaoAdminCard = ({
                 e.stopPropagation();
               }}
               sx={{
-                color: "var(--color-azul-unb)",
+                color: "var(--color-titulo-destaque)",
                 textTransform: "none",
                 fontWeight: 600,
                 fontSize: "0.75rem",
@@ -144,7 +144,7 @@ export const SugestaoAdminCard = ({
                   left: 0,
                   right: 0,
                   height: "2px",
-                  backgroundColor: "var(--color-azul-unb)",
+                  backgroundColor: "var(--color-titulo-destaque)",
                   transform: "scaleX(0)",
                   transition: "transform 0.2s ease-in-out",
                 },

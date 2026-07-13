@@ -57,7 +57,7 @@ export const PaineisPage = () => {
       />
 
       <div className="mt-6 text-center">
-        <h1 className="text-3xl font-black uppercase tracking-tight text-azul-unb">
+        <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
           {q ? `Busca: ${q}` : "Painéis"}
         </h1>
         <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
@@ -144,7 +144,7 @@ export const PaineisPage = () => {
                   </span>
                 </div>
                 {/* Verso */}
-                <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center p-3.5 text-center bg-azul-unb">
+                <div className="backface-hidden rotate-y-180 absolute inset-0 flex flex-col items-center justify-center p-3.5 text-center bg-fundo-navbar">
                   {cat.descricao ? (
                     <p className="line-clamp-6 text-sm font-medium leading-relaxed text-texto-invertido">
                       {cat.descricao}

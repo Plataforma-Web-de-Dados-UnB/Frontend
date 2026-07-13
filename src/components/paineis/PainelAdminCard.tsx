@@ -89,7 +89,7 @@ export const PainelAdminCard = ({
             e.stopPropagation();
           }}
           sx={{
-            color: "var(--color-azul-unb)",
+            color: "var(--color-titulo-destaque)",
             textTransform: "none",
             fontWeight: 600,
             fontSize: "0.75rem",
@@ -112,7 +112,7 @@ export const PainelAdminCard = ({
               left: 0,
               right: 0,
               height: "2px",
-              backgroundColor: "var(--color-azul-unb)",
+              backgroundColor: "var(--color-titulo-destaque)",
               transform: "scaleX(0)",
               transition: "transform 0.2s ease-in-out",
             },
@@ -177,7 +177,7 @@ export const PainelAdminCard = ({
                 size="medium"
                 onClick={() => onEdit(painel)}
                 sx={{
-                  color: "primary.main",
+                  color: "var(--color-titulo-destaque)",
                   bgcolor: "rgba(59, 130, 246, 0.08)",
                   borderRadius: "50%",
                   p: 1,

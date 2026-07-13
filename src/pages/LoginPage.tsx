@@ -47,7 +47,7 @@ export const LoginPage = () => {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-fundo-pagina px-4 py-8">
       <div className="w-full max-w-md rounded bg-fundo-superficie p-8 shadow-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-azul-unb">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Entrar
           </h1>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />

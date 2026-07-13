@@ -220,7 +220,7 @@ export const SugestaoDetailModal = ({
                         component="a"
                         href={`mailto:${sugestao.emailContato}`}
                         sx={{
-                          color: "var(--color-azul-unb)",
+                          color: "var(--color-titulo-destaque)",
                           textTransform: "none",
                           fontWeight: 700,
                           fontSize: "0.875rem",
@@ -243,7 +243,7 @@ export const SugestaoDetailModal = ({
                             left: "4px",
                             right: "4px",
                             height: "2px",
-                            backgroundColor: "var(--color-azul-unb)",
+                            backgroundColor: "var(--color-titulo-destaque)",
                             transform: "scaleX(0)",
                             transition: "transform 0.2s ease-in-out",
                           },
