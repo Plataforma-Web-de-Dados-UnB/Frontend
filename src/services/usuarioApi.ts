@@ -33,4 +33,10 @@ export const usuarioApi = {
   async deletarConta(senha: string) {
     await api.delete("/usuario/conta", { data: { senha } });
   },
+  async recuperarSenha(email: string) {
+    await api.post("/usuario/recuperar-senha", { email });
+  },
+  async redefinirSenha(token: string, novaSenha: string) {
+    await api.post("/usuario/redefinir-senha", { token, novaSenha });
+  },
 };

@@ -23,6 +23,8 @@ import { UsuariosPage } from "@/pages/admin/UsuariosPage";
 import { SugestoesAdminPage } from "@/pages/admin/SugestoesAdminPage";
 
 import { PoliticaPrivacidadePage } from "@/pages/PoliticaPrivacidadePage";
+import { RecuperarSenhaPage } from "@/pages/RecuperarSenhaPage";
+import { RedefinirSenhaPage } from "@/pages/RedefinirSenhaPage";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 
 export default function App() {
@@ -47,6 +49,14 @@ export default function App() {
           <Route
             path={ROUTES.cadastroPendente}
             element={<CadastroPendentePage />}
+          />
+          <Route
+            path={ROUTES.recuperarSenha}
+            element={<RecuperarSenhaPage />}
+          />
+          <Route
+            path={ROUTES.redefinirSenha}
+            element={<RedefinirSenhaPage />}
           />
         </Route>
 

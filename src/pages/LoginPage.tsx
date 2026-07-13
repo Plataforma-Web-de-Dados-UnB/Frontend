@@ -93,6 +93,27 @@ export const LoginPage = () => {
             }}
           />
 
+          <div className="flex justify-end -mt-2">
+            <Button
+              component={Link}
+              to={ROUTES.recuperarSenha}
+              sx={{
+                color: "var(--color-texto-secundario)",
+                textTransform: "none",
+                fontWeight: 500,
+                fontSize: "0.8rem",
+                padding: "2px 4px",
+                minWidth: "auto",
+                "&:hover": {
+                  backgroundColor: "transparent",
+                  color: "var(--color-destaque)",
+                },
+              }}
+            >
+              Esqueceu sua senha?
+            </Button>
+          </div>
+
           <AlertBanner message={errors.root?.message} />
 
           <Button

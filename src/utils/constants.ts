@@ -13,6 +13,8 @@ export const ROUTES = {
   login: "/entrar",
   cadastro: "/cadastro",
   cadastroPendente: "/cadastro/pendente",
+  recuperarSenha: "/recuperar-senha",
+  redefinirSenha: "/redefinir-senha",
   perfil: "/perfil",
   politicaPrivacidade: "/politica-privacidade",
   // Admin

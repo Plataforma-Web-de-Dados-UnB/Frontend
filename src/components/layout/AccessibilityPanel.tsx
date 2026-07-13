@@ -112,7 +112,7 @@ export const AccessibilityPanel = () => {
           </IconButton>
         </div>
 
-        <div className="mx-auto mb-5 h-1 w-16 rounded bg-destaque"></div>
+        <div className="mx-auto mt-2 mb-5 h-1 w-16 rounded bg-destaque"></div>
 
         <div className="flex-1 overflow-y-auto px-5 pb-5 space-y-8">
           {/* Tema */}
@@ -129,10 +129,14 @@ export const AccessibilityPanel = () => {
                   textTransform: "none",
                   fontWeight: 600,
                   bgcolor: theme === "light" ? "primary.main" : "transparent",
-                  color: theme === "light" ? "primary.contrastText" : "text.primary",
+                  color:
+                    theme === "light" ? "primary.contrastText" : "text.primary",
                   borderColor: "divider",
                   "&:hover": {
-                    bgcolor: theme === "light" ? "primary.dark" : "var(--color-fundo-superficie-suave)",
+                    bgcolor:
+                      theme === "light"
+                        ? "primary.dark"
+                        : "var(--color-fundo-superficie-suave)",
                   },
                 }}
               >
@@ -148,10 +152,14 @@ export const AccessibilityPanel = () => {
                   textTransform: "none",
                   fontWeight: 600,
                   bgcolor: theme === "dark" ? "primary.main" : "transparent",
-                  color: theme === "dark" ? "primary.contrastText" : "text.primary",
+                  color:
+                    theme === "dark" ? "primary.contrastText" : "text.primary",
                   borderColor: "divider",
                   "&:hover": {
-                    bgcolor: theme === "dark" ? "primary.dark" : "var(--color-fundo-superficie-suave)",
+                    bgcolor:
+                      theme === "dark"
+                        ? "primary.dark"
+                        : "var(--color-fundo-superficie-suave)",
                   },
                 }}
               >
@@ -159,7 +167,7 @@ export const AccessibilityPanel = () => {
               </Button>
             </div>
           </section>
- 
+
           {/* Alto contraste */}
           <section>
             <SectionTitle>Alto contraste</SectionTitle>
@@ -178,7 +186,9 @@ export const AccessibilityPanel = () => {
                 color: highContrast ? "secondary.contrastText" : "text.primary",
                 borderColor: "divider",
                 "&:hover": {
-                  bgcolor: highContrast ? "secondary.dark" : "var(--color-fundo-superficie-suave)",
+                  bgcolor: highContrast
+                    ? "secondary.dark"
+                    : "var(--color-fundo-superficie-suave)",
                 },
               }}
             >

@@ -78,6 +78,20 @@ export const sugestaoSchema = z.object({
     .or(z.literal("")),
 });
 
+export const recuperarSenhaSchema = z.object({
+  email: z.email("E-mail inválido."),
+});
+
+export const redefinirSenhaSchema = z
+  .object({
+    novaSenha: passwordComplexitySchema,
+    confirmarNovaSenha: z.string(),
+  })
+  .refine((d) => d.novaSenha === d.confirmarNovaSenha, {
+    message: "As senhas não coincidem.",
+    path: ["confirmarNovaSenha"],
+  });
+
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type CadastroFormValues = z.infer<typeof cadastroSchema>;
 export type AlterarSenhaFormValues = z.infer<typeof alterarSenhaSchema>;
@@ -85,3 +99,5 @@ export type CategoriaFormValues = z.infer<typeof categoriaSchema>;
 export type PainelFormValues = z.infer<typeof painelSchema>;
 export type PipelineFormValues = z.infer<typeof pipelineSchema>;
 export type SugestaoFormValues = z.infer<typeof sugestaoSchema>;
+export type RecuperarSenhaFormValues = z.infer<typeof recuperarSenhaSchema>;
+export type RedefinirSenhaFormValues = z.infer<typeof redefinirSenhaSchema>;
