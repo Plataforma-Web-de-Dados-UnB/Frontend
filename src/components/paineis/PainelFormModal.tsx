@@ -123,9 +123,9 @@ export const PainelFormModal = ({
             borderBottom: "1px solid var(--color-borda-padrao)",
           }}
         >
-          <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
+          <span className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
             {editingPainel ? "Editar Painel de Dados" : "Novo Painel de Dados"}
-          </h2>
+          </span>
           <IconButton
             onClick={handleAttemptClose}
             disabled={isSubmitting}

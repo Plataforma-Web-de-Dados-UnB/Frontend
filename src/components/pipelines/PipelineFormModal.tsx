@@ -98,11 +98,11 @@ export const PipelineFormModal = ({
             borderBottom: "1px solid var(--color-borda-padrao)",
           }}
         >
-          <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
+          <span className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
             {editingPipeline
               ? "Editar Pipeline de Dados"
               : "Nova Pipeline de Dados"}
-          </h2>
+          </span>
           <IconButton
             onClick={() => setShowConfirmClose(true)}
             disabled={isSubmitting}

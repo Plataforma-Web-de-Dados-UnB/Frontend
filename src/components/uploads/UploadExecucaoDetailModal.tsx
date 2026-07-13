@@ -115,7 +115,7 @@ export const UploadExecucaoDetailModal = ({
                 borderBottom: "1px solid var(--color-borda-padrao)",
               }}
             >
-              <h2
+              <span
                 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4 select-none flex items-center gap-1"
                 title={`Execução ${execucao.id}`}
               >
@@ -124,7 +124,7 @@ export const UploadExecucaoDetailModal = ({
                   <Hash className="h-5 w-5 text-destaque" />
                   <span>{execucao.id}</span>
                 </div>
-              </h2>
+              </span>
               <IconButton
                 onClick={onClose}
                 sx={{

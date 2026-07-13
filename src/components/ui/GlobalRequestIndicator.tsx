@@ -14,8 +14,24 @@ export const GlobalRequestIndicator = () => {
   if (isFetching === 0 && isMutating === 0 && active === 0) return null;
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-[9999]">
-      <div className="h-0.5 w-full animate-pulse bg-destaque" />
+    <div className="fixed left-0 right-0 top-0 z-[9999] pointer-events-none">
+      <div
+        className="h-[3px] w-full animate-pulse"
+        style={{
+          background:
+            "linear-gradient(90deg, var(--color-destaque), var(--color-azul-unb), var(--color-destaque))",
+          backgroundSize: "200% 100%",
+          animation:
+            "pulse 1.5s ease-in-out infinite, slide 2s linear infinite",
+          boxShadow: "0 0 6px var(--color-destaque)",
+        }}
+      />
+      <style>{`
+        @keyframes slide {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </div>
   );
 };

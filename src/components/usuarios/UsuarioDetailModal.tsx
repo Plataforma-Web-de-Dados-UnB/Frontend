@@ -94,9 +94,9 @@ export const UsuarioDetailModal = ({
             }}
           >
             <div className="flex flex-col min-w-0 mt-6">
-              <h2 className="text-2xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
+              <span className="text-2xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
                 {usuario.nome} {usuario.ultimoNome}
-              </h2>
+              </span>
               <div className="flex items-center gap-1.5 text-sm text-texto-secundario mt-1 truncate">
                 <Mail className="h-4 w-4 text-texto-secundario/65 shrink-0" />
                 <span>{usuario.email}</span>

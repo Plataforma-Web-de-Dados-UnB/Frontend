@@ -127,11 +127,11 @@ export const CategoriaFormModal = ({
             borderBottom: "1px solid var(--color-borda-padrao)",
           }}
         >
-          <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
+          <span className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
             {editing
               ? "Editar Categoria de Painéis"
               : "Nova Categoria de Painéis"}
-          </h2>
+          </span>
           <IconButton
             onClick={handleAttemptClose}
             disabled={isSubmitting}

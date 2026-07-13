@@ -68,9 +68,9 @@ export const PipelineDetailModal = ({
               borderBottom: "1px solid var(--color-borda-padrao)",
             }}
           >
-            <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
+            <span className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4">
               {pipeline.nome}
-            </h2>
+            </span>
             <IconButton
               onClick={onClose}
               sx={{

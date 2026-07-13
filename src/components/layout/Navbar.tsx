@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { LogIn, Menu, UserPlus, X, LogOut, User, BarChart2, Megaphone, ChartColumnBig, LayoutDashboard, UserCog } from "lucide-react";
+import {
+  LogIn,
+  Menu,
+  UserPlus,
+  X,
+  LogOut,
+  User,
+  Megaphone,
+  ChartColumnBig,
+  LayoutDashboard,
+  UserCog,
+} from "lucide-react";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";

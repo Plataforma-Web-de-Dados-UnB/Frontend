@@ -111,9 +111,9 @@ export const SugestaoDetailModal = ({
                 borderBottom: "1px solid var(--color-borda-padrao)",
               }}
             >
-              <h2 className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4 select-none">
+              <span className="text-xl font-extrabold tracking-tight font-sans text-texto-principal truncate pr-4 select-none">
                 {sugestao.titulo}
-              </h2>
+              </span>
               <IconButton
                 onClick={onClose}
                 sx={{
