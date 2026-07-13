@@ -115,12 +115,12 @@ export const PaineisPage = () => {
 
       {/* Categorias sem busca */}
       {!isLoading && !q && filteredCategorias.length > 0 && (
-        <div className="mt-8 flex flex-wrap justify-center gap-5 w-full">
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-5 gap-4 lg:gap-8 w-full lg:px-40">
           {filteredCategorias.map((cat) => (
             <Link
               key={cat.id}
               to={ROUTES.categoria.replace(":id", String(cat.id))}
-              className="group perspective aspect-square cursor-pointer w-[calc(50%-10px)] sm:w-[calc(25%-15px)] md:w-[calc(16.666%-17px)] lg:w-[calc(12.5%-17.5px)]"
+              className="group perspective aspect-square cursor-pointer w-full"
               aria-label={cat.nome}
             >
               <div className="flip-card-inner relative h-full w-full transform-style-3d transition-transform duration-500">
@@ -139,7 +139,7 @@ export const PaineisPage = () => {
                       </div>
                     )}
                   </div>
-                  <span className="text-sm font-black leading-tight text-texto-principal/80 line-clamp-2 mt-2">
+                  <span className="text-sm font-black leading-tight text-texto-principal/80 line-clamp-2 mt-1">
                     {cat.nome}
                   </span>
                 </div>

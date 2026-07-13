@@ -28,6 +28,8 @@ export const SugestaoPage = () => {
       await sugestaoApi.create({
         ...values,
         tipo: Number(values.tipo) as TipoSugestao,
+        nomeContato: values.nomeContato?.trim() || undefined,
+        emailContato: values.emailContato?.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -122,14 +124,14 @@ export const SugestaoPage = () => {
           />
 
           <FormField
-            label="Seu Nome"
+            label="Seu Nome (opcional)"
             placeholder="Nome para contato"
             fieldError={errors.nomeContato}
             {...register("nomeContato")}
           />
 
           <FormField
-            label="Seu E-mail"
+            label="Seu E-mail (opcional)"
             type="email"
             placeholder="seu@email.com"
             fieldError={errors.emailContato}

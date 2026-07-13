@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Share2 } from "lucide-react";
 import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CheckIcon from "@mui/icons-material/Check";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import XIcon from "@mui/icons-material/X";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import EmailIcon from "@mui/icons-material/Email";
 import { embedDashboard } from "@superset-ui/embedded-sdk";
 import { painelApi } from "@/services/painelApi";
 import { supersetApi } from "@/services/supersetApi";
@@ -14,12 +23,81 @@ export const PainelPage = () => {
   const painelId = Number(id);
   const embedRef = useRef<HTMLDivElement>(null);
   const [embedError, setEmbedError] = useState<string | null>(null);
-
   const { data: painel, isLoading } = useQuery({
     queryKey: ["painel", painelId],
     queryFn: () => painelApi.detail(painelId),
     enabled: !!painelId,
   });
+
+  const [shareAnchor, setShareAnchor] = useState<HTMLElement | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const siteName =
+    "Portal de Dados Institucionais - Universidade de Brasília - FCTE";
+  const shareText = painel
+    ? `Confira o painel "${painel.nome}" no ${siteName}`
+    : `Confira este painel no ${siteName}`;
+
+  const shareOptions = [
+    {
+      label: copied ? "Link copiado!" : "Copiar link",
+      icon: copied ? CheckIcon : ContentCopyIcon,
+      action: () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+      },
+    },
+    {
+      label: "WhatsApp",
+      icon: WhatsAppIcon,
+      action: () => {
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`,
+          "_blank",
+        );
+      },
+    },
+    {
+      label: "X / Twitter",
+      icon: XIcon,
+      action: () => {
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+          "_blank",
+        );
+      },
+    },
+    {
+      label: "Facebook",
+      icon: FacebookIcon,
+      action: () => {
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+          "_blank",
+        );
+      },
+    },
+    {
+      label: "LinkedIn",
+      icon: LinkedInIcon,
+      action: () => {
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+          "_blank",
+        );
+      },
+    },
+    {
+      label: "E-mail",
+      icon: EmailIcon,
+      action: () => {
+        window.location.href = `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+      },
+    },
+  ];
 
   useEffect(() => {
     if (!painel?.embedDashboardUuid || !embedRef.current) return;
@@ -182,6 +260,74 @@ export const PainelPage = () => {
 
         {/* Toolbar bottom */}
         <div className="flex items-center justify-end mx-6 lg:mx-7 py-3 border-t border-fundo-superficie-suave mb-6 gap-2">
+          <Button
+            size="small"
+            startIcon={<Share2 className="h-4 w-4" />}
+            sx={{
+              borderRadius: "4px",
+              textTransform: "none",
+              fontWeight: 600,
+              bgcolor: "var(--color-fundo-superficie-suave)",
+              color: "var(--color-texto-secundario)",
+              px: 1.5,
+              py: 0.5,
+              "&:hover": {
+                bgcolor: "var(--color-fundo-superficie-suave)",
+                color: "var(--color-texto-secundario)",
+                opacity: 0.8,
+              },
+            }}
+            onClick={(e) => setShareAnchor(e.currentTarget)}
+          >
+            Compartilhar
+          </Button>
+          <Menu
+            anchorEl={shareAnchor}
+            open={Boolean(shareAnchor)}
+            onClose={() => setShareAnchor(null)}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+            slotProps={{
+              paper: {
+                sx: {
+                  mt: -1,
+                  borderRadius: "8px",
+                  bgcolor: "var(--color-fundo-superficie)",
+                  border: "1px solid var(--color-borda-padrao)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  minWidth: 180,
+                },
+              },
+            }}
+          >
+            {shareOptions.map((option) => {
+              const Icon = option.icon;
+              return (
+                <MenuItem
+                  key={option.label}
+                  onClick={() => {
+                    option.action();
+                    setShareAnchor(null);
+                  }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    py: 1,
+                    px: 2,
+                    fontSize: "0.9375rem",
+                    color: "var(--color-texto-principal)",
+                    "&:hover": {
+                      bgcolor: "var(--color-fundo-superficie-suave)",
+                    },
+                  }}
+                >
+                  <Icon sx={{ fontSize: 18 }} />
+                  <span>{option.label}</span>
+                </MenuItem>
+              );
+            })}
+          </Menu>
           <Button
             size="small"
             startIcon={<Maximize2 className="h-4 w-4" />}

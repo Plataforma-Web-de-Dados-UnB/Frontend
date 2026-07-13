@@ -48,14 +48,13 @@ export default function App() {
             path={ROUTES.cadastroPendente}
             element={<CadastroPendentePage />}
           />
-          <Route
-            path={ROUTES.perfil}
-            element={
-              <PrivateRoute>
-                <PerfilPage />
-              </PrivateRoute>
-            }
-          />
+        </Route>
+
+        {/* Perfil - autenticado com layout admin */}
+        <Route element={<PrivateRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path={ROUTES.perfil} element={<PerfilPage />} />
+          </Route>
         </Route>
 
         {/* Área admin - PrivateRoute sem children usa Outlet internamente */}

@@ -30,4 +30,7 @@ export const usuarioApi = {
   async remover(id: string) {
     await api.delete(`/admin/usuarios/${id}`);
   },
+  async deletarConta(senha: string) {
+    await api.delete("/usuario/conta", { data: { senha } });
+  },
 };

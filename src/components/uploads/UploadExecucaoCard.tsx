@@ -1,6 +1,6 @@
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import { Calendar, Clock, RotateCcw, Eye } from "lucide-react";
+import { Calendar, Clock, RotateCcw, Eye, Hash } from "lucide-react";
 import type { PipelineExecucaoGetDto } from "@/types/dtos";
 
 export interface UploadExecucaoCardProps {
@@ -95,20 +95,24 @@ export const UploadExecucaoCard = ({
       onClick={() => onView(exec)}
       className="group flex flex-col md:grid md:grid-cols-12 items-center gap-4 bg-fundo-superficie p-5 transition hover:bg-fundo-superficie-suave cursor-pointer rounded shadow-sm"
     >
-      {/* Column 1: Pipeline Name & Return Message (col-span-5) */}
+      {/* Column 1: Execution id & File Name (col-span-5) */}
       <div className="col-span-5 min-w-0 w-full">
-        <h3 className="font-bold text-texto-principal text-base group-hover:text-destaque transition-colors truncate">
-          {exec.pipelineNome}
+        <h3 className="font-bold text-texto-principal text-base group-hover:text-destaque transition-colors flex items-center gap-1">
+          <span>Execução</span>
+          <div className="flex items-center gap-0">
+            <Hash className="h-4 w-4 text-destaque" />
+            <span>{exec.id}</span>
+          </div>
         </h3>
         <p
-          className="text-sm text-texto-secundario/70 mt-1 truncate font-normal h-[20px] leading-normal"
-          title={exec.mensagem ?? undefined}
+          className="text-sm text-texto-secundario/70 mt-1 truncate font-normal h-5 leading-normal"
+          title={exec.nomeArquivo ?? undefined}
         >
-          {exec.mensagem ? (
-            exec.mensagem
+          {exec.nomeArquivo ? (
+            exec.nomeArquivo
           ) : (
             <span className="italic text-texto-secundario/40 select-none">
-              Sem mensagem de retorno.
+              Arquivo não registrado
             </span>
           )}
         </p>

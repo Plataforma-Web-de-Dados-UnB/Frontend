@@ -187,13 +187,14 @@ export const PainelFormModal = ({
                       borderRadius: "4px",
                       bgcolor: "var(--color-fundo-superficie)",
                       color: "var(--color-texto-principal)",
-                      "& fieldset": {
-                        borderColor: "var(--color-borda-padrao)",
-                      },
-                      "&:hover fieldset": {
+                      border: "1px solid var(--color-borda-padrao)",
+                      "& .MuiOutlinedInput-notchedOutline": {
                         borderColor: "var(--color-borda-padrao) !important",
                       },
-                      "&.Mui-focused fieldset": {
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "var(--color-borda-padrao) !important",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                         borderColor: "var(--color-destaque) !important",
                       },
                     }}
@@ -203,6 +204,22 @@ export const PainelFormModal = ({
                           sx: {
                             backgroundColor: "var(--color-fundo-superficie)",
                             color: "var(--color-texto-principal)",
+                            border: "1px solid var(--color-borda-padrao)",
+                            "& .MuiMenuItem-root": {
+                              fontSize: "0.875rem",
+                              "&:hover": {
+                                backgroundColor:
+                                  "var(--color-fundo-superficie-suave)",
+                              },
+                              "&.Mui-selected": {
+                                backgroundColor: "var(--color-destaque-suave)",
+                                color: "var(--color-destaque)",
+                                "&:hover": {
+                                  backgroundColor:
+                                    "var(--color-destaque-suave)",
+                                },
+                              },
+                            },
                           },
                         },
                       },

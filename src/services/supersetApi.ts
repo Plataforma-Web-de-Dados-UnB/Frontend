@@ -10,4 +10,9 @@ export const supersetApi = {
     );
     return data.token;
   },
+
+  async getSsoUrl() {
+    const { data } = await api.get<{ url: string }>("/superset/sso-url");
+    return data.url;
+  },
 };

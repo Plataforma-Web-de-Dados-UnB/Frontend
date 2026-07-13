@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { api } from "@/services/api";
+import { usuarioApi } from "@/services/usuarioApi";
 import type {
   CargoUsuario,
   LoginDto,
@@ -29,6 +30,7 @@ type AuthContextType = {
   alterarSenha: (
     data: AlterarSenhaDto,
   ) => Promise<{ ok: boolean; error?: string }>;
+  deletarConta: (senha: string) => Promise<{ ok: boolean; error?: string }>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -99,6 +101,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const deletarConta = async (senha: string) => {
+    try {
+      await usuarioApi.deletarConta(senha);
+      setUser(null);
+      localStorage.removeItem("portal@access_token");
+      localStorage.removeItem("portal@refresh_token");
+      localStorage.removeItem("portal@user");
+      return { ok: true };
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Erro ao excluir conta.";
+      return { ok: false, error: message };
+    }
+  };
+
   const alterarSenha = async (data: AlterarSenhaDto) => {
     try {
       await api.put("/usuario/senha", {
@@ -130,6 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         cadastro,
         logout,
         alterarSenha,
+        deletarConta,
       }}
     >
       {isReady ? children : null}

@@ -80,6 +80,8 @@ export const SugestoesAdminPage = (): React.JSX.Element => {
   const handleClearSearch = () => {
     setBuscaInput("");
     setBusca("");
+    setTipoFilter("");
+    setStatusFilter(0);
     setPage(1);
   };
 

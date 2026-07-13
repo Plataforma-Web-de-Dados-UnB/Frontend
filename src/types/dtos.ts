@@ -127,6 +127,7 @@ export type PipelineExecucaoGetDto = {
   pipelineId: number;
   pipelineNome: string;
   batchId: string;
+  nomeArquivo: string | null;
   tabelaSilver: string;
   tabelaGold: string;
   status: StatusPipelineExecucao;

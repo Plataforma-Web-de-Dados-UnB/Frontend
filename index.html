@@ -1,23 +1,52 @@
 <!doctype html>
 <html lang="pt_BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/unb-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        const root = document.documentElement;
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/unb-icon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>
-    if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  </script>
-  <title>Portal de Dados Institucionais | UnB - FCTE</title>
-</head>
+        const theme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        if (theme === "dark" || (!theme && prefersDark)) {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+        if (localStorage.getItem("high-contrast") === "true") {
+          root.classList.add("high-contrast");
+        }
 
+        const fontSize = localStorage.getItem("font-size-level");
+        const parsed = parseFloat(fontSize || "100");
+        if (!Number.isNaN(parsed) && parsed >= 100 && parsed <= 150) {
+          root.style.fontSize = fontSize + "%";
+        } else {
+          root.style.fontSize = "100%";
+        }
+      })();
+    </script>
+    <title>Portal de Dados Institucionais | UnB - FCTE</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
+    </script>
+  </body>
 </html>

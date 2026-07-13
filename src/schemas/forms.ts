@@ -67,12 +67,15 @@ export const sugestaoSchema = z.object({
   descricao: z.string().min(10, "A descrição deve ter ao menos 10 caracteres."),
   nomeContato: z
     .string()
-    .min(2, "O nome de contato é obrigatório.")
-    .max(255, "Máximo de 255 caracteres."),
+    .max(255, "Máximo de 255 caracteres.")
+    .optional()
+    .or(z.literal("")),
   emailContato: z
     .string()
-    .min(1, "O e-mail de contato é obrigatório.")
-    .email("E-mail inválido."),
+    .email("E-mail inválido.")
+    .max(255, "Máximo de 255 caracteres.")
+    .optional()
+    .or(z.literal("")),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;

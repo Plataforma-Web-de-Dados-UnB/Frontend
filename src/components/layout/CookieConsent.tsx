@@ -36,13 +36,11 @@ export const CookieConsent = () => {
               <span className="sm:hidden">
                 <Cookie className="h-4 w-4 text-destaque inline" />
               </span>
-              Uso de Cookies Essenciais e LGPD
+              Diga-nos se concorda com o uso de cookies
             </h4>
-            <p className="text-xs text-texto-secundario leading-relaxed max-w-3xl">
-              Este portal utiliza cookies estritamente necessários para manter a
-              sua autenticação ativa de forma segura (renovação do token de
-              segurança). Para mais informações, acesse a nossa Política de
-              Privacidade.
+            <p className="text-sm text-texto-secundario leading-relaxed max-w-3xl">
+              Usamos apenas cookies necessários para manter você autenticado com
+              segurança. Nenhum dado é compartilhado com terceiros.
             </p>
           </div>
         </div>
@@ -73,7 +71,7 @@ export const CookieConsent = () => {
               px: 3,
             }}
           >
-            Aceitar
+            Concordo
           </Button>
         </div>
       </div>

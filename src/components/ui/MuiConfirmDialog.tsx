@@ -21,6 +21,7 @@ interface MuiConfirmDialogProps {
   onConfirm: () => void;
   requireTextInput?: boolean;
   textInputExpectedValue?: string;
+  children?: React.ReactNode;
 }
 
 export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
@@ -35,6 +36,7 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
   onConfirm,
   requireTextInput = false,
   textInputExpectedValue = "",
+  children,
 }): React.JSX.Element => {
   const [inputValue, setInputValue] = useState("");
 
@@ -133,9 +135,11 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
           {description}
         </DialogContentText>
 
+        {children}
+
         {requireTextInput && (
           <div className="flex flex-col gap-2 mt-4">
-            <p className="text-[0.875rem] leading-[2rem] font-semibold text-texto-secundario">
+            <p className="text-[0.875rem] leading-8 font-semibold text-texto-secundario">
               Para confirmar, digite{" "}
               <span className="text-[0.875rem] text-texto-principal bg-borda-padrao px-1.5 py-1.5 rounded">
                 {textInputExpectedValue}
@@ -207,6 +211,8 @@ export const MuiConfirmDialog: React.FC<MuiConfirmDialogProps> = ({
           disabled={isConfirmDisabled}
           variant="contained"
           color={getToneColor()}
+          className="confirm-dialog-confirm-btn"
+          data-confirm-tone={confirmTone}
           startIcon={
             isLoading ? <CircularProgress size={16} color="inherit" /> : null
           }

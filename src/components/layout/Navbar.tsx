@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { LogIn, Menu, UserPlus, X, LogOut, User } from "lucide-react";
+import { LogIn, Menu, UserPlus, X, LogOut, User, BarChart2, Megaphone, ChartColumnBig, LayoutDashboard, UserCog } from "lucide-react";
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { useAuth } from "@/features/auth/useAuth";
+import { useAccessibilityDrawer } from "@/features/accessibility/useAccessibilityDrawer";
 import { APP_CONFIG, ROUTES } from "@/utils/constants";
+import { supersetApi } from "@/services/supersetApi";
 
 const sharpButton = {
   borderRadius: "4px",
@@ -71,12 +76,32 @@ export const Navbar = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { openDrawer } = useAccessibilityDrawer();
   const [open, setOpen] = useState(false);
+  const [supersetLoading, setSupersetLoading] = useState(false);
+  const [supersetError, setSupersetError] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await logout();
     navigate(ROUTES.home);
     setOpen(false);
+  };
+
+  const handleSupersetClick = async () => {
+    if (supersetLoading) return;
+    setSupersetLoading(true);
+    setSupersetError(null);
+    try {
+      const url = await supersetApi.getSsoUrl();
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Erro ao abrir o Superset.";
+      setSupersetError(message);
+    } finally {
+      setSupersetLoading(false);
+      setOpen(false);
+    }
   };
 
   const getNavButtonStyle = (route: string, isDestaque = false) => {
@@ -96,7 +121,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-azul-unb shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-fundo-navbar shadow-md">
       <div className="flex h-16 w-full items-center justify-between px-6 lg:px-7">
         {/* Logo / Título */}
         <Link
@@ -131,7 +156,7 @@ export const Navbar = () => {
           <Button
             component={Link}
             to={ROUTES.paineis}
-            //startIcon={<BarChart2 className="h-4 w-4" />}
+            startIcon={<ChartColumnBig className="h-4 w-4" />}
             sx={getNavButtonStyle(ROUTES.paineis)}
           >
             Painéis
@@ -140,6 +165,7 @@ export const Navbar = () => {
           <Button
             component={Link}
             to={ROUTES.sugestao}
+            startIcon={<Megaphone className="h-4 w-4" />}
             sx={getNavButtonStyle(ROUTES.sugestao)}
           >
             Sugestões
@@ -147,11 +173,9 @@ export const Navbar = () => {
 
           {isAuthenticated && APP_CONFIG.supersetUrl && (
             <Button
-              component="a"
-              href={APP_CONFIG.supersetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              //startIcon={<LayoutDashboard className="h-4 w-4" />}
+              onClick={handleSupersetClick}
+              disabled={supersetLoading}
+              startIcon={<LayoutDashboard className="h-4 w-4" />}
               sx={navTextButton}
             >
               Superset
@@ -164,12 +188,20 @@ export const Navbar = () => {
                 <Button
                   component={Link}
                   to={ROUTES.adminDashboard}
-                  //startIcon={<Settings2 className="h-4 w-4" />}
+                  startIcon={<UserCog className="h-4.5 w-4.5" />}
                   sx={getNavButtonStyle(ROUTES.adminDashboard)}
                 >
                   Área administrativa
                 </Button>
               )}
+              <Button
+                onClick={openDrawer}
+                startIcon={<AccessibilityIcon className="h-4 w-4" />}
+                aria-label="Abrir configurações de acessibilidade"
+                sx={navTextButton}
+              >
+                Acessibilidade
+              </Button>
               <Button
                 component={Link}
                 to={ROUTES.perfil}
@@ -189,9 +221,17 @@ export const Navbar = () => {
           ) : (
             <>
               <Button
+                onClick={openDrawer}
+                startIcon={<AccessibilityIcon className="h-4 w-4" />}
+                aria-label="Abrir configurações de acessibilidade"
+                sx={navTextButton}
+              >
+                Acessibilidade
+              </Button>
+              <Button
                 component={Link}
                 to={ROUTES.cadastro}
-                //startIcon={<UserPlus className="h-4 w-4" />}
+                startIcon={<UserPlus className="h-4 w-4" />}
                 sx={getNavButtonStyle(ROUTES.cadastro)}
               >
                 Cadastro
@@ -199,7 +239,7 @@ export const Navbar = () => {
               <Button
                 component={Link}
                 to={ROUTES.login}
-                //startIcon={<LogIn className="h-4 w-4" />}
+                startIcon={<LogIn className="h-4 w-4" />}
                 sx={getNavButtonStyle(ROUTES.login, true)}
               >
                 Entrar
@@ -226,13 +266,14 @@ export const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-white/10 bg-azul-unb px-4 pb-4 lg:hidden">
+        <div className="border-t border-white/10 bg-fundo-navbar px-4 pb-4 lg:hidden">
           <div className="mt-3 flex flex-col gap-2 pt-2">
             <Button
               fullWidth
               component={Link}
               to={ROUTES.paineis}
               onClick={() => setOpen(false)}
+              startIcon={<ChartColumnBig className="h-4 w-4" />}
               sx={{
                 ...sharpButton,
                 justifyContent: "flex-start",
@@ -248,6 +289,7 @@ export const Navbar = () => {
               component={Link}
               to={ROUTES.sugestao}
               onClick={() => setOpen(false)}
+              startIcon={<Megaphone className="h-4 w-4" />}
               sx={{
                 ...sharpButton,
                 justifyContent: "flex-start",
@@ -261,11 +303,9 @@ export const Navbar = () => {
             {isAuthenticated && APP_CONFIG.supersetUrl && (
               <Button
                 fullWidth
-                component="a"
-                href={APP_CONFIG.supersetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                //startIcon={<LayoutDashboard className="h-4 w-4" />}
+                onClick={handleSupersetClick}
+                disabled={supersetLoading}
+                startIcon={<LayoutDashboard className="h-4 w-4" />}
                 sx={{
                   ...sharpButton,
                   justifyContent: "flex-start",
@@ -285,7 +325,7 @@ export const Navbar = () => {
                     component={Link}
                     to="/admin"
                     onClick={() => setOpen(false)}
-                    //startIcon={<Settings2 className="h-4 w-4" />}
+                    startIcon={<UserCog className="h-4.5 w-4.5" />}
                     sx={{
                       ...sharpButton,
                       justifyContent: "flex-start",
@@ -299,10 +339,27 @@ export const Navbar = () => {
                 )}
                 <Button
                   fullWidth
+                  onClick={() => {
+                    setOpen(false);
+                    openDrawer();
+                  }}
+                  startIcon={<AccessibilityIcon className="h-4 w-4" />}
+                  sx={{
+                    ...sharpButton,
+                    justifyContent: "flex-start",
+                    color: "#ffffff",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                  }}
+                >
+                  Acessibilidade
+                </Button>
+                <Button
+                  fullWidth
                   component={Link}
                   to={ROUTES.perfil}
                   onClick={() => setOpen(false)}
-                  //startIcon={<User className="h-4 w-4" />}
+                  startIcon={<User className="h-4 w-4" />}
                   sx={{
                     ...sharpButton,
                     justifyContent: "flex-start",
@@ -316,6 +373,7 @@ export const Navbar = () => {
                 <Button
                   fullWidth
                   onClick={handleLogout}
+                  startIcon={<LogOut className="h-4 w-4" />}
                   sx={{
                     ...sharpButton,
                     justifyContent: "flex-start",
@@ -330,6 +388,23 @@ export const Navbar = () => {
               </>
             ) : (
               <>
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    setOpen(false);
+                    openDrawer();
+                  }}
+                  startIcon={<AccessibilityIcon className="h-4 w-4" />}
+                  sx={{
+                    ...sharpButton,
+                    justifyContent: "flex-start",
+                    color: "#ffffff",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                  }}
+                >
+                  Acessibilidade
+                </Button>
                 <Button
                   fullWidth
                   component={Link}
@@ -367,6 +442,21 @@ export const Navbar = () => {
           </div>
         </div>
       )}
+
+      <Snackbar
+        open={Boolean(supersetError)}
+        autoHideDuration={6000}
+        onClose={() => setSupersetError(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSupersetError(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {supersetError}
+        </Alert>
+      </Snackbar>
     </header>
   );
 };

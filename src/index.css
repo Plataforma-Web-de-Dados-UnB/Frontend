@@ -2,6 +2,7 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant high-contrast (&:where(.high-contrast, .high-contrast *));
 
 /* ─── TOKENS SEMÂNTICOS - IDENTIDADE UnB ─────────────────── */
 @theme {
@@ -11,6 +12,7 @@
   --color-fundo-superficie-suave: #e8eaf0;
   --color-borda-padrao: #d1d5db;
   --color-fundo-navbar: #1a2744;
+  --color-fundo-header-card: #1a2744;
 
   /* Texto */
   --color-texto-principal: #1a1a2e;
@@ -46,25 +48,26 @@
 
 /* ─── TEMA DARK ───────────────────────────────────────────── */
 @variant dark {
-  --color-fundo-pagina: #0d1117;
-  --color-fundo-superficie: #161b27;
+  --color-fundo-pagina: #0a0f1a;
+  --color-fundo-superficie: #111827;
   --color-fundo-superficie-suave: #1e2535;
-  --color-borda-padrao: #2d3748;
-  --color-fundo-navbar: #0d1117;
+  --color-borda-padrao: #374151;
+  --color-fundo-navbar: #070b14;
+  --color-fundo-header-card: #141e33;
 
-  --color-texto-principal: #f1f5f9;
-  --color-texto-secundario: #94a3b8;
+  --color-texto-principal: #f8fafc;
+  --color-texto-secundario: #cbd5e1;
   --color-texto-invertido: #ffffff;
 
   --color-destaque: #00c44a;
-  --color-destaque-hover: #00e855;
+  --color-destaque-hover: #22d35d;
   --color-destaque-suave: #052e16;
-  --color-azul-unb: #1e3a6e;
-  --color-azul-unb-hover: #254d96;
+  --color-azul-unb: #386fad;
+  --color-azul-unb-hover: #548ac4;
   --color-azul-unb-suave: #0f1e3a;
 
   --color-verde-claro: #052e16;
-  --color-verde-escuro: #34d399;
+  --color-verde-escuro: #4ade80;
   --color-amarelo-claro: #451a03;
   --color-amarelo-escuro: #fbbf24;
   --color-vermelho-claro: #450a0a;
@@ -73,6 +76,66 @@
   --color-azul-escuro: #60a5fa;
   --color-cinza-claro: #1e2535;
   --color-cinza-escuro: #94a3b8;
+}
+
+/* ─── TEMA ALTO CONTRASTE ─────────────────────────────────── */
+@variant high-contrast {
+  --color-fundo-pagina: #000000;
+  --color-fundo-superficie: #0a0f1d;
+  --color-fundo-superficie-suave: #141b2d;
+  --color-borda-padrao: #ffffff;
+  --color-fundo-navbar: #000000;
+  --color-fundo-header-card: #000000;
+
+  --color-texto-principal: #ffffff;
+  --color-texto-secundario: #f1f5f9;
+  --color-texto-invertido: #000000;
+
+  --color-destaque: #00ff55;
+  --color-destaque-hover: #80ffaa;
+  --color-destaque-suave: #002e11;
+  --color-azul-unb: #5c93ff;
+  --color-azul-unb-hover: #a3c2ff;
+  --color-azul-unb-suave: #091224;
+
+  --color-verde-claro: #002e11;
+  --color-verde-escuro: #39ff14;
+  --color-amarelo-claro: #332200;
+  --color-amarelo-escuro: #ffea00;
+  --color-vermelho-claro: #3a0909;
+  --color-vermelho-escuro: #ff4d4d;
+  --color-azul-claro: #091224;
+  --color-azul-escuro: #5c93ff;
+  --color-cinza-claro: #1a202c;
+  --color-cinza-escuro: #e2e8f0;
+}
+
+html.high-contrast *,
+html.high-contrast *::before,
+html.high-contrast *::after {
+  box-shadow: none !important;
+}
+
+html.high-contrast :focus-visible,
+html.high-contrast button:focus-visible,
+html.high-contrast a:focus-visible,
+html.high-contrast input:focus-visible,
+html.high-contrast select:focus-visible,
+html.high-contrast textarea:focus-visible,
+html.high-contrast [role="button"]:focus-visible {
+  outline: 2px solid #ffea00 !important;
+  outline-offset: -2px !important;
+}
+
+html.high-contrast .MuiInputAdornment-root span {
+  background-color: var(--color-fundo-superficie-suave) !important;
+  color: var(--color-texto-principal) !important;
+  border: 1px solid var(--color-borda-padrao) !important;
+}
+
+html.high-contrast img,
+html.high-contrast video {
+  filter: contrast(1.2);
 }
 
 /* ─── BASE ────────────────────────────────────────────────── */
@@ -193,6 +256,64 @@ input:-webkit-autofill:active {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+}
+
+/* MUI inputs follow Tailwind CSS variables so theme changes apply instantly */
+.MuiOutlinedInput-root {
+  background-color: var(--color-fundo-superficie) !important;
+  color: var(--color-texto-principal) !important;
+}
+
+.MuiOutlinedInput-root fieldset {
+  border-color: var(--color-borda-padrao) !important;
+  border-width: 1px !important;
+}
+
+.MuiOutlinedInput-root:hover fieldset {
+  border-color: var(--color-borda-padrao) !important;
+  border-width: 1px !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: var(--color-destaque) !important;
+  border-width: 1px !important;
+}
+
+.MuiInputLabel-root {
+  color: var(--color-texto-secundario) !important;
+}
+
+/* Swap default/hover confirm button colors in dark theme */
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="primary"] {
+  background-color: #0d1630 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="primary"]:hover {
+  background-color: #1a2744 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="danger"] {
+  background-color: #dc2626 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="danger"]:hover {
+  background-color: #ef4444 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="warning"] {
+  background-color: #d97706 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="warning"]:hover {
+  background-color: #f59e0b !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="success"] {
+  background-color: #059669 !important;
+}
+
+html.dark .confirm-dialog-confirm-btn[data-confirm-tone="success"]:hover {
+  background-color: #10b981 !important;
 }
 
 @layer utilities {
