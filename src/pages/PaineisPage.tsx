@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart2, ChevronsRight } from "lucide-react";
@@ -5,10 +6,19 @@ import { categoriasApi } from "@/services/categoriasApi";
 import { painelApi } from "@/services/painelApi";
 import { ROUTES } from "@/utils/constants";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { startTour } from "@/features/tour/useTour";
+import { paineisSteps } from "@/features/tour/tourSteps";
 
 export const PaineisPage = () => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
+
+  useEffect(() => {
+    if (!q) {
+      const timer = setTimeout(() => startTour("paineis", paineisSteps), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [q]);
 
   const { data: categorias, isLoading: isLoadingCategorias } = useQuery({
     queryKey: ["categorias-all"],
@@ -57,7 +67,10 @@ export const PaineisPage = () => {
       />
 
       <div className="mt-6 text-center">
-        <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
+        <h1
+          id="tour-paineis-title"
+          className="text-3xl font-black uppercase tracking-tight text-titulo-destaque"
+        >
           {q ? `Busca: ${q}` : "Painéis"}
         </h1>
         <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
@@ -115,7 +128,10 @@ export const PaineisPage = () => {
 
       {/* Categorias sem busca */}
       {!isLoading && !q && filteredCategorias.length > 0 && (
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-5 gap-4 lg:gap-8 w-full lg:px-40">
+        <div
+          id="tour-paineis-grid"
+          className="mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-5 gap-4 lg:gap-8 w-full lg:px-40"
+        >
           {filteredCategorias.map((cat) => (
             <Link
               key={cat.id}

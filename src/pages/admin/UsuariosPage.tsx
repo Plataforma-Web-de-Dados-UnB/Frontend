@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Users, ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "@mui/material/Button";
@@ -6,6 +6,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
 import { usuarioApi } from "@/services/usuarioApi";
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminUsuariosSteps } from "@/features/tour/tourSteps";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import type { UsuarioGetDto } from "@/types/dtos";
 import { toast } from "sonner";
@@ -19,6 +21,14 @@ const PAGE_SIZE = 5;
 export const UsuariosPage = () => {
   const { isSuperAdmin } = useAuth();
   const qc = useQueryClient();
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-usuarios", adminUsuariosSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [busca, setBusca] = useState("");
@@ -150,23 +160,27 @@ export const UsuariosPage = () => {
   return (
     <div className="flex flex-col gap-6">
       {/* Welcome Card Top */}
-      <PageHeaderCard
-        title="Gestão de Usuários"
-        description="Gerencie as permissões e aprove ou revogue os acessos dos usuários da plataforma de dados institucionais."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Gestão de Usuários"
+          description="Gerencie as permissões e aprove ou revogue os acessos dos usuários da plataforma de dados institucionais."
+        />
+      </div>
 
       {/* Filter and Search Bar with Tabs */}
-      <UsuarioFilterBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        onSearchSubmit={handleSearchSubmit}
-        onClearSearch={handleClearSearch}
-        filterCargo={filterCargo}
-        setFilterCargo={handleCargoChange}
-        statusFilter={statusFilter}
-        setStatusFilter={handleStatusFilterChange}
-        pendingCount={pendingCount}
-      />
+      <div id="tour-usuarios-filterbar">
+        <UsuarioFilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearchSubmit={handleSearchSubmit}
+          onClearSearch={handleClearSearch}
+          filterCargo={filterCargo}
+          setFilterCargo={handleCargoChange}
+          statusFilter={statusFilter}
+          setStatusFilter={handleStatusFilterChange}
+          pendingCount={pendingCount}
+        />
+      </div>
 
       {/* Progress line for background updates */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">

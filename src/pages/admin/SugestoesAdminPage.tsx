@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -14,6 +14,8 @@ import type {
 } from "@/types/dtos";
 
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminSugestoesSteps } from "@/features/tour/tourSteps";
 import { SugestaoFilterBar } from "@/components/sugestoes/SugestaoFilterBar";
 import { SugestaoAdminCard } from "@/components/sugestoes/SugestaoAdminCard";
 import { SugestaoDetailModal } from "@/components/sugestoes/SugestaoDetailModal";
@@ -23,6 +25,14 @@ const PAGE_SIZE = 5;
 
 export const SugestoesAdminPage = (): React.JSX.Element => {
   const qc = useQueryClient();
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-sugestoes", adminSugestoesSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
 
   // Search and filter states
   const [page, setPage] = useState(1);
@@ -162,28 +172,32 @@ export const SugestoesAdminPage = (): React.JSX.Element => {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeaderCard
-        title="Sugestões e Relatos"
-        description="Gerencie as solicitações, sugestões de melhorias e relatos de erros ou bugs submetidos pelos usuários no portal público."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Sugestões e Relatos"
+          description="Gerencie as solicitações, sugestões de melhorias e relatos de erros ou bugs submetidos pelos usuários no portal público."
+        />
+      </div>
 
       {/* Filter and Search Bar */}
-      <SugestaoFilterBar
-        searchTerm={buscaInput}
-        setSearchTerm={setBuscaInput}
-        onSearchSubmit={handleSearchSubmit}
-        onClearSearch={handleClearSearch}
-        tipoFilter={tipoFilter}
-        setTipoFilter={(val) => {
-          setTipoFilter(val);
-          setPage(1);
-        }}
-        statusFilter={statusFilter}
-        setStatusFilter={(val) => {
-          setStatusFilter(val);
-          setPage(1);
-        }}
-      />
+      <div id="tour-sugestoes-filterbar">
+        <SugestaoFilterBar
+          searchTerm={buscaInput}
+          setSearchTerm={setBuscaInput}
+          onSearchSubmit={handleSearchSubmit}
+          onClearSearch={handleClearSearch}
+          tipoFilter={tipoFilter}
+          setTipoFilter={(val) => {
+            setTipoFilter(val);
+            setPage(1);
+          }}
+          statusFilter={statusFilter}
+          setStatusFilter={(val) => {
+            setStatusFilter(val);
+            setPage(1);
+          }}
+        />
+      </div>
 
       {/* Progress line for background updates */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">

@@ -1,8 +1,12 @@
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import { ChevronLeft, ChevronRight, LayoutList } from "lucide-react";
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminCategoriasSteps } from "@/features/tour/tourSteps";
 import { CategoriaFilterBar } from "@/components/categorias/CategoriaFilterBar";
 import { CategoriaAdminCard } from "@/components/categorias/CategoriaAdminCard";
 import { CategoriaFormModal } from "@/components/categorias/CategoriaFormModal";
@@ -17,11 +21,17 @@ import { toast } from "sonner";
 
 const PAGE_SIZE = 5;
 
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
 export const CategoriasAdminPage = () => {
   const qc = useQueryClient();
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-categorias", adminCategoriasSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
+
   const [page, setPage] = useState(1);
   const [buscaInput, setBuscaInput] = useState("");
   const [busca, setBusca] = useState("");
@@ -194,24 +204,28 @@ export const CategoriasAdminPage = () => {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <PageHeaderCard
-        title="Categorias de Painéis"
-        description="Gerencie as categorias de agrupamento dos painéis. As categorias organizam os dashboards e facilitam a descoberta e navegação dos usuários na área pública."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Categorias de Painéis"
+          description="Gerencie as categorias de agrupamento dos painéis. As categorias organizam os dashboards e facilitam a descoberta e navegação dos usuários na área pública."
+        />
+      </div>
 
       {/* Filter and Search Bar */}
-      <CategoriaFilterBar
-        searchTerm={buscaInput}
-        setSearchTerm={setBuscaInput}
-        onSearchSubmit={handleSearchSubmit}
-        onClearSearch={handleClearSearch}
-        statusFilter={statusFilter}
-        setStatusFilter={(val) => {
-          setStatusFilter(val);
-          setPage(1);
-        }}
-        onNewClick={openNew}
-      />
+      <div id="tour-categorias-filterbar">
+        <CategoriaFilterBar
+          searchTerm={buscaInput}
+          setSearchTerm={setBuscaInput}
+          onSearchSubmit={handleSearchSubmit}
+          onClearSearch={handleClearSearch}
+          statusFilter={statusFilter}
+          setStatusFilter={(val) => {
+            setStatusFilter(val);
+            setPage(1);
+          }}
+          onNewClick={openNew}
+        />
+      </div>
 
       {/* Linear progress for background updates */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
@@ -231,7 +245,10 @@ export const CategoriasAdminPage = () => {
       </div>
 
       {/* List Container */}
-      <div className="flex flex-col gap-5 min-h-[520px] relative">
+      <div
+        id="tour-categorias-lista"
+        className="flex flex-col gap-5 min-h-[520px] relative"
+      >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
             <CircularProgress color="primary" />

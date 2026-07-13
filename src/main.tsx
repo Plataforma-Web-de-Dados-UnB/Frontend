@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/lib/MuiThemeProvider";
 import { AccessibilityProvider } from "@/features/accessibility/AccessibilityProvider";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import "./index.css";
+import "./features/tour/tour.css";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(

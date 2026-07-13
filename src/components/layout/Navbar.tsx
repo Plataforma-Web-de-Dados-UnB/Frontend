@@ -136,6 +136,7 @@ export const Navbar = () => {
       <div className="flex h-16 w-full items-center justify-between px-6 lg:px-7">
         {/* Logo / Título */}
         <Link
+          id="tour-navbar-logo"
           to={ROUTES.home}
           className="flex items-center gap-3 shrink-0 select-none cursor-pointer"
         >
@@ -165,6 +166,7 @@ export const Navbar = () => {
         {/* Desktop: botões à direita */}
         <div className="hidden items-center gap-3 lg:flex">
           <Button
+            id="tour-navbar-paineis"
             component={Link}
             to={ROUTES.paineis}
             startIcon={<ChartColumnBig className="h-4 w-4" />}
@@ -174,6 +176,7 @@ export const Navbar = () => {
           </Button>
 
           <Button
+            id="tour-navbar-sugestoes"
             component={Link}
             to={ROUTES.sugestao}
             startIcon={<Megaphone className="h-4 w-4" />}
@@ -197,6 +200,7 @@ export const Navbar = () => {
             <>
               {isAdmin && (
                 <Button
+                  id="tour-navbar-admin"
                   component={Link}
                   to={ROUTES.adminDashboard}
                   startIcon={<UserCog className="h-4.5 w-4.5" />}
@@ -206,6 +210,7 @@ export const Navbar = () => {
                 </Button>
               )}
               <Button
+                id="tour-navbar-acessibilidade"
                 onClick={openDrawer}
                 startIcon={<AccessibilityIcon className="h-4 w-4" />}
                 aria-label="Abrir configurações de acessibilidade"
@@ -232,6 +237,7 @@ export const Navbar = () => {
           ) : (
             <>
               <Button
+                id="tour-navbar-acessibilidade"
                 onClick={openDrawer}
                 startIcon={<AccessibilityIcon className="h-4 w-4" />}
                 aria-label="Abrir configurações de acessibilidade"

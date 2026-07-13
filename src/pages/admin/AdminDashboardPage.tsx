@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminDashboardSteps } from "@/features/tour/tourSteps";
 import { api } from "@/services/api";
 import { pipelineApi } from "@/services/pipelineApi";
 import type { PipelineExecucaoGetDto } from "@/types/dtos";
@@ -149,6 +151,14 @@ const VolumeCard = ({
 
 export const AdminDashboardPage = () => {
   const { user, isSuperAdmin } = useAuth();
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-dashboard", adminDashboardSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
   const [kpis, setKpis] = useState<KpiData>({
     totalPipelines: 0,
     totalCategorias: 0,
@@ -261,13 +271,15 @@ export const AdminDashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <PageHeaderCard
-        title={`Olá, ${user?.nome || "Administrador"}!`}
-        description="Bem-vindo à Área Administrativa do Portal de Dados. Aqui você pode gerenciar painéis, categorias, pipelines de dados e acompanhar o status de integridade do ambiente."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title={`Olá, ${user?.nome || "Administrador"}!`}
+          description="Bem-vindo à Área Administrativa do Portal de Dados. Aqui você pode gerenciar painéis, categorias, pipelines de dados e acompanhar o status de integridade do ambiente."
+        />
+      </div>
 
       {/* Grid de KPIs Principais */}
-      <div>
+      <div id="tour-admin-kpis">
         <h2 className="text-sm font-black uppercase tracking-wider text-texto-secundario mb-4 border-l-4 border-destaque pl-3">
           Visão Geral do Sistema
         </h2>
@@ -465,7 +477,10 @@ export const AdminDashboardPage = () => {
       </div>
 
       {/* Seção inferior: Monitor de pipelines e Execuções Recentes */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div
+        id="tour-admin-execucoes"
+        className="grid grid-cols-1 gap-6 lg:grid-cols-3"
+      >
         {/* Execuções Recentes */}
         <div className="lg:col-span-2 rounded bg-fundo-superficie p-6 shadow-sm">
           <div className="flex items-start justify-between mb-4">
@@ -543,7 +558,10 @@ export const AdminDashboardPage = () => {
         </div>
 
         {/* Informações de Ambiente / Status */}
-        <div className="rounded bg-fundo-superficie p-6 shadow-sm flex flex-col justify-between">
+        <div
+          id="tour-admin-status"
+          className="rounded bg-fundo-superficie p-6 shadow-sm flex flex-col justify-between"
+        >
           <div className="w-full">
             <h2 className="text-sm font-black uppercase tracking-wider text-texto-secundario mb-4 border-l-4 border-destaque pl-3">
               Status do Ambiente

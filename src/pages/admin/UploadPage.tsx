@@ -7,6 +7,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { pipelineApi } from "@/services/pipelineApi";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminUploadSteps } from "@/features/tour/tourSteps";
 import type { PipelineExecucaoGetDto } from "@/types/dtos";
 import type { PipelineGetDto } from "@/types/dtos";
 import { StatusPipelineLabel } from "@/types/dtos";
@@ -22,6 +24,14 @@ const PAGE_SIZE = 5;
 
 export const UploadPage = (): React.JSX.Element => {
   const qc = useQueryClient();
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-upload", adminUploadSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
 
   // History filter states
   const [page, setPage] = useState(1);
@@ -217,31 +227,35 @@ export const UploadPage = (): React.JSX.Element => {
   return (
     <div className="flex flex-col gap-6">
       {/* Page Header */}
-      <PageHeaderCard
-        title="Upload de Dados"
-        description="Monitore as execuções das pipelines de processamento de dados e envie arquivos em lote para iniciar o fluxo de transformação Bronze, Prata e Ouro."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Upload de Dados"
+          description="Monitore as execuções das pipelines de processamento de dados e envie arquivos em lote para iniciar o fluxo de transformação Bronze, Prata e Ouro."
+        />
+      </div>
 
       {/* Filter Bar (with "Novo Processamento" button) */}
-      <UploadFilterBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        inputRef={inputRef}
-        onSearchSubmit={handleSearchSubmit}
-        pipelineFilter={pipelineFilter}
-        setPipelineFilter={(val) => {
-          setPipelineFilter(val);
-          setPage(1);
-        }}
-        statusFilter={statusFilter}
-        setStatusFilter={(val) => {
-          setStatusFilter(val);
-          setPage(1);
-        }}
-        pipelines={pipelines || []}
-        onClearFilters={handleClearFilters}
-        onNewClick={() => setIsNewModalOpen(true)}
-      />
+      <div id="tour-upload-filterbar">
+        <UploadFilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          inputRef={inputRef}
+          onSearchSubmit={handleSearchSubmit}
+          pipelineFilter={pipelineFilter}
+          setPipelineFilter={(val) => {
+            setPipelineFilter(val);
+            setPage(1);
+          }}
+          statusFilter={statusFilter}
+          setStatusFilter={(val) => {
+            setStatusFilter(val);
+            setPage(1);
+          }}
+          pipelines={pipelines || []}
+          onClearFilters={handleClearFilters}
+          onNewClick={() => setIsNewModalOpen(true)}
+        />
+      </div>
 
       {/* Background refetch indicator */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
@@ -261,7 +275,10 @@ export const UploadPage = (): React.JSX.Element => {
       </div>
 
       {/* Executions List */}
-      <div className="flex flex-col gap-5 min-h-[520px] relative">
+      <div
+        id="tour-upload-lista"
+        className="flex flex-col gap-5 min-h-[520px] relative"
+      >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
             <CircularProgress color="primary" />

@@ -11,6 +11,8 @@ import { pipelineApi } from "@/services/pipelineApi";
 import { pipelineSchema, type PipelineFormValues } from "@/schemas/forms";
 import { isApiError } from "@/types/api";
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminPipelinesSteps } from "@/features/tour/tourSteps";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import type { PipelineGetDto } from "@/types/dtos";
 import { toast } from "sonner";
@@ -26,6 +28,14 @@ const PAGE_SIZE = 5;
 export const PipelinesPage = (): React.JSX.Element => {
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-pipelines", adminPipelinesSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -240,25 +250,29 @@ export const PipelinesPage = (): React.JSX.Element => {
   return (
     <div className="flex flex-col gap-6">
       {/* Reusable Header Card */}
-      <PageHeaderCard
-        title="Pipelines de Dados"
-        description="As pipelines de dados são scripts em Python que realizam o fluxo de transformação e carregamento. Elas recebem arquivos brutos nos formatos .csv, .xlsx, etc. estruturando-os nas camadas Bronze, Silver e Gold do DB."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Pipelines de Dados"
+          description="As pipelines de dados são scripts em Python que realizam o fluxo de transformação e carregamento. Elas recebem arquivos brutos nos formatos .csv, .xlsx, etc. estruturando-os nas camadas Bronze, Silver e Gold do DB."
+        />
+      </div>
 
       {/* Single Line Filter & Search Bar on Desktop */}
-      <PipelineFilterBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        inputRef={inputRef}
-        onSearchSubmit={handleSearchSubmit}
-        onClearSearch={handleClearSearch}
-        statusFilter={statusFilter}
-        setStatusFilter={(val) => {
-          setStatusFilter(val);
-          setPage(1);
-        }}
-        onNewClick={openNew}
-      />
+      <div id="tour-pipelines-filterbar">
+        <PipelineFilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          inputRef={inputRef}
+          onSearchSubmit={handleSearchSubmit}
+          onClearSearch={handleClearSearch}
+          statusFilter={statusFilter}
+          setStatusFilter={(val) => {
+            setStatusFilter(val);
+            setPage(1);
+          }}
+          onNewClick={openNew}
+        />
+      </div>
 
       {/* Divider or loading progress line */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">
@@ -278,7 +292,10 @@ export const PipelinesPage = (): React.JSX.Element => {
       </div>
 
       {/* Pipelines List */}
-      <div className="flex flex-col gap-5 min-h-[520px] relative">
+      <div
+        id="tour-pipelines-lista"
+        className="flex flex-col gap-5 min-h-[520px] relative"
+      >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
             <CircularProgress color="primary" />

@@ -15,6 +15,8 @@ import { isApiError } from "@/types/api";
 import type { PainelGetDto } from "@/types/dtos";
 
 import { PageHeaderCard } from "@/components/ui/PageHeaderCard";
+import { startTour } from "@/features/tour/useTour";
+import { adminPaineisSteps } from "@/features/tour/tourSteps";
 import { MuiConfirmDialog } from "@/components/ui/MuiConfirmDialog";
 import { PainelFilterBar } from "@/components/paineis/PainelFilterBar";
 import { PainelAdminCard } from "@/components/paineis/PainelAdminCard";
@@ -26,6 +28,14 @@ const PAGE_SIZE = 4;
 export const PaineisAdminPage = (): React.JSX.Element => {
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(
+      () => startTour("admin-paineis", adminPaineisSteps),
+      600,
+    );
+    return () => clearTimeout(t);
+  }, []);
 
   // Search and filter states
   const [page, setPage] = useState(1);
@@ -217,31 +227,35 @@ export const PaineisAdminPage = (): React.JSX.Element => {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeaderCard
-        title="Gestão de Painéis"
-        description="Os dashboards inseridos nestes painéis vêm do Apache Superset. Portanto, é importante criá-los lá primeiro para que possam ser incorporados aqui."
-      />
+      <div id="tour-admin-header" className="relative">
+        <PageHeaderCard
+          title="Gestão de Painéis"
+          description="Os dashboards inseridos nestes painéis vêm do Apache Superset. Portanto, é importante criá-los lá primeiro para que possam ser incorporados aqui."
+        />
+      </div>
 
       {/* Filter and Search Bar */}
-      <PainelFilterBar
-        searchTerm={buscaInput}
-        setSearchTerm={setBuscaInput}
-        inputRef={inputRef}
-        onSearchSubmit={handleSearchSubmit}
-        onClearSearch={handleClearSearch}
-        filterCat={filterCat}
-        setFilterCat={(val) => {
-          setFilterCat(val);
-          setPage(1);
-        }}
-        categorias={categorias}
-        statusFilter={statusFilter}
-        setStatusFilter={(val) => {
-          setStatusFilter(val);
-          setPage(1);
-        }}
-        onNewClick={openNew}
-      />
+      <div id="tour-paineis-admin-filterbar">
+        <PainelFilterBar
+          searchTerm={buscaInput}
+          setSearchTerm={setBuscaInput}
+          inputRef={inputRef}
+          onSearchSubmit={handleSearchSubmit}
+          onClearSearch={handleClearSearch}
+          filterCat={filterCat}
+          setFilterCat={(val) => {
+            setFilterCat(val);
+            setPage(1);
+          }}
+          categorias={categorias}
+          statusFilter={statusFilter}
+          setStatusFilter={(val) => {
+            setStatusFilter(val);
+            setPage(1);
+          }}
+          onNewClick={openNew}
+        />
+      </div>
 
       {/* Progress line for background updates */}
       <div className="h-[3px] w-full bg-borda-padrao/60 relative -mt-2 -mb-2">

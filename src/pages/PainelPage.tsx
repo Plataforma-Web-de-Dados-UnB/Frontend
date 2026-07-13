@@ -17,11 +17,18 @@ import { painelApi } from "@/services/painelApi";
 import { supersetApi } from "@/services/supersetApi";
 import { APP_CONFIG, ROUTES } from "@/utils/constants";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { startTour } from "@/features/tour/useTour";
+import { painelSteps } from "@/features/tour/tourSteps";
 
 export const PainelPage = () => {
   const { id } = useParams<{ id: string }>();
   const painelId = Number(id);
   const embedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => startTour("painel", painelSteps), 800);
+    return () => clearTimeout(timer);
+  }, [painelId]);
   const [embedError, setEmbedError] = useState<string | null>(null);
   const { data: painel, isLoading } = useQuery({
     queryKey: ["painel", painelId],
@@ -193,15 +200,17 @@ export const PainelPage = () => {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       {/* Header */}
-      <div className="bg-fundo-pagina px-6 pt-8 pb-14 lg:px-7">
-        <Breadcrumb
-          items={[
-            { label: "Painéis", to: ROUTES.paineis },
-            { label: painel.categoriaNome, to: categoriRoute },
-            { label: painel.nome },
-          ]}
-        />
-        <div className="mt-6 text-center">
+      <div className="bg-fundo-superficie px-6 pt-8 pb-14 lg:px-7">
+        <div id="tour-painel-breadcrumb">
+          <Breadcrumb
+            items={[
+              { label: "Painéis", to: ROUTES.paineis },
+              { label: painel.categoriaNome, to: categoriRoute },
+              { label: painel.nome },
+            ]}
+          />
+        </div>
+        <div id="tour-painel-title" className="mt-6 text-center">
           <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
             {painel.nome}
           </h1>
@@ -217,7 +226,10 @@ export const PainelPage = () => {
       </div>
 
       {/* Embed area */}
-      <div className="relative flex-1 bg-fundo-pagina flex flex-col">
+      <div
+        id="tour-painel-embed"
+        className="relative flex-1 bg-fundo-superficie flex flex-col"
+      >
         {hasEmbed ? (
           <>
             <style>{`

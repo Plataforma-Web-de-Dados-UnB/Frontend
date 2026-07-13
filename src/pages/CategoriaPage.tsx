@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { useQuery } from "@tanstack/react-query";
@@ -6,10 +7,17 @@ import { categoriasApi } from "@/services/categoriasApi";
 import { painelApi } from "@/services/painelApi";
 import { ROUTES } from "@/utils/constants";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { startTour } from "@/features/tour/useTour";
+import { categoriaSteps } from "@/features/tour/tourSteps";
 
 export const CategoriaPage = () => {
   const { id } = useParams<{ id: string }>();
   const categoriaId = Number(id);
+
+  useEffect(() => {
+    const timer = setTimeout(() => startTour("categoria", categoriaSteps), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const { data: categoria, isLoading: loadingCat } = useQuery({
     queryKey: ["categoria", categoriaId],
@@ -33,15 +41,17 @@ export const CategoriaPage = () => {
 
   return (
     <div className="px-6 py-8 lg:px-7">
-      <Breadcrumb
-        items={[
-          { label: "Painéis", to: ROUTES.paineis },
-          { label: categoria?.nome ?? "Categoria" },
-        ]}
-      />
+      <div id="tour-categoria-breadcrumb">
+        <Breadcrumb
+          items={[
+            { label: "Painéis", to: ROUTES.paineis },
+            { label: categoria?.nome ?? "Categoria" },
+          ]}
+        />
+      </div>
 
       {/* Header */}
-      <div className="mt-6 text-center">
+      <div id="tour-categoria-title" className="mt-6 text-center">
         <h1 className="text-3xl font-black uppercase tracking-tight text-titulo-destaque">
           {categoria?.nome ?? "Categoria"}
         </h1>
