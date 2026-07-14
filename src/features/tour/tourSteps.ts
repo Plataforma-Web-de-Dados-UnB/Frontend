@@ -1,12 +1,13 @@
 import type { DriveStep } from "driver.js";
+import { openDrawerImperative } from "@/features/accessibility/accessibilityDrawerRef";
 
 export const homeSteps: DriveStep[] = [
   {
     element: "#tour-navbar-logo",
     popover: {
-      title: "Portal de Dados da UnB",
+      title: "Voltar à Página Inicial",
       description:
-        "Bem-vindo ao Portal de Dados Institucionais da Universidade de Brasília. Clique no logo a qualquer momento para voltar à página inicial.",
+        "Bem-vindo ao Portal de Dados Institucionais da Universidade de Brasília. Clique na logo a qualquer momento para voltar à página inicial.",
       side: "bottom",
       align: "start",
     },
@@ -42,16 +43,6 @@ export const homeSteps: DriveStep[] = [
     },
   },
   {
-    element: "#tour-home-title",
-    popover: {
-      title: "Portal de Dados Institucionais",
-      description:
-        "Esta é a página inicial. Aqui você encontra um resumo do portal e acesso rápido à busca e aos painéis.",
-      side: "bottom",
-      align: "center",
-    },
-  },
-  {
     element: "#tour-home-search",
     popover: {
       title: "Busca de Painéis",
@@ -62,32 +53,37 @@ export const homeSteps: DriveStep[] = [
     },
   },
   {
-    element: "#tour-home-btn-buscar",
-    popover: {
-      title: "Botão Buscar",
-      description: "Clique para pesquisar painéis pelo termo digitado no campo acima.",
-      side: "bottom",
-      align: "start",
-    },
-  },
-  {
     element: "#tour-home-btn-ver-paineis",
     popover: {
-      title: "Ver Todos os Painéis",
+      title: "Ver Categorias de Painéis",
       description:
-        "Clique para navegar pela lista completa de painéis organizados por categoria, sem precisar pesquisar.",
+        "Clique para navegar pela lista completa com todos os painéis analíticos disponíveis, organizados por categoria.",
       side: "bottom",
       align: "start",
     },
   },
   {
-    element: "#tour-home-sobre",
+    element: "#tour-navbar-acessibilidade",
     popover: {
-      title: "Sobre o Portal",
+      title: "Repetir o Tutorial",
       description:
-        "Saiba mais sobre os princípios de transparência, painéis analíticos e dados abertos que guiam este portal.",
-      side: "top",
-      align: "center",
+        "Sempre que quiser ver o tutorial de uma página novamente, abra o painel de Acessibilidade clicando neste botão.",
+      side: "bottom",
+      align: "end",
+      onNextClick: (_el, _step, { driver: d }) => {
+        openDrawerImperative();
+        setTimeout(() => d.moveNext(), 350);
+      },
+    },
+  },
+  {
+    element: "#tour-btn-tutorial",
+    popover: {
+      title: "Botão Tutorial",
+      description:
+        "Este botão inicia o tutorial da página atual. Ele aparece apenas nas páginas que possuem um guia interativo.",
+      side: "left",
+      align: "start",
     },
   },
 ];
@@ -121,7 +117,7 @@ export const categoriaSteps: DriveStep[] = [
     popover: {
       title: "Navegação (Breadcrumb)",
       description:
-        "Mostra o caminho de navegação atual. Clique em \"Painéis\" para voltar à lista de categorias.",
+        'Mostra o caminho de navegação atual. Clique em "Painéis" para voltar à lista de categorias.',
       side: "bottom",
       align: "start",
     },
@@ -130,8 +126,7 @@ export const categoriaSteps: DriveStep[] = [
     element: "#tour-categoria-title",
     popover: {
       title: "Categoria",
-      description:
-        "Nome e descrição da categoria atual. O traço verde abaixo é um identificador visual do portal.",
+      description: "Nome e descrição da categoria atual.",
       side: "bottom",
       align: "center",
     },
@@ -141,7 +136,7 @@ export const categoriaSteps: DriveStep[] = [
     popover: {
       title: "Painéis da Categoria",
       description:
-        "Lista de painéis disponíveis nesta categoria. Clique em qualquer item para abrir o painel correspondente.",
+        "Lista de painéis disponíveis nesta categoria. Clique em qualquer cartão para abrir o painel correspondente.",
       side: "top",
       align: "center",
     },
@@ -162,7 +157,7 @@ export const painelSteps: DriveStep[] = [
   {
     element: "#tour-painel-title",
     popover: {
-      title: "Painel Analítico",
+      title: "Painel",
       description:
         "Nome e descrição do painel. O conteúdo interativo é exibido abaixo.",
       side: "bottom",
@@ -177,6 +172,26 @@ export const painelSteps: DriveStep[] = [
         "Aqui é exibido o painel interativo. Você pode explorar os dados, aplicar filtros e interagir com os gráficos diretamente.",
       side: "top",
       align: "center",
+    },
+  },
+  {
+    element: "#tour-painel-compartilhar",
+    popover: {
+      title: "Compartilhar",
+      description:
+        "Compartilhe este painel por link, WhatsApp, X, Facebook, LinkedIn ou e-mail.",
+      side: "top",
+      align: "end",
+    },
+  },
+  {
+    element: "#tour-painel-tela-cheia",
+    popover: {
+      title: "Tela Cheia",
+      description:
+        "Expande o painel para ocupar toda a tela, ideal para apresentações e análises detalhadas.",
+      side: "top",
+      align: "end",
     },
   },
 ];
@@ -207,7 +222,7 @@ export const adminDashboardSteps: DriveStep[] = [
     popover: {
       title: "Status dos Serviços",
       description:
-        "Monitore em tempo real se o banco de dados, o Superset e o Redis estão online.",
+        "Monitore em tempo real se a API, o banco de dados, o Superset e o Redis estão online.",
       side: "top",
       align: "center",
     },
@@ -216,8 +231,7 @@ export const adminDashboardSteps: DriveStep[] = [
     element: "#tour-admin-execucoes",
     popover: {
       title: "Últimas Execuções",
-      description:
-        "Histórico das execuções de pipeline mais recentes, com status de sucesso ou falha.",
+      description: "Histórico das execuções de pipeline mais recentes.",
       side: "top",
       align: "center",
     },
@@ -240,7 +254,7 @@ export const adminPipelinesSteps: DriveStep[] = [
     popover: {
       title: "Pipelines",
       description:
-        "Gerencie os pipelines de ingestão e processamento de dados. Cada pipeline define como os dados são coletados, transformados e disponibilizados.",
+        "Gerencie os pipelines de processamento de dados. Cada pipeline define como os dados são transformados e disponibilizados.",
       side: "bottom",
       align: "start",
     },
@@ -313,7 +327,7 @@ export const adminUploadSteps: DriveStep[] = [
     popover: {
       title: "Lista de Execuções",
       description:
-        "Cada item mostra a pipeline relacionada, status, tempo de execução e logs. Clique no ícone de olho para ver os detalhes completos.",
+        "Cada item mostra a pipeline relacionada, status, tempo de execução e logs. Clique no ícone de olho para ver os detalhes completos ou no de reload para fazer Rollback e desfazer o upload dos dados relacioados à execução.",
       side: "top",
       align: "center",
     },

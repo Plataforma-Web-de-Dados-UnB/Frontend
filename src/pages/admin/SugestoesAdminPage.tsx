@@ -217,7 +217,10 @@ export const SugestoesAdminPage = (): React.JSX.Element => {
       </div>
 
       {/* List Container */}
-      <div className="flex flex-col gap-5 min-h-[520px] relative">
+      <div
+        id="tour-sugestoes-lista"
+        className="flex flex-col gap-5 min-h-[520px] relative"
+      >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-fundo-pagina/50 z-10">
             <CircularProgress color="primary" />

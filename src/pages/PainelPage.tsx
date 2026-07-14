@@ -276,6 +276,7 @@ export const PainelPage = () => {
         {/* Toolbar bottom */}
         <div className="flex items-center justify-end mx-6 lg:mx-7 py-3 border-t border-fundo-superficie-suave mb-6 gap-2">
           <Button
+            id="tour-painel-compartilhar"
             size="small"
             startIcon={<Share2 className="h-4 w-4" />}
             sx={{
@@ -344,6 +345,7 @@ export const PainelPage = () => {
             })}
           </Menu>
           <Button
+            id="tour-painel-tela-cheia"
             size="small"
             startIcon={<Maximize2 className="h-4 w-4" />}
             sx={{

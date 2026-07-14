@@ -1,4 +1,4 @@
-import { X, Sun, Moon, Contrast } from "lucide-react";
+import { X, Sun, Moon, Contrast, GraduationCap } from "lucide-react";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -9,6 +9,7 @@ import {
   type FontSizeLevel,
 } from "@/features/accessibility/useAccessibility";
 import { useAccessibilityDrawer } from "@/features/accessibility/useAccessibilityDrawer";
+import { startTour, useTourForPage } from "@/features/tour/useTour";
 
 const FONT_MIN = 100;
 const FONT_MAX = 150;
@@ -51,6 +52,7 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 
 export const AccessibilityPanel = () => {
   const { open, closeDrawer } = useAccessibilityDrawer();
+  const pageTour = useTourForPage();
   const {
     theme,
     setTheme,
@@ -195,6 +197,39 @@ export const AccessibilityPanel = () => {
               {highContrast ? "Ativado" : "Desativado"}
             </Button>
           </section>
+
+          {/* Tutorial */}
+          {pageTour && (
+            <section>
+              <SectionTitle>Tutorial</SectionTitle>
+              <Button
+                id="tour-btn-tutorial"
+                fullWidth
+                variant="outlined"
+                onClick={() => {
+                  closeDrawer();
+                  setTimeout(
+                    () => startTour(pageTour.page, pageTour.steps, true),
+                    300,
+                  );
+                }}
+                startIcon={<GraduationCap className="h-4 w-4" />}
+                sx={{
+                  borderRadius: "4px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  color: "text.primary",
+                  borderColor: "divider",
+                  justifyContent: "flex-start",
+                  "&:hover": {
+                    bgcolor: "var(--color-fundo-superficie-suave)",
+                  },
+                }}
+              >
+                Tutorial: {pageTour.label}
+              </Button>
+            </section>
+          )}
 
           {/* Tamanho da fonte */}
           <section>

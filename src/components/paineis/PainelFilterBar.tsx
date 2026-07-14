@@ -244,6 +244,7 @@ export const PainelFilterBar = ({
 
         {/* New Panel Button */}
         <Button
+          id="tour-paineis-admin-novo"
           variant="contained"
           color="primary"
           startIcon={<Plus className="h-4 w-4" />}

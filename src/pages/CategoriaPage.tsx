@@ -81,7 +81,7 @@ export const CategoriaPage = () => {
       )}
 
       {!loadingPaineis && paineis && paineis.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div id="tour-categoria-lista" className="flex flex-col gap-3">
           {paineis.map((painel) => (
             <Link
               key={painel.id}

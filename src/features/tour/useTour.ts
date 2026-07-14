@@ -1,5 +1,20 @@
 import { driver } from "driver.js";
 import type { DriveStep } from "driver.js";
+import { useLocation } from "react-router-dom";
+import { closeDrawerImperative } from "@/features/accessibility/accessibilityDrawerRef";
+import {
+  homeSteps,
+  paineisSteps,
+  categoriaSteps,
+  painelSteps,
+  adminDashboardSteps,
+  adminPipelinesSteps,
+  adminUploadSteps,
+  adminCategoriasSteps,
+  adminPaineisSteps,
+  adminUsuariosSteps,
+  adminSugestoesSteps,
+} from "./tourSteps";
 
 const STORAGE_KEY_PREFIX = "tour-done-";
 
@@ -23,7 +38,7 @@ function buildDriver(steps: DriveStep[], onDone?: () => void) {
   const overlayColor = isHC || isDark ? "#000000" : "#1a2744";
   const overlayOpacity = isHC ? 0.9 : isDark ? 0.7 : 0.5;
 
-  let closedByX = false;
+  let closedByOverlay = false;
 
   const d = driver({
     showProgress: true,
@@ -40,13 +55,13 @@ function buildDriver(steps: DriveStep[], onDone?: () => void) {
     popoverOffset: 12,
     stagePadding: 6,
     stageRadius: 4,
-    onCloseClick: () => {
-      closedByX = true;
+    overlayClickBehavior: () => {
+      closedByOverlay = true;
       d.destroy();
     },
-    onDestroyed: (_el, _step, { state }) => {
-      if (closedByX) return;
-      if (state.activeIndex !== undefined) return;
+    onDestroyed: () => {
+      closeDrawerImperative();
+      if (closedByOverlay) return;
       onDone?.();
     },
   });
@@ -69,3 +84,82 @@ export function resetTours(): void {
 }
 
 export { isDone as isTourDone };
+
+const ROUTE_TOUR_MAP: Array<{
+  pattern: RegExp;
+  page: string;
+  label: string;
+  steps: DriveStep[];
+}> = [
+  {
+    pattern: /^\/admin\/pipelines/,
+    page: "admin-pipelines",
+    label: "Pipelines",
+    steps: adminPipelinesSteps,
+  },
+  {
+    pattern: /^\/admin\/upload/,
+    page: "admin-upload",
+    label: "Upload",
+    steps: adminUploadSteps,
+  },
+  {
+    pattern: /^\/admin\/categorias/,
+    page: "admin-categorias",
+    label: "Categorias",
+    steps: adminCategoriasSteps,
+  },
+  {
+    pattern: /^\/admin\/paineis/,
+    page: "admin-paineis",
+    label: "Painéis Admin",
+    steps: adminPaineisSteps,
+  },
+  {
+    pattern: /^\/admin\/usuarios/,
+    page: "admin-usuarios",
+    label: "Usuários",
+    steps: adminUsuariosSteps,
+  },
+  {
+    pattern: /^\/admin\/sugestoes/,
+    page: "admin-sugestoes",
+    label: "Sugestões Admin",
+    steps: adminSugestoesSteps,
+  },
+  {
+    pattern: /^\/admin/,
+    page: "admin-dashboard",
+    label: "Dashboard Admin",
+    steps: adminDashboardSteps,
+  },
+  {
+    pattern: /^\/paineis\/categoria\//,
+    page: "categoria",
+    label: "Categoria",
+    steps: categoriaSteps,
+  },
+  {
+    pattern: /^\/paineis\/painel\//,
+    page: "painel",
+    label: "Painel",
+    steps: painelSteps,
+  },
+  {
+    pattern: /^\/paineis/,
+    page: "paineis",
+    label: "Painéis",
+    steps: paineisSteps,
+  },
+  { pattern: /^\/$/, page: "home", label: "Início", steps: homeSteps },
+];
+
+export function useTourForPage(): {
+  page: string;
+  label: string;
+  steps: DriveStep[];
+} | null {
+  const { pathname } = useLocation();
+  const match = ROUTE_TOUR_MAP.find(({ pattern }) => pattern.test(pathname));
+  return match ?? null;
+}

@@ -182,6 +182,7 @@ export const CategoriaFilterBar = ({
 
         {/* New Category Button */}
         <Button
+          id="tour-categorias-nova"
           variant="contained"
           color="primary"
           startIcon={<Plus className="h-4 w-4" />}

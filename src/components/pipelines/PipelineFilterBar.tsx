@@ -171,6 +171,7 @@ export const PipelineFilterBar = ({
 
         {/* New Pipeline Button */}
         <Button
+          id="tour-pipelines-nova"
           variant="contained"
           color="primary"
           startIcon={<Plus className="h-4 w-4" />}

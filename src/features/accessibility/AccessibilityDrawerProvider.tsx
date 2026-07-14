@@ -1,5 +1,9 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { AccessibilityDrawerContext } from "./AccessibilityDrawerContext";
+import {
+  registerOpenDrawer,
+  registerCloseDrawer,
+} from "./accessibilityDrawerRef";
 
 export const AccessibilityDrawerProvider = ({
   children,
@@ -7,6 +11,11 @@ export const AccessibilityDrawerProvider = ({
   children: ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    registerOpenDrawer(() => setOpen(true));
+    registerCloseDrawer(() => setOpen(false));
+  }, []);
 
   return (
     <AccessibilityDrawerContext.Provider

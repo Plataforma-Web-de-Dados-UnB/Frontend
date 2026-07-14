@@ -250,6 +250,7 @@ export const UploadFilterBar = ({
         </Tabs>
 
         <Button
+          id="tour-upload-nova"
           variant="contained"
           color="primary"
           startIcon={<Plus className="h-4 w-4" />}

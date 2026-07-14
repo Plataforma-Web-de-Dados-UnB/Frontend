@@ -441,7 +441,10 @@ export const AdminLayout = () => {
               </Tooltip>
             </div>
 
-            <nav className="flex-1 overflow-y-auto p-2">
+            <nav
+              id="tour-admin-nav-links"
+              className="flex-1 overflow-y-auto p-2"
+            >
               {sidebarList(collapsed)}
             </nav>
             {bottomSection(collapsed)}
