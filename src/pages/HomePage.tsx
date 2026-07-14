@@ -97,33 +97,37 @@ export const HomePage = () => {
       {/* Sobre */}
       <section
         id="tour-home-sobre"
-        className="bg-fundo-superficie-suave px-4 py-12 shrink-0"
+        className="bg-fundo-superficie-suave px-4 pb-8 pt-8 shrink-0"
       >
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl font-black uppercase tracking-tight text-titulo-destaque">
             Sobre
           </h2>
           <div className="mx-auto mt-3 h-1 w-16 rounded bg-destaque" />
-          <div className="mt-10 grid gap-8 lg:grid-cols-3">
+          <div className="mt-8 grid gap-8 lg:grid-cols-3">
             {[
               {
-                title: "Lorem ipsum",
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi.",
+                title: "A Plataforma",
+                text: "Portal que centraliza indicadores acadêmicos da Faculdade de Ciências e Tecnologias em Engenharia (FCTE) da Universidade de Brasília, reunindo em um único lugar informações sobre ensino e desempenho estudantil.",
               },
               {
-                title: "Lorem ipsum",
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi. Quisque tempus, nibh eget fermentum rutrum, tortor urna molestie purus, eu hendrerit risus nibh eu lectus.",
+                title: "Público-Alvo",
+                text: "A plataforma é pública e voltada a toda a comunidade acadêmica da FCTE e da UnB, além de qualquer interessado nos dados institucionais.",
               },
               {
-                title: "Lorem ipsum",
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi.",
+                title: "Qualidade dos Dados",
+                text: "Os dados institucionais passam por etapas automatizadas de limpeza e padronização antes de alimentar os painéis, garantindo consistência e rastreabilidade das informações exibidas.",
               },
             ].map((item) => (
               <div key={item.title}>
                 <h3 className="text-base font-bold text-texto-principal">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-texto-secundario">
+                <p
+                  className="mt-2 text-sm leading-relaxed text-texto-secundario text-justify"
+                  lang="pt-BR"
+                  style={{ hyphens: "auto" }}
+                >
                   {item.text}
                 </p>
               </div>
