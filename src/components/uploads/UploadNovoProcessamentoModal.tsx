@@ -445,7 +445,8 @@ export const UploadNovoProcessamentoModal = ({
                   </span>
                 ) : (
                   <p className="text-[10px] text-texto-secundario font-medium pl-1 select-none">
-                    Formatos aceitos: .csv (separador <code>;</code>) e .xlsx
+                    Formatos aceitos: .csv (separador detectado automaticamente)
+                    e .xlsx
                   </p>
                 )}
               </div>

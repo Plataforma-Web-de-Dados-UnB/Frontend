@@ -273,6 +273,16 @@ export const UploadExecucaoDetailModal = ({
                         {execucao.tabelaGold}
                       </span>
                     </div>
+                    {execucao.tabelasGoldExtras?.map((t) => (
+                      <div key={t} className="flex items-center gap-2.5">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-amber-100 text-amber-600">
+                          <Database className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm font-bold text-texto-principal">
+                          {t}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 

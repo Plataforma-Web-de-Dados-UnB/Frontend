@@ -107,16 +107,16 @@ export const HomePage = () => {
           <div className="mt-10 grid gap-8 lg:grid-cols-3">
             {[
               {
-                title: "Transparência",
-                text: "O portal disponibiliza dados públicos da UnB de forma organizada, acessível e visualizável por qualquer cidadão.",
+                title: "Lorem ipsum",
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi.",
               },
               {
-                title: "Painéis Analíticos",
-                text: "Visualizações interativas construídas sobre dados reais do SIGAA, RU, pesquisa e extensão da universidade.",
+                title: "Lorem ipsum",
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi. Quisque tempus, nibh eget fermentum rutrum, tortor urna molestie purus, eu hendrerit risus nibh eu lectus.",
               },
               {
-                title: "Dados Abertos",
-                text: "Todos os conjuntos de dados seguem os princípios de dados abertos governamentais, podendo ser baixados e reutilizados.",
+                title: "Lorem ipsum",
+                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla sit amet augue consectetur placerat. Donec nec arcu in dui posuere pulvinar. Donec quis commodo nisi.",
               },
             ].map((item) => (
               <div key={item.title}>

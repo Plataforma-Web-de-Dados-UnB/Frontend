@@ -130,6 +130,7 @@ export type PipelineExecucaoGetDto = {
   nomeArquivo: string | null;
   tabelaSilver: string;
   tabelaGold: string;
+  tabelasGoldExtras?: string[] | null;
   status: StatusPipelineExecucao;
   mensagem: string | null;
   iniciadoEm: string | null;
