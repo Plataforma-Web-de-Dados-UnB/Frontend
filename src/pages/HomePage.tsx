@@ -33,9 +33,8 @@ export const HomePage = () => {
           </h1>
           <div className="mx-auto mt-4 h-1 w-24 rounded bg-destaque" />
           <p className="mt-6 text-base text-texto-secundario lg:text-lg">
-            Transparência e acesso a dados institucionais da Universidade de
-            Brasília. Explore painéis analíticos com informações sobre ensino,
-            pesquisa e gestão universitária.
+            Dados institucionais da FCTE disponíveis a toda a comunidade
+            em forma de painéis interativos da Faculdade de Ciências e Tecnologias em Engenharia.
           </p>
 
           <form

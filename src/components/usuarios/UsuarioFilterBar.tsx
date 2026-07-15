@@ -45,11 +45,11 @@ export const UsuarioFilterBar = ({
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full flex-wrap">
       {/* Search Bar and Cargo Select */}
       <form
         onSubmit={onSearchSubmit}
-        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto flex-wrap"
       >
         <TextField
           inputRef={inputRef}
@@ -206,7 +206,7 @@ export const UsuarioFilterBar = ({
       </form>
 
       {/* Tabs on the right */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:min-h-10 flex-wrap">
         <Tabs
           value={statusFilter}
           onChange={(_, newValue) => {

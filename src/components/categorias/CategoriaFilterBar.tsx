@@ -39,9 +39,9 @@ export const CategoriaFilterBar = ({
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full flex-wrap">
       {/* Search Input Box */}
-      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto">
+      <form onSubmit={onSearchSubmit} className="flex gap-2 w-full lg:w-auto flex-wrap">
         <TextField
           inputRef={inputRef}
           placeholder="Buscar categoria..."
@@ -140,7 +140,7 @@ export const CategoriaFilterBar = ({
       </form>
 
       {/* Group Tabs & Nova Categoria button together on the right */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:min-h-10 flex-wrap">
         {/* Status Tabs */}
         <Tabs
           value={statusFilter}

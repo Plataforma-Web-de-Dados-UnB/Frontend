@@ -37,11 +37,11 @@ export const UploadFilterBar = ({
   onNewClick,
 }: UploadFilterBarProps) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full flex-wrap">
       {/* Left: Search + Pipeline dropdown + Clear */}
       <form
         onSubmit={onSearchSubmit}
-        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+        className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto flex-wrap"
       >
         {/* Search field - mesmo padrão das outras FilterBars */}
         <TextField
@@ -216,7 +216,7 @@ export const UploadFilterBar = ({
       </form>
 
       {/* Right: Status Tabs + New Processing Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:h-10">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto justify-end shrink-0 lg:min-h-10 flex-wrap">
         <Tabs
           value={statusFilter}
           onChange={(_, newValue) => setStatusFilter(newValue)}
