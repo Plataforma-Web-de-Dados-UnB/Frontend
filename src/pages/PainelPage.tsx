@@ -120,6 +120,7 @@ export const PainelPage = () => {
       fetchGuestToken: () =>
         supersetApi.getGuestToken(painel.embedDashboardUuid!),
       dashboardUiConfig: {
+        hideTitle: true,
         filters: { expanded: true, visible: true },
         hideTab: false,
         hideChartControls: false,
