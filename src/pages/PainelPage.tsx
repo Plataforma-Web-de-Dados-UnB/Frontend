@@ -125,7 +125,8 @@ export const PainelPage = () => {
         hideTab: false,
         hideChartControls: false,
         urlParams: {
-          themeMode: 'dark',
+          themeMode: "dark",
+          theme_color_scheme: "unb_brand_palette",
         },
       },
     })
